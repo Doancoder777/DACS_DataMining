@@ -1,0 +1,52 @@
+=== RP-GROWTH - RARE PATTERN MINING (FIXED) ===
+File dữ liệu: data_little.txt
+MinRareSupport (MRT): 20.0% (0.2)
+MinFrequentSupport (MFT): 40.0% (0.4)
+Khoảng rare items: [20.0%, 40.0%] (FIXED: bao gồm boundary)
+Thời gian bắt đầu: Wed May 28 20:06:36 ICT 2025
+Output folder: release/RPGrowth/
+
+ĐỊNH NGHĨA (FIXED):
+- Rare Item: MRT ≤ Support(X) ≤ MFT (FIXED: bao gồm cả boundary values)
+- Rare Itemset: có ít nhất 1 rare item
+- Perfect Rare Itemset: chứa toàn rare items
+
+========== RARE ITEMSETS ==========
+Số lượng giao dịch: 20
+
+Ngưỡng tuyệt đối:
+- MinRareSupport: 4
+- MinFrequentSupport: 8
+
+--- 1-itemsets HIẾM ---
+10  #SUP: 5 (25.00%)
+9  #SUP: 5 (25.00%)
+8  #SUP: 5 (25.00%)
+7  #SUP: 7 (35.00%)
+6  #SUP: 7 (35.00%)
+5  #SUP: 8 (40.00%)
+4  #SUP: 8 (40.00%)
+
+--- 2-itemsets HIẾM ---
+5 10  #SUP: 4 (20.00%)
+6 9  #SUP: 4 (20.00%)
+4 6  #SUP: 4 (20.00%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 10
+Thuật toán: RP-Growth (FIXED)
+Output folder: release/RPGrowth/
+
+========== SO SÁNH VỚI APRIORI INVERSE ==========
+❌ CHƯA KHỚP! AprioriTID Inverse tìm được 18 itemsets, RP-Growth tìm được 10
+
+========== PHÂN LOẠI RARE ITEMSETS ==========
+Perfect Rare Itemsets (ước tính): 6
+Regular Rare Itemsets (ước tính): 4
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: RP-Growth (Rare Pattern Mining) - FIXED VERSION
+Tổng thời gian thực thi: 00:03.446 (phút:giây.mili giây) [3446 ms]
+Bộ nhớ tối đa sử dụng: 6.96 MB
+Thời gian kết thúc: Wed May 28 20:06:40 ICT 2025
+Output folder: release/RPGrowth/

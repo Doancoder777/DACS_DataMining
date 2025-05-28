@@ -1,0 +1,89 @@
+=== RARE ITEMSET TREE - RARE PATTERN MINING ===
+File dữ liệu: data_little.txt
+MinRareSupport (minsup): 15.0%
+MinFrequentSupport (maxsup): 50.0%
+Thời gian bắt đầu: Thu May 29 01:50:08 ICT 2025
+Output folder: release/RareItemsetTree/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+- Định nghĩa: 2 < Support(X) <= 10
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 20
+
+========== RARE ITEMSET TREE STRUCTURE ==========
+{}   sup=20
+  [3]   sup=3
+    [3 5 7 10]   sup=1
+    [3 4]   sup=2
+      [3 4 7 8]   sup=1
+      [3 4 6 9]   sup=1
+  [1]   sup=11
+    [1 4 6]   sup=2
+      [1 4 6 7]   sup=1
+    [1 5 6 10]   sup=1
+    [1 3]   sup=2
+      [1 3 7 8]   sup=1
+      [1 3 6 9]   sup=1
+    [1 2]   sup=6
+      [1 2 7 10]   sup=1
+      [1 2 6 9]   sup=1
+      [1 2 5]   sup=2
+        [1 2 5 10]   sup=1
+        [1 2 5 8]   sup=1
+      [1 2 3]   sup=2
+        [1 2 3 4]   sup=1
+        [1 2 3 5]   sup=1
+  [2]   sup=6
+    [2 4]   sup=2
+      [2 4 5 10]   sup=1
+      [2 4 6 9]   sup=1
+    [2 3]   sup=3
+      [2 3 4 7]   sup=1
+      [2 3 5]   sup=1
+      [2 3 8 9]   sup=1
+    [2 5 7 8]   sup=1
+
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (2, 10]
+Định nghĩa: MRT < Support(X) <= MFT
+
+--- 2-itemsets HIẾM ---
+3 5  #SUP: 3 (15.00%)
+3 8  #SUP: 3 (15.00%)
+3 9  #SUP: 3 (15.00%)
+4 7  #SUP: 3 (15.00%)
+7 8  #SUP: 3 (15.00%)
+3 4  #SUP: 4 (20.00%)
+3 7  #SUP: 4 (20.00%)
+4 6  #SUP: 4 (20.00%)
+5 10  #SUP: 4 (20.00%)
+6 9  #SUP: 4 (20.00%)
+
+--- 1-itemsets HIẾM ---
+8  #SUP: 5 (25.00%)
+9  #SUP: 5 (25.00%)
+10  #SUP: 5 (25.00%)
+6  #SUP: 7 (35.00%)
+7  #SUP: 7 (35.00%)
+4  #SUP: 8 (40.00%)
+5  #SUP: 8 (40.00%)
+3  #SUP: 10 (50.00%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 18
+Thuật toán: Rare Itemset Tree
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/RareItemsetTree/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: Rare Itemset Tree
+Tổng thời gian thực thi: 00:03.726 (phút:giây.mili giây) [3726 ms]
+Bộ nhớ tối đa sử dụng: 6.48 MB
+Thời gian kết thúc: Thu May 29 01:50:12 ICT 2025
+Output folder: release/RareItemsetTree/
+Định nghĩa: MRT < Support(X) <= MFT

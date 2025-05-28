@@ -1,0 +1,54 @@
+=== PREPOST RARE - RARE ITEMSETS MINING ===
+File dữ liệu: data_little.txt
+MinRareSupport (minsup): 15.0%
+MinFrequentSupport (maxsup): 50.0%
+Thời gian bắt đầu: Thu May 29 01:43:57 ICT 2025
+Output folder: release/PrePostRare/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 20
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (15.0%, 50.0%]
+Định nghĩa: MRT < Support(X) <= MFT
+
+--- 1-itemsets HIẾM ---
+10 #SUP: 5 (25.00%)
+9 #SUP: 5 (25.00%)
+8 #SUP: 5 (25.00%)
+7 #SUP: 7 (35.00%)
+6 #SUP: 7 (35.00%)
+5 #SUP: 8 (40.00%)
+4 #SUP: 8 (40.00%)
+3 #SUP: 10 (50.00%)
+
+--- 2-itemsets HIẾM ---
+10 5 #SUP: 4 (20.00%)
+9 6 #SUP: 4 (20.00%)
+9 3 #SUP: 3 (15.00%)
+8 7 #SUP: 3 (15.00%)
+8 3 #SUP: 3 (15.00%)
+7 4 #SUP: 3 (15.00%)
+7 3 #SUP: 4 (20.00%)
+6 4 #SUP: 4 (20.00%)
+5 3 #SUP: 3 (15.00%)
+4 3 #SUP: 4 (20.00%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 18
+Thuật toán: PrePost Rare
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/PrePostRare/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: PrePost Rare
+Tổng thời gian thực thi: 00:04.279 (phút:giây.mili giây) [4279 ms]
+Bộ nhớ tối đa sử dụng: 46.86 MB
+Thời gian kết thúc: Thu May 29 01:44:01 ICT 2025
+Output folder: release/PrePostRare/
+Định nghĩa: MRT < Support(X) <= MFT

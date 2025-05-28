@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "MainTestHierarchicalClustering_saveToMemory",
+            "request": "launch",
+            "mainClass": "clustering.hierarchical_clustering.MainTestHierarchicalClustering_saveToMemory",
+            "projectName": "JavaRare_784a2947"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
+            "projectName": "JavaRare_784a2947"
+        },
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}",
+            "console": "externalTerminal"
+        },
+        {
+            "type": "java",
+            "name": "Launch test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "JavaRare"
+        }
+    ]
+}
