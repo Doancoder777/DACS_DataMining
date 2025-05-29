@@ -1,8 +1,8 @@
 === RP-GROWTH - RARE PATTERN MINING ===
-File dữ liệu: data_little.txt
+File dữ liệu: inputITtree.txt
 MinRareSupport (minsup): 15.0%
 MinFrequentSupport (maxsup): 50.0%
-Thời gian bắt đầu: Thu May 29 23:40:45 ICT 2025
+Thời gian bắt đầu: Thu May 29 21:58:54 ICT 2025
 Output folder: release/RPGrowth/
 
 ========== ĐỊNH NGHĨA ==========
@@ -15,40 +15,43 @@ Tìm itemsets với support trong khoảng (15.0%, 50.0%]
 Định nghĩa: MRT < Support(X) <= MFT
 
 ========== DATABASE INFO ==========
-Số lượng giao dịch: 20
+Số lượng giao dịch: 12
 
 --- 1-itemsets HIẾM ---
-10  #SUP: 5 (25.00%)
-9  #SUP: 5 (25.00%)
-8  #SUP: 5 (25.00%)
-7  #SUP: 7 (35.00%)
-6  #SUP: 7 (35.00%)
-5  #SUP: 8 (40.00%)
-4  #SUP: 8 (40.00%)
-3  #SUP: 10 (50.00%)
+7  #SUP: 2 (16.67%)
+5  #SUP: 2 (16.67%)
+6  #SUP: 3 (25.00%)
+4  #SUP: 3 (25.00%)
+11  #SUP: 4 (33.33%)
+3  #SUP: 5 (41.67%)
+2  #SUP: 5 (41.67%)
+9  #SUP: 6 (50.00%)
 
 --- 2-itemsets HIẾM ---
-5 10  #SUP: 4 (20.00%)
-3 9  #SUP: 3 (15.00%)
-6 9  #SUP: 4 (20.00%)
-7 8  #SUP: 3 (15.00%)
-3 8  #SUP: 3 (15.00%)
-4 7  #SUP: 3 (15.00%)
-3 7  #SUP: 4 (20.00%)
-4 6  #SUP: 4 (20.00%)
-3 5  #SUP: 3 (15.00%)
-3 4  #SUP: 4 (20.00%)
+4 7  #SUP: 2 (16.67%)
+4 6  #SUP: 2 (16.67%)
+3 6  #SUP: 3 (25.00%)
+3 4  #SUP: 2 (16.67%)
+2 4  #SUP: 2 (16.67%)
+9 11  #SUP: 4 (33.33%)
+2 11  #SUP: 2 (16.67%)
+2 3  #SUP: 2 (16.67%)
+2 9  #SUP: 2 (16.67%)
+
+--- 3-itemsets HIẾM ---
+3 4 6  #SUP: 2 (16.67%)
+2 9 11  #SUP: 2 (16.67%)
 
 ========== TỔNG KẾT ==========
-Tổng số rare itemsets tìm được: 18
+Tổng số rare itemsets tìm được: 19
 Thuật toán: RP-Growth
 Định nghĩa: MRT < Support(X) <= MFT
 Output folder: release/RPGrowth/
 
 ========== THÔNG TIN HIỆU SUẤT ==========
 Thuật toán: RP-Growth
-Tổng thời gian thực thi: 00:08.443 (phút:giây.mili giây) [8443 ms]
+Tổng thời gian thực thi: 00:03.625 (phút:giây.mili giây) [3625 ms]
 Bộ nhớ tối đa sử dụng: 6.96 MB
-Thời gian kết thúc: Thu May 29 23:40:54 ICT 2025
+Thời gian kết thúc: Thu May 29 21:58:58 ICT 2025
 Output folder: release/RPGrowth/
 Định nghĩa: MRT < Support(X) <= MFT

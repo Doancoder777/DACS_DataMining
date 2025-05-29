@@ -1,0 +1,57 @@
+=== APRIORI-TID INVERSE - RARE ITEMSETS MINING ===
+File dữ liệu: inputITtree.txt
+MinRareSupport (minsup): 15.0%
+MinFrequentSupport (maxsup): 50.0%
+Thời gian bắt đầu: Thu May 29 02:34:04 ICT 2025
+Output folder: release/AprioriTIDInverse/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 12
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (15.0%, 50.0%]
+Định nghĩa: MRT < Support(X) <= MFT
+
+--- 1-itemsets HIẾM ---
+2  #SUP: 5 (41.67%) #TID: [0, 3, 5, 6, 9]
+3  #SUP: 5 (41.67%) #TID: [0, 1, 2, 4, 6]
+4  #SUP: 3 (25.00%) #TID: [0, 2, 5]
+5  #SUP: 2 (16.67%) #TID: [3, 4]
+6  #SUP: 3 (25.00%) #TID: [0, 2, 4]
+7  #SUP: 2 (16.67%) #TID: [2, 5]
+9  #SUP: 6 (50.00%) #TID: [6, 7, 8, 9, 10, 11]
+11  #SUP: 4 (33.33%) #TID: [6, 7, 8, 9]
+
+--- 2-itemsets HIẾM ---
+2 3  #SUP: 2 (16.67%) #TID: [0, 6]
+2 4  #SUP: 2 (16.67%) #TID: [0, 5]
+2 9  #SUP: 2 (16.67%) #TID: [6, 9]
+2 11  #SUP: 2 (16.67%) #TID: [6, 9]
+3 4  #SUP: 2 (16.67%) #TID: [0, 2]
+3 6  #SUP: 3 (25.00%) #TID: [0, 2, 4]
+4 6  #SUP: 2 (16.67%) #TID: [0, 2]
+4 7  #SUP: 2 (16.67%) #TID: [2, 5]
+9 11  #SUP: 4 (33.33%) #TID: [6, 7, 8, 9]
+
+--- 3-itemsets HIẾM ---
+2 9 11  #SUP: 2 (16.67%) #TID: [6, 9]
+3 4 6  #SUP: 2 (16.67%) #TID: [0, 2]
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 19
+Thuật toán: AprioriTID Inverse
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/AprioriTIDInverse/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: AprioriTID Inverse
+Tổng thời gian thực thi: 00:02.690 (phút:giây.mili giây) [2690 ms]
+Bộ nhớ tối đa sử dụng: 6.48 MB
+Thời gian kết thúc: Thu May 29 02:34:07 ICT 2025
+Output folder: release/AprioriTIDInverse/
+Định nghĩa: MRT < Support(X) <= MFT

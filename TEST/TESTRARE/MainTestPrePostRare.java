@@ -15,26 +15,13 @@ import java.util.Scanner;
 import Rarepartem.nlistrare.PrePostRare;
 import tools.MemoryLogger;
 
-/**
- * Chương trình test thuật toán PrePost Rare để tìm rare itemsets
- * Đọc dữ liệu ItemsetTree format và convert sang format chuẩn
- * Output được lưu trong folder riêng: release/PrePostRare/
- * 
- * ĐỊNH NGHĨA: Rare Item có MRT < Support(X) <= MFT
- */
 public class MainTestPrePostRare {
 
     public static void main(String[] args) throws IOException {
-        // Đặt lại bộ đếm bộ nhớ
         MemoryLogger.getInstance().reset();
-        
-        // Đánh dấu thời gian bắt đầu thuật toán
         long startTime = System.currentTimeMillis();
-        
-        // Đường dẫn thư mục chứa dữ liệu
         String dataDir = "Data";
 
-        // Quét thư mục để lấy danh sách tệp
         File directory = new File(dataDir);
         File[] files = directory.listFiles((dir, name) -> name.endsWith(".txt") || name.endsWith(".hui"));
         if (files == null || files.length == 0) {
@@ -44,7 +31,6 @@ public class MainTestPrePostRare {
 
         Scanner scanner = new Scanner(System.in);
         
-        // Hiển thị thông báo và định nghĩa
         System.out.println("=== PREPOST RARE - RARE ITEMSETS MINING ===");
         System.out.println("ĐỊNH NGHĨA:");
         System.out.println("- Rare Item: MRT < Support(X) <= MFT");
@@ -52,7 +38,6 @@ public class MainTestPrePostRare {
         System.out.println("- Infrequent Item: Support(X) <= MRT");
         System.out.println("==========================================================");
         
-        // Hiển thị danh sách tệp và yêu cầu người dùng chọn
         System.out.println("\nDanh sách tệp dữ liệu trong thư mục:");
         for (int i = 0; i < files.length; i++) {
             System.out.println((i + 1) + ". " + files[i].getName());
@@ -65,12 +50,10 @@ public class MainTestPrePostRare {
             choice = scanner.nextInt();
         }
 
-        // Lấy đường dẫn tệp được chọn
         String input = files[choice - 1].getAbsolutePath();
         String fileName = files[choice - 1].getName();
         System.out.println("Đã chọn tệp: " + fileName);
 
-        // Nhập MinRareSupport (minsup) - ngưỡng support tối thiểu
         System.out.print("Nhập MinRareSupport - minsup (phần trăm, từ 0 đến 100): ");
         double minsupPercent = scanner.nextDouble();
         while (minsupPercent < 0 || minsupPercent > 100) {
@@ -78,7 +61,6 @@ public class MainTestPrePostRare {
             minsupPercent = scanner.nextDouble();
         }
 
-        // Nhập MinFrequentSupport (maxsup) - ngưỡng support tối đa
         System.out.print("Nhập MinFrequentSupport - maxsup (phần trăm, từ 0 đến 100): ");
         double maxsupPercent = scanner.nextDouble();
         while (maxsupPercent < minsupPercent || maxsupPercent > 100) {
@@ -86,7 +68,6 @@ public class MainTestPrePostRare {
             maxsupPercent = scanner.nextDouble();
         }
 
-        // Tạo thư mục release/PrePostRare nếu chưa tồn tại
         File releaseDir = new File("release");
         if (!releaseDir.exists()) {
             releaseDir.mkdirs();
@@ -98,8 +79,7 @@ public class MainTestPrePostRare {
             System.out.println("Đã tạo thư mục: " + prepostRareDir.getAbsolutePath());
         }
 
-        // Tạo tên file output trong thư mục riêng
-        String outputBaseName = fileName.replaceAll("\\.[^.]*$", ""); // Loại bỏ extension
+        String outputBaseName = fileName.replaceAll("\\.[^.]*$", "");
         double minsup = minsupPercent / 100.0;
         double maxsup = maxsupPercent / 100.0;
         String outputPath = prepostRareDir.getAbsolutePath() + File.separator + outputBaseName + 
@@ -114,15 +94,11 @@ public class MainTestPrePostRare {
         scanner.close();
     }
 
-    /**
-     * Chạy thuật toán PrePost Rare
-     */
     private static void runPrePostRare(String input, String outputPath, double minsup, double maxsup, 
                                      String fileName, long startTime) throws IOException {
         System.out.println("\n=== CHẠY PREPOST RARE ===");
         System.out.println("Kết quả sẽ được lưu vào file: " + outputPath);
         
-        // Tạo file output
         PrintWriter writer = new PrintWriter(new FileWriter(outputPath));
         writer.println("=== PREPOST RARE - RARE ITEMSETS MINING ===");
         writer.println("File dữ liệu: " + fileName);
@@ -138,7 +114,6 @@ public class MainTestPrePostRare {
         writer.println("- Infrequent Item: Support(X) <= MRT");
         writer.println();
 
-        // BƯỚC 1: Convert ItemsetTree format sang format chuẩn
         System.out.println("Đang convert dữ liệu từ ItemsetTree format...");
         String convertedFile = "temp_converted_" + System.currentTimeMillis() + ".txt";
         int transactionCount = convertItemsetTreeToStandardFormat(input, convertedFile);
@@ -147,22 +122,17 @@ public class MainTestPrePostRare {
         writer.println("Số lượng giao dịch: " + transactionCount);
         writer.println();
         
-        // BƯỚC 2: Chạy thuật toán PrePost Rare
         String tempOutputPath = "temp_prepost_rare_" + System.currentTimeMillis() + ".txt";
         PrePostRare algo = new PrePostRare();
         algo.runAlgorithm(convertedFile, minsup, maxsup, tempOutputPath);
         
-        // In thống kê
         algo.printStats();
         
-        // BƯỚC 3: Đọc kết quả và ghi ra file chính với format đẹp
         writeFormattedResults(writer, tempOutputPath, transactionCount, minsup, maxsup, algo.outputCount);
         
-        // Ghi thống kê hiệu suất
         writePerformanceStats(writer, startTime);
         writer.close();
         
-        // Xóa các file tạm
         new File(convertedFile).delete();
         new File(tempOutputPath).delete();
         
@@ -171,25 +141,18 @@ public class MainTestPrePostRare {
         System.out.println("Thư mục output: release/PrePostRare/");
     }
 
-    /**
-     * Convert ItemsetTree format sang format chuẩn cho PrePost
-     * ItemsetTree format: transaction_id item_id [count]
-     * Standard format: item1 item2 item3 ... (một dòng cho mỗi transaction)
-     */
     private static int convertItemsetTreeToStandardFormat(String inputFile, String outputFile) throws IOException {
         Map<Integer, List<Integer>> transactionMap = new HashMap<>();
         
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
         String line;
 
-        // Đọc dòng đầu tiên (header) và bỏ qua
         line = reader.readLine();
         if (line == null || line.trim().isEmpty()) {
             reader.close();
             throw new IOException("File đầu vào rỗng hoặc không hợp lệ");
         }
 
-        // Đọc các dòng dữ liệu và nhóm theo transaction_id
         while ((line = reader.readLine()) != null) {
             if (line.isEmpty() || line.charAt(0) == '#' || line.charAt(0) == '%' || line.charAt(0) == '@') {
                 continue;
@@ -205,7 +168,6 @@ public class MainTestPrePostRare {
             int count = parts.length >= 3 ? Integer.parseInt(parts[2]) : 1;
 
             if (count > 0) {
-                // Thêm item vào transaction (tránh duplicate)
                 transactionMap.computeIfAbsent(transactionId, k -> new ArrayList<>());
                 if (!transactionMap.get(transactionId).contains(itemId)) {
                     transactionMap.get(transactionId).add(itemId);
@@ -214,18 +176,14 @@ public class MainTestPrePostRare {
         }
         reader.close();
 
-        // Ghi ra file theo format chuẩn
         PrintWriter writer = new PrintWriter(new FileWriter(outputFile));
         
-        // Sắp xếp theo transaction ID để đảm bảo thứ tự
         transactionMap.entrySet().stream()
             .sorted(Map.Entry.comparingByKey())
             .forEach(entry -> {
                 List<Integer> transaction = entry.getValue();
-                // Sắp xếp items trong transaction
                 transaction.sort(Integer::compareTo);
                 
-                // Ghi transaction
                 for (int i = 0; i < transaction.size(); i++) {
                     if (i > 0) writer.print(" ");
                     writer.print(transaction.get(i));
@@ -238,9 +196,6 @@ public class MainTestPrePostRare {
         return transactionMap.size();
     }
 
-    /**
-     * Đọc kết quả từ file tạm và ghi ra file chính với format đẹp
-     */
     private static void writeFormattedResults(PrintWriter writer, String tempOutputPath, 
                                             int transactionCount, double minsup, double maxsup, 
                                             int outputCount) throws IOException {
@@ -249,7 +204,6 @@ public class MainTestPrePostRare {
         writer.println("Định nghĩa: MRT < Support(X) <= MFT");
         writer.println();
         
-        // Đọc kết quả từ file tạm
         BufferedReader reader = new BufferedReader(new FileReader(tempOutputPath));
         String line;
         
@@ -259,13 +213,11 @@ public class MainTestPrePostRare {
             if (line.trim().isEmpty()) continue;
             
             if (line.contains("#SUP:")) {
-                // Parse dòng: "item1 item2 item3 #SUP: support"
                 String[] parts = line.split("#SUP:");
                 String itemsPart = parts[0].trim();
                 int support = Integer.parseInt(parts[1].trim());
                 double supportPercent = (support * 100.0) / transactionCount;
                 
-                // Đếm số items để xác định kích thước itemset
                 int itemsetSize = itemsPart.isEmpty() ? 0 : itemsPart.split(" ").length;
                 
                 String formattedLine = String.format("%s #SUP: %d (%.2f%%)", 
@@ -276,7 +228,6 @@ public class MainTestPrePostRare {
         }
         reader.close();
         
-        // Ghi kết quả theo từng level (kích thước itemset)
         int totalCount = 0;
         for (int size = 1; size <= 10; size++) {
             List<String> itemsets = itemsetsBySize.get(size);
@@ -306,32 +257,22 @@ public class MainTestPrePostRare {
         writer.println();
     }
 
-    /**
-     * Ghi thống kê hiệu suất ra file
-     */
     private static void writePerformanceStats(PrintWriter writer, long startTime) {
-        // Kiểm tra bộ nhớ sử dụng lần cuối
         MemoryLogger.getInstance().checkMemory();
 
-        // Tính thời gian thực thi thuật toán
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
         
-        // Chuyển đổi thời gian từ millisecond sang phút:giây.millisecond
         long minutes = (executionTime / 1000) / 60;
         long seconds = (executionTime / 1000) % 60;
         long milliseconds = executionTime % 1000;
         
-        // Tạo chuỗi thời gian theo định dạng "mm:ss.ms"
         String formattedTime = String.format("%02d:%02d.%03d", minutes, seconds, milliseconds);
         
-        // Lấy thông tin bộ nhớ tối đa đã sử dụng
         double maxMemory = MemoryLogger.getInstance().getMaxMemory();
         
-        // Định dạng bộ nhớ tối đa sang MB
         String formattedMemory = String.format("%.2f", maxMemory);
         
-        // Ghi thông tin hiệu suất
         writer.println("========== THÔNG TIN HIỆU SUẤT ==========");
         writer.println("Thuật toán: PrePost Rare");
         writer.println("Tổng thời gian thực thi: " + formattedTime + " (phút:giây.mili giây) [" + executionTime + " ms]");

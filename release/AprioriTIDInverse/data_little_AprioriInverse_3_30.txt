@@ -1,0 +1,40 @@
+=== APRIORI-TID INVERSE - RARE ITEMSETS MINING ===
+File dữ liệu: data_little.txt
+MinRareSupport (minsup): 3.0%
+MinFrequentSupport (maxsup): 30.0%
+Thời gian bắt đầu: Thu May 29 21:28:49 ICT 2025
+Output folder: release/AprioriTIDInverse/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 20
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (3.0%, 30.0%]
+Định nghĩa: MRT < Support(X) <= MFT
+
+--- 1-itemsets HIẾM ---
+8  #SUP: 5 (25.00%) #TID: [17, 3, 8, 11, 14]
+9  #SUP: 5 (25.00%) #TID: [18, 4, 8, 12, 15]
+10  #SUP: 5 (25.00%) #TID: [16, 19, 5, 9, 13]
+
+--- 2-itemsets HIẾM ---
+8 9  #SUP: 1 (5.00%) #TID: [8]
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 4
+Thuật toán: AprioriTID Inverse
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/AprioriTIDInverse/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: AprioriTID Inverse
+Tổng thời gian thực thi: 00:02.363 (phút:giây.mili giây) [2363 ms]
+Bộ nhớ tối đa sử dụng: 6.48 MB
+Thời gian kết thúc: Thu May 29 21:28:51 ICT 2025
+Output folder: release/AprioriTIDInverse/
+Định nghĩa: MRT < Support(X) <= MFT

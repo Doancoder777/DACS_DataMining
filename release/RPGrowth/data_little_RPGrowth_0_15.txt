@@ -1,0 +1,32 @@
+=== RP-GROWTH - RARE PATTERN MINING ===
+File dữ liệu: data_little.txt
+MinRareSupport (minsup): 0.0%
+MinFrequentSupport (maxsup): 15.0%
+Thời gian bắt đầu: Thu May 29 21:34:04 ICT 2025
+Output folder: release/RPGrowth/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (0.0%, 15.0%]
+Định nghĩa: MRT < Support(X) <= MFT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 20
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 0
+Thuật toán: RP-Growth
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/RPGrowth/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: RP-Growth
+Tổng thời gian thực thi: 00:03.642 (phút:giây.mili giây) [3642 ms]
+Bộ nhớ tối đa sử dụng: 6.48 MB
+Thời gian kết thúc: Thu May 29 21:34:08 ICT 2025
+Output folder: release/RPGrowth/
+Định nghĩa: MRT < Support(X) <= MFT
