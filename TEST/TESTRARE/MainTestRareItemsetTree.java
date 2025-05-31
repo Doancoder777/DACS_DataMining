@@ -19,7 +19,7 @@ import patterns.itemset_array_integers_with_count.Itemset;
 import tools.MemoryLogger;
 
 /**
- * Chương trình test thuật toán Rare Itemset Tree để khai thác rare patterns
+ * Chương trình test thuật toán Rare Itemset Tree với tối ưu cắt tỉa
  * Output được lưu trong folder riêng: release/RareItemsetTree/
  * 
  * ĐỊNH NGHĨA: Rare Item có MRT < Support(X) <= MFT
@@ -46,6 +46,7 @@ public class MainTestRareItemsetTree {
         System.out.println("- Rare Item: MRT < Support(X) <= MFT");
         System.out.println("- Frequent Item: Support(X) > MFT");
         System.out.println("- Infrequent Item: Support(X) <= MRT");
+        System.out.println("- Tối ưu: Cắt tỉa transactions và candidates");
         System.out.println("==========================================================");
         
         System.out.println("\nDanh sách tệp dữ liệu trong thư mục:");
@@ -123,6 +124,7 @@ public class MainTestRareItemsetTree {
         writer.println("MinFrequentSupport (maxsup): " + maxsupPercent + "%");
         writer.println("Thời gian bắt đầu: " + new java.util.Date(startTime));
         writer.println("Output folder: release/RareItemsetTree/");
+        writer.println("Tối ưu: Transaction pruning + Candidate pruning + Support caching");
         writer.println();
         
         writer.println("========== ĐỊNH NGHĨA ==========");
@@ -134,22 +136,26 @@ public class MainTestRareItemsetTree {
 
         System.out.println("Đang xây dựng Rare Itemset Tree...");
         RareItemsetTree rareTree = new RareItemsetTree(minRareSupport, maxRareSupport);
+        
+        long buildStart = System.currentTimeMillis();
         rareTree.buildTree(input);
+        long buildTime = System.currentTimeMillis() - buildStart;
         
         writer.println("========== DATABASE INFO ==========");
         writer.println("Số lượng giao dịch: " + rareTree.getTransactionCount());
+        writer.println("Thời gian xây dựng cây: " + buildTime + " ms");
         writer.println();
         
         rareTree.printStatistics();
-        
-        System.out.println("Đang xuất cây rare itemset...");
-        writer.println("========== RARE ITEMSET TREE STRUCTURE ==========");
-        String treeString = rareTree.toString();
-        writer.println(treeString);
-        writer.println();
 
         System.out.println("Đang khai thác tất cả rare itemsets...");
-        List<Itemset> allRareItemsets = mineAllRareItemsets(rareTree, input, minRareSupport, maxRareSupport);
+        long miningStart = System.currentTimeMillis();
+        
+        // SỬ DỤNG PHƯƠNG THỨC KHAI THÁC VỚI CẮT TỈA
+        List<Itemset> allRareItemsets = rareTree.mineAllRareItemsetsWithPruning(input, minRareSupport, maxRareSupport);
+        
+        long miningTime = System.currentTimeMillis() - miningStart;
+        System.out.println("Thời gian khai thác: " + miningTime + " ms");
 
         Collections.sort(allRareItemsets, new Comparator<Itemset>() {
             @Override
@@ -159,157 +165,14 @@ public class MainTestRareItemsetTree {
         });
 
         writeRareResults(writer, allRareItemsets, "RARE ITEMSETS", transactionCount, 
-                        minRareSupport, maxRareSupport);
+                        minRareSupport, maxRareSupport, buildTime, miningTime);
         
-        writePerformanceStats(writer, startTime);
+        writePerformanceStats(writer, startTime, buildTime, miningTime);
         writer.close();
         
         System.out.println("=== HOÀN THÀNH ===");
         System.out.println("Kết quả đã được ghi vào file: " + outputPath);
         System.out.println("Thư mục output: release/RareItemsetTree/");
-    }
-
-    private static List<Itemset> mineAllRareItemsets(RareItemsetTree rareTree, String inputFile, 
-                                                   int minRareSupport, int maxRareSupport) throws IOException {
-        List<Itemset> allRareItemsets = new ArrayList<>();
-        
-        Set<Integer> allItems = findAllItems(inputFile);
-        List<Integer> sortedItems = new ArrayList<>(allItems);
-        Collections.sort(sortedItems);
-        
-        System.out.println("Tổng số items trong dữ liệu: " + sortedItems.size());
-        
-        List<Integer> rareItems = new ArrayList<>();
-        for (int item : sortedItems) {
-            int[] itemset = new int[]{item};
-            int support = rareTree.getSupportOfItemset(itemset);
-            
-            // Sử dụng định nghĩa đúng: MRT < support <= MFT
-            if (support > minRareSupport && support <= maxRareSupport) {
-                rareItems.add(item);
-                Itemset is = new Itemset(itemset);
-                is.support = support;
-                allRareItemsets.add(is);
-            }
-        }
-        
-        Collections.sort(rareItems);
-        System.out.println("Tìm thấy " + rareItems.size() + " rare 1-itemsets: " + rareItems);
-        
-        List<List<Integer>> currentLevel = new ArrayList<>();
-        for (Integer item : rareItems) {
-            List<Integer> singleItem = new ArrayList<>();
-            singleItem.add(item);
-            currentLevel.add(singleItem);
-        }
-        
-        int k = 2;
-        while (!currentLevel.isEmpty() && k <= rareItems.size()) {
-            System.out.println("Đang tìm rare " + k + "-itemsets...");
-            
-            List<List<Integer>> candidates = generateCandidates(currentLevel, k);
-            List<List<Integer>> nextLevel = new ArrayList<>();
-            
-            for (List<Integer> candidate : candidates) {
-                int[] itemsetArray = candidate.stream().mapToInt(i -> i).toArray();
-                int support = rareTree.getSupportOfItemset(itemsetArray);
-                
-                // Sử dụng định nghĩa đúng: MRT < support <= MFT
-                if (support > minRareSupport && support <= maxRareSupport) {
-                    Itemset is = new Itemset(itemsetArray);
-                    is.support = support;
-                    allRareItemsets.add(is);
-                    nextLevel.add(candidate);
-                }
-            }
-            
-            System.out.println("Tìm thấy " + nextLevel.size() + " rare " + k + "-itemsets");
-            currentLevel = nextLevel;
-            k++;
-        }
-        
-        return allRareItemsets;
-    }
-    
-    private static List<List<Integer>> generateCandidates(List<List<Integer>> previousLevel, int k) {
-        List<List<Integer>> candidates = new ArrayList<>();
-        
-        for (int i = 0; i < previousLevel.size(); i++) {
-            for (int j = i + 1; j < previousLevel.size(); j++) {
-                List<Integer> itemset1 = previousLevel.get(i);
-                List<Integer> itemset2 = previousLevel.get(j);
-                
-                boolean canJoin = true;
-                
-                if (k == 2) {
-                    canJoin = !itemset1.get(0).equals(itemset2.get(0));
-                } else {
-                    for (int idx = 0; idx < k - 2; idx++) {
-                        if (!itemset1.get(idx).equals(itemset2.get(idx))) {
-                            canJoin = false;
-                            break;
-                        }
-                    }
-                    if (canJoin && itemset1.get(k-2).equals(itemset2.get(k-2))) {
-                        canJoin = false;
-                    }
-                }
-                
-                if (canJoin) {
-                    List<Integer> candidate = new ArrayList<>();
-                    if (k == 2) {
-                        candidate.add(itemset1.get(0));
-                        candidate.add(itemset2.get(0));
-                    } else {
-                        candidate.addAll(itemset1);
-                        candidate.add(itemset2.get(k-2));
-                    }
-                    
-                    Collections.sort(candidate);
-                    
-                    if (!containsCandidate(candidates, candidate)) {
-                        candidates.add(candidate);
-                    }
-                }
-            }
-        }
-        
-        return candidates;
-    }
-    
-    private static boolean containsCandidate(List<List<Integer>> candidates, List<Integer> candidate) {
-        for (List<Integer> existing : candidates) {
-            if (existing.equals(candidate)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    private static Set<Integer> findAllItems(String inputFilePath) throws IOException {
-        Set<Integer> items = new HashSet<>();
-        
-        BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
-        String line;
-        
-        reader.readLine();
-        
-        while ((line = reader.readLine()) != null) {
-            if (line.isEmpty() || line.startsWith("#") || line.startsWith("%") || line.startsWith("@")) {
-                continue;
-            }
-            
-            String[] parts = line.trim().split(" ");
-            if (parts.length < 2) {
-                continue;
-            }
-            
-            int itemId = Integer.parseInt(parts[1]);
-            items.add(itemId);
-        }
-        
-        reader.close();
-        return items;
     }
     
     private static int countTransactions(String inputFilePath) throws IOException {
@@ -318,7 +181,7 @@ public class MainTestRareItemsetTree {
         BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
         String line;
         
-        reader.readLine();
+        reader.readLine(); // Skip header
         
         while ((line = reader.readLine()) != null) {
             if (line.isEmpty() || line.startsWith("#") || line.startsWith("%") || line.startsWith("@")) {
@@ -339,10 +202,14 @@ public class MainTestRareItemsetTree {
     }
 
     private static void writeRareResults(PrintWriter writer, List<Itemset> rareItemsets, String title, 
-                                       int transactionCount, int minRareSupport, int maxRareSupport) {
+                                       int transactionCount, int minRareSupport, int maxRareSupport,
+                                       long buildTime, long miningTime) {
         writer.println("========== " + title + " ==========");
         writer.println("Tìm itemsets với support trong khoảng (" + minRareSupport + ", " + maxRareSupport + "]");
         writer.println("Định nghĩa: MRT < Support(X) <= MFT");
+        writer.println("Thời gian xây dựng cây: " + buildTime + " ms");
+        writer.println("Thời gian khai thác: " + miningTime + " ms");
+        writer.println("Tối ưu: Transaction pruning + Candidate pruning + Support caching");
         writer.println();
         
         int totalCount = 0;
@@ -373,6 +240,12 @@ public class MainTestRareItemsetTree {
         writer.println("========== TỔNG KẾT ==========");
         writer.println("Tổng số rare itemsets tìm được: " + totalCount);
         writer.println("Thuật toán: Rare Itemset Tree");
+        writer.println("Tối ưu áp dụng:");
+        writer.println("- Transaction pruning: Loại bỏ items không rare");
+        writer.println("- Candidate pruning: Kiểm tra subset conditions");
+        writer.println("- Support upper bound estimation");
+        writer.println("- Support value caching");
+        writer.println("- Quick join conditions checking");
         writer.println("Định nghĩa: MRT < Support(X) <= MFT");
         writer.println("Output folder: release/RareItemsetTree/");
         
@@ -382,7 +255,7 @@ public class MainTestRareItemsetTree {
         writer.println();
     }
 
-    private static void writePerformanceStats(PrintWriter writer, long startTime) {
+    private static void writePerformanceStats(PrintWriter writer, long startTime, long buildTime, long miningTime) {
         MemoryLogger.getInstance().checkMemory();
 
         long endTime = System.currentTimeMillis();
@@ -400,14 +273,26 @@ public class MainTestRareItemsetTree {
         writer.println("========== THÔNG TIN HIỆU SUẤT ==========");
         writer.println("Thuật toán: Rare Itemset Tree");
         writer.println("Tổng thời gian thực thi: " + formattedTime + " (phút:giây.mili giây) [" + executionTime + " ms]");
+        writer.println("- Thời gian xây dựng cây: " + buildTime + " ms");
+        writer.println("- Thời gian khai thác: " + miningTime + " ms");
         writer.println("Bộ nhớ tối đa sử dụng: " + formattedMemory + " MB");
         writer.println("Thời gian kết thúc: " + new java.util.Date(endTime));
         writer.println("Output folder: release/RareItemsetTree/");
         writer.println("Định nghĩa: MRT < Support(X) <= MFT");
+        writer.println();
+        writer.println("========== TỐI ƯU ÁP DỤNG ==========");
+        writer.println("1. Transaction Pruning: Loại bỏ transactions chỉ chứa items không rare");
+        writer.println("2. Candidate Pruning: Kiểm tra subset conditions trước khi tính support");
+        writer.println("3. Support Upper Bound: Ước tính upper bound để skip candidates");
+        writer.println("4. Support Caching: Cache kết quả tính support để tái sử dụng");
+        writer.println("5. Quick Join Check: Kiểm tra điều kiện join nhanh");
+        writer.println("6. Early Termination: Dừng sớm khi không còn candidates");
         
         System.out.println("========== THÔNG TIN HIỆU SUẤT ==========");
         System.out.println("Thuật toán: Rare Itemset Tree");
         System.out.println("Tổng thời gian thực thi: " + formattedTime + " (phút:giây.mili giây) [" + executionTime + " ms]");
+        System.out.println("- Thời gian xây dựng cây: " + buildTime + " ms");  
+        System.out.println("- Thời gian khai thác: " + miningTime + " ms");
         System.out.println("Bộ nhớ tối đa sử dụng: " + formattedMemory + " MB");
     }
 }

@@ -7,7 +7,7 @@ import java.util.HashSet;
 public class RareItemsetTreeNode implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
+		
 	int[] itemset;
 	int support;
 	Collection<RareItemsetTreeNode> childs = new HashSet<RareItemsetTreeNode>();
