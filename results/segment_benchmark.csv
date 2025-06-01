@@ -1,36 +1,36 @@
 MinSupport,MaxSupport,Algorithm,Runtime(ms),Memory(MB),ItemsetsFound,Dataset,Segment
-5.0,10.0,Apriori TID,5856,820.00,37,accidents.hui,5-10%
-5.0,10.0,ECLAT Rare,3694,1300.61,37,accidents.hui,5-10%
-5.0,10.0,PrePost Rare,6390,1404.21,37,accidents.hui,5-10%
-5.0,10.0,RareItemsetTree,40514,1400.44,37,accidents.hui,5-10%
-5.0,10.0,RP-Growth,6916,1321.55,37,accidents.hui,5-10%
-10.0,15.0,Apriori TID,5601,1566.00,12,accidents.hui,10-15%
-10.0,15.0,ECLAT Rare,3593,219.18,12,accidents.hui,10-15%
-10.0,15.0,PrePost Rare,6317,125.48,12,accidents.hui,10-15%
-10.0,15.0,RareItemsetTree,12607,279.79,12,accidents.hui,10-15%
-10.0,15.0,RP-Growth,7009,279.79,12,accidents.hui,10-15%
-15.0,20.0,Apriori TID,5594,1045.77,15,accidents.hui,15-20%
-15.0,20.0,ECLAT Rare,3741,1029.54,15,accidents.hui,15-20%
-15.0,20.0,PrePost Rare,5981,125.84,15,accidents.hui,15-20%
-15.0,20.0,RareItemsetTree,12355,567.10,15,accidents.hui,15-20%
-15.0,20.0,RP-Growth,6585,532.68,15,accidents.hui,15-20%
-20.0,25.0,Apriori TID,5421,892.39,7,accidents.hui,20-25%
-20.0,25.0,ECLAT Rare,3602,820.02,7,accidents.hui,20-25%
-20.0,25.0,PrePost Rare,5872,665.23,7,accidents.hui,20-25%
-20.0,25.0,RareItemsetTree,9724,389.52,7,accidents.hui,20-25%
-20.0,25.0,RP-Growth,6543,558.90,7,accidents.hui,20-25%
-25.0,30.0,Apriori TID,5007,800.00,3,accidents.hui,25-30%
-25.0,30.0,ECLAT Rare,3697,632.39,3,accidents.hui,25-30%
-25.0,30.0,PrePost Rare,5603,683.02,3,accidents.hui,25-30%
-25.0,30.0,RareItemsetTree,9087,916.61,3,accidents.hui,25-30%
-25.0,30.0,RP-Growth,7004,632.57,3,accidents.hui,25-30%
-30.0,35.0,Apriori TID,5426,808.17,1,accidents.hui,30-35%
-30.0,35.0,ECLAT Rare,3931,1510.02,1,accidents.hui,30-35%
-30.0,35.0,PrePost Rare,6185,59.76,1,accidents.hui,30-35%
-30.0,35.0,RareItemsetTree,9290,515.26,1,accidents.hui,30-35%
-30.0,35.0,RP-Growth,7057,515.26,1,accidents.hui,30-35%
-35.0,40.0,Apriori TID,5097,993.50,2,accidents.hui,35-40%
-35.0,40.0,ECLAT Rare,3992,348.49,2,accidents.hui,35-40%
-35.0,40.0,PrePost Rare,5892,765.71,2,accidents.hui,35-40%
-35.0,40.0,RareItemsetTree,8501,448.39,2,accidents.hui,35-40%
-35.0,40.0,RP-Growth,6684,335.36,2,accidents.hui,35-40%
+5.0,10.0,Apriori TID,212,36.12,5,chess.hui,5-10%
+5.0,10.0,ECLAT Rare,70,28.46,5,chess.hui,5-10%
+5.0,10.0,PrePost Rare,201,154.46,5,chess.hui,5-10%
+5.0,10.0,RareItemsetTree,198,76.49,5,chess.hui,5-10%
+5.0,10.0,RP-Growth,168,76.49,5,chess.hui,5-10%
+10.0,15.0,Apriori TID,43,56.13,4,chess.hui,10-15%
+10.0,15.0,ECLAT Rare,40,97.13,4,chess.hui,10-15%
+10.0,15.0,PrePost Rare,90,72.23,4,chess.hui,10-15%
+10.0,15.0,RareItemsetTree,102,182.23,4,chess.hui,10-15%
+10.0,15.0,RP-Growth,90,182.23,4,chess.hui,10-15%
+15.0,20.0,Apriori TID,49,122.57,4,chess.hui,15-20%
+15.0,20.0,ECLAT Rare,47,13.00,4,chess.hui,15-20%
+15.0,20.0,PrePost Rare,85,135.00,4,chess.hui,15-20%
+15.0,20.0,RareItemsetTree,84,54.00,4,chess.hui,15-20%
+15.0,20.0,RP-Growth,65,135.00,4,chess.hui,15-20%
+20.0,25.0,Apriori TID,46,31.82,3,chess.hui,20-25%
+20.0,25.0,ECLAT Rare,36,71.82,3,chess.hui,20-25%
+20.0,25.0,PrePost Rare,91,45.72,3,chess.hui,20-25%
+20.0,25.0,RareItemsetTree,90,154.72,3,chess.hui,20-25%
+20.0,25.0,RP-Growth,66,154.72,3,chess.hui,20-25%
+25.0,30.0,Apriori TID,62,93.21,1,chess.hui,25-30%
+25.0,30.0,ECLAT Rare,70,133.21,1,chess.hui,25-30%
+25.0,30.0,PrePost Rare,79,107.78,1,chess.hui,25-30%
+25.0,30.0,RareItemsetTree,101,183.78,1,chess.hui,25-30%
+25.0,30.0,RP-Growth,64,108.35,1,chess.hui,25-30%
+30.0,35.0,Apriori TID,44,9.32,5,chess.hui,30-35%
+30.0,35.0,ECLAT Rare,35,50.32,5,chess.hui,30-35%
+30.0,35.0,PrePost Rare,78,172.32,5,chess.hui,30-35%
+30.0,35.0,RareItemsetTree,81,90.74,5,chess.hui,30-35%
+30.0,35.0,RP-Growth,66,90.74,5,chess.hui,30-35%
+35.0,40.0,Apriori TID,40,69.91,5,chess.hui,35-40%
+35.0,40.0,ECLAT Rare,35,109.91,5,chess.hui,35-40%
+35.0,40.0,PrePost Rare,78,83.35,5,chess.hui,35-40%
+35.0,40.0,RareItemsetTree,76,191.35,5,chess.hui,35-40%
+35.0,40.0,RP-Growth,67,191.35,5,chess.hui,35-40%

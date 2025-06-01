@@ -1,0 +1,61 @@
+=== RARE ITEMSET TREE - RARE PATTERN MINING ===
+File dữ liệu: chess.hui
+MinRareSupport (minsup): 5.0%
+MinFrequentSupport (maxsup): 10.0%
+Thời gian bắt đầu: Sun Jun 01 21:26:45 ICT 2025
+Output folder: release/RareItemsetTree/
+Tối ưu: Transaction pruning + Candidate pruning + Support caching
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+- Định nghĩa: 159 < Support(X) <= 320
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 3196
+Thời gian xây dựng cây: 112 ms
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (159, 320]
+Định nghĩa: MRT < Support(X) <= MFT
+Thời gian xây dựng cây: 112 ms
+Thời gian khai thác: 58 ms
+Tối ưu: Transaction pruning + Candidate pruning + Support caching
+
+--- 1-itemsets HIẾM ---
+57  #SUP: 175 (5.48%)
+67  #SUP: 175 (5.48%)
+49  #SUP: 183 (5.73%)
+33  #SUP: 224 (7.01%)
+6  #SUP: 225 (7.04%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 5
+Thuật toán: Rare Itemset Tree
+Tối ưu áp dụng:
+- Transaction pruning: Loại bỏ items không rare
+- Candidate pruning: Kiểm tra subset conditions
+- Support upper bound estimation
+- Support value caching
+- Quick join conditions checking
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/RareItemsetTree/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: Rare Itemset Tree
+Tổng thời gian thực thi: 00:02.072 (phút:giây.mili giây) [2072 ms]
+- Thời gian xây dựng cây: 112 ms
+- Thời gian khai thác: 58 ms
+Bộ nhớ tối đa sử dụng: 57.63 MB
+Thời gian kết thúc: Sun Jun 01 21:26:47 ICT 2025
+Output folder: release/RareItemsetTree/
+Định nghĩa: MRT < Support(X) <= MFT
+
+========== TỐI ƯU ÁP DỤNG ==========
+1. Transaction Pruning: Loại bỏ transactions chỉ chứa items không rare
+2. Candidate Pruning: Kiểm tra subset conditions trước khi tính support
+3. Support Upper Bound: Ước tính upper bound để skip candidates
+4. Support Caching: Cache kết quả tính support để tái sử dụng
+5. Quick Join Check: Kiểm tra điều kiện join nhanh
+6. Early Termination: Dừng sớm khi không còn candidates
