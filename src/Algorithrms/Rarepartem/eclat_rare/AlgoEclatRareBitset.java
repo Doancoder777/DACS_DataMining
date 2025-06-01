@@ -17,11 +17,8 @@ import patterns.itemset_array_integers_with_count.Itemset;
 import patterns.itemset_array_integers_with_count.Itemsets;
 import tools.MemoryLogger;
 
-/**
- * ECLAT Rare Debug Version - Trace missing 3-itemsets
- * Focus on debugging why {53, 56, 80} is missing
- */
-public class AlgoEclatRareDebug3Items {
+
+public class AlgoEclatRareBitset {
 
     private int minRareSupportRelative;
     private int maxFrequentSupportRelative;
@@ -33,6 +30,7 @@ public class AlgoEclatRareDebug3Items {
     protected int rareItemsetCount;
     boolean showTransactionIdentifiers = false;
     int maxItemsetSize = Integer.MAX_VALUE;
+
 
     public class BitSetSupport {
         BitSet bitset = new BitSet();
@@ -46,9 +44,12 @@ public class AlgoEclatRareDebug3Items {
         }
     }
 
-    public AlgoEclatRareDebug3Items() {
+    public AlgoEclatRareBitset() {
     }
 
+    /**
+     * Run algorithm với BitSet optimization
+     */
     public Itemsets runAlgorithm(String output, TransactionDatabase database, 
                                 double minRareSupport, double maxFrequentSupport) throws IOException {
         
@@ -66,52 +67,34 @@ public class AlgoEclatRareDebug3Items {
         this.database = database;
         startTimestamp = System.currentTimeMillis();
         
+        // Same threshold calculation as Apriori Rare Fixed
         this.minRareSupportRelative = (int) Math.ceil(minRareSupport * database.size()) - 1;
         this.maxFrequentSupportRelative = (int) Math.ceil(maxFrequentSupport * database.size());
         
-        System.out.println("=== ECLAT RARE DEBUG - 3-ITEMSETS TRACING ===");
-        System.out.println("Target missing: {53, 56, 80} with support ~52518");
-        System.out.println("Thresholds: " + minRareSupportRelative + " < Support <= " + maxFrequentSupportRelative);
-        System.out.println("===============================================");
-        
-        // Calculate BitSet tidsets
+        // Calculate BitSet tidsets for all items (OPTIMIZED)
         final Map<Integer, BitSetSupport> mapItemBitsets = new HashMap<Integer, BitSetSupport>();
         calculateSupportSingleItemsBitset(database, mapItemBitsets);
 
-        // Find rare single items
+        // Find ONLY rare single items (FIXED logic)
         List<Integer> rareItems = new ArrayList<Integer>();
         
         for (Entry<Integer, BitSetSupport> entry : mapItemBitsets.entrySet()) {
             int support = entry.getValue().support;
             int item = entry.getKey();
             
-            if (support > minRareSupportRelative && support <= maxFrequentSupportRelative) {
+            if (support > minRareSupportRelative && support <= maxFrequentSupportRelative 
+                && maxItemsetSize >= 1) {
                 rareItems.add(item);
                 saveRareSingleItemBitset(item, entry.getValue());
             }
         }
 
-        Collections.sort(rareItems, new Comparator<Integer>() {
-            @Override
-            public int compare(Integer arg0, Integer arg1) {
-                return mapItemBitsets.get(arg0).support - mapItemBitsets.get(arg1).support;
-            }
-        });
+        // Sort rare items by ITEM ID (not support) for proper join conditions
+        Collections.sort(rareItems);
 
-        System.out.println("Rare items found: " + rareItems.size());
-        
-        // Check if target items are in rare list
-        boolean has53 = rareItems.contains(53);
-        boolean has56 = rareItems.contains(56);
-        boolean has80 = rareItems.contains(80);
-        System.out.println("Target items check:");
-        System.out.println("- Item 53 rare? " + has53 + " (support: " + (mapItemBitsets.containsKey(53) ? mapItemBitsets.get(53).support : "N/A") + ")");
-        System.out.println("- Item 56 rare? " + has56 + " (support: " + (mapItemBitsets.containsKey(56) ? mapItemBitsets.get(56).support : "N/A") + ")");
-        System.out.println("- Item 80 rare? " + has80 + " (support: " + (mapItemBitsets.containsKey(80) ? mapItemBitsets.get(80).support : "N/A") + ")");
-
-        // Generate combinations with detailed tracing
+        // Generate combinations ONLY from rare items using BitSet operations (FIXED)
         if (maxItemsetSize >= 2 && rareItems.size() > 1) {
-            generateRareCombinationsWithDebug(rareItems, mapItemBitsets);
+            generateRareCombinationsBitset(rareItems, mapItemBitsets);
         }
         
         MemoryLogger.getInstance().checkMemory();
@@ -125,6 +108,10 @@ public class AlgoEclatRareDebug3Items {
         return rareItemsets;
     }
 
+    /**
+     * Calculate tidsets using BitSet (MUCH faster than HashSet)
+     * Memory usage: 1 bit per transaction instead of 32+ bytes per Integer
+     */
     private void calculateSupportSingleItemsBitset(TransactionDatabase database,
                                                   Map<Integer, BitSetSupport> mapItemBitsets) {
         
@@ -136,85 +123,94 @@ public class AlgoEclatRareDebug3Items {
                     mapItemBitsets.put(item, bitsetSupport);
                 }
                 
+                // Set bit for this transaction (FAST operation)
                 bitsetSupport.bitset.set(i);
-                bitsetSupport.support++;
+                bitsetSupport.support++; // Increment support counter
             }
         }
     }
 
-    private void generateRareCombinationsWithDebug(List<Integer> rareItems, 
-                                                  Map<Integer, BitSetSupport> mapItemBitsets) throws IOException {
+    /**
+     * Generate rare combinations using BitSet operations (MUCH faster)
+     * FIXED: Ensure proper item ordering for correct joins
+     */
+    private void generateRareCombinationsBitset(List<Integer> rareItems, 
+                                               Map<Integer, BitSetSupport> mapItemBitsets) throws IOException {
         
-        System.out.println("\n=== GENERATING 2-ITEMSETS ===");
-        List<Itemset> level2 = new ArrayList<Itemset>();
+        // Start with 2-itemsets using BitSet intersection
+        List<Itemset> level = new ArrayList<Itemset>();
         
-        // Track specific combinations we're interested in
-        boolean found53_56 = false;
-        boolean found56_80 = false;
-        boolean found53_80 = false;
-        
+        // FIXED: Ensure items are properly ordered for joins
         for (int i = 0; i < rareItems.size(); i++) {
             for (int j = i + 1; j < rareItems.size(); j++) {
                 Integer itemI = rareItems.get(i);
                 Integer itemJ = rareItems.get(j);
                 
+                // FIXED: Ensure ascending order (itemI < itemJ)
+                if (itemI > itemJ) {
+                    Integer temp = itemI;
+                    itemI = itemJ;
+                    itemJ = temp;
+                }
+                
                 BitSetSupport bitsetI = mapItemBitsets.get(itemI);
                 BitSetSupport bitsetJ = mapItemBitsets.get(itemJ);
                 
+                // FAST BitSet intersection using AND operation
                 BitSetSupport intersectionBitset = performBitsetIntersection(bitsetI, bitsetJ);
                 int support = intersectionBitset.support;
                 
-                // Check for target combinations
-                if ((itemI == 53 && itemJ == 56) || (itemI == 56 && itemJ == 53)) {
-                    found53_56 = true;
-                    System.out.println("Found {53, 56}: support=" + support + " (rare: " + (support > minRareSupportRelative && support <= maxFrequentSupportRelative) + ")");
-                }
-                if ((itemI == 56 && itemJ == 80) || (itemI == 80 && itemJ == 56)) {
-                    found56_80 = true;
-                    System.out.println("Found {56, 80}: support=" + support + " (rare: " + (support > minRareSupportRelative && support <= maxFrequentSupportRelative) + ")");
-                }
-                if ((itemI == 53 && itemJ == 80) || (itemI == 80 && itemJ == 53)) {
-                    found53_80 = true;
-                    System.out.println("Found {53, 80}: support=" + support + " (rare: " + (support > minRareSupportRelative && support <= maxFrequentSupportRelative) + ")");
-                }
-                
                 if (support > minRareSupportRelative && support <= maxFrequentSupportRelative) {
+                    // FIXED: Create itemset with proper ordering
                     Itemset itemset = new Itemset(new int[]{itemI, itemJ});
                     itemset.setAbsoluteSupport(support);
-                    level2.add(itemset);
+                    level.add(itemset);
                     
                     saveRareItemsetBitset(new int[]{itemI}, 1, itemJ, support);
                 }
             }
         }
         
-        System.out.println("2-itemsets generated: " + level2.size());
-        System.out.println("Prerequisites for {53, 56, 80}:");
-        System.out.println("- {53, 56} found: " + found53_56);
-        System.out.println("- {56, 80} found: " + found56_80);
-        System.out.println("- {53, 80} found: " + found53_80);
-        
-        // Generate 3-itemsets with detailed tracing
-        if (maxItemsetSize >= 3 && level2.size() > 1) {
-            System.out.println("\n=== GENERATING 3-ITEMSETS ===");
-            generateCandidatesLevel3WithDebug(level2, mapItemBitsets);
+        // Continue with larger itemsets using BitSet operations
+        int k = 3;
+        while (!level.isEmpty() && k <= maxItemsetSize) {
+            level = generateCandidatesLevelKBitset(level, mapItemBitsets);
+            k++;
         }
     }
 
-    private void generateCandidatesLevel3WithDebug(List<Itemset> level2, 
-                                                  Map<Integer, BitSetSupport> mapItemBitsets) throws IOException {
+    /**
+     * FAST BitSet intersection using bitwise AND
+     * Performance: O(bitset_size/64) vs O(min(setA, setB)) for HashSet
+     */
+    private BitSetSupport performBitsetIntersection(BitSetSupport bitsetI, BitSetSupport bitsetJ) {
+        // Clone first bitset to avoid modifying original
+        BitSet intersection = (BitSet) bitsetI.bitset.clone();
         
-        System.out.println("Level 2 itemsets: " + level2.size());
+        // Perform bitwise AND - VERY FAST operation
+        intersection.and(bitsetJ.bitset);
         
-        int candidatesGenerated = 0;
-        int targetChecked = 0;
+        // Count set bits - this is the support
+        int support = intersection.cardinality();
         
-        for (int i = 0; i < level2.size(); i++) {
-            Itemset itemset1 = level2.get(i);
-            for (int j = i + 1; j < level2.size(); j++) {
-                Itemset itemset2 = level2.get(j);
+        return new BitSetSupport(intersection, support);
+    }
+
+    /**
+     * Generate candidates for level k using BitSet operations
+     * FIXED: Correct Apriori join condition
+     */
+    private List<Itemset> generateCandidatesLevelKBitset(List<Itemset> levelKMinus1, 
+                                                        Map<Integer, BitSetSupport> mapItemBitsets) throws IOException {
+        List<Itemset> candidates = new ArrayList<Itemset>();
+        
+        for (int i = 0; i < levelKMinus1.size(); i++) {
+            Itemset itemset1 = levelKMinus1.get(i);
+            for (int j = i + 1; j < levelKMinus1.size(); j++) {
+                Itemset itemset2 = levelKMinus1.get(j);
                 
-                // Check join condition
+                // FIXED: Correct Apriori join condition
+                // Check if first k-2 items are the same
                 boolean canJoin = true;
                 for (int k = 0; k < itemset1.size() - 1; k++) {
                     if (itemset1.getItems()[k] != itemset2.getItems()[k]) {
@@ -223,75 +219,40 @@ public class AlgoEclatRareDebug3Items {
                     }
                 }
                 
+                // FIXED: Also check that last items are in ascending order
                 if (canJoin && itemset1.getItems()[itemset1.size() - 1] < itemset2.getItems()[itemset2.size() - 1]) {
-                    // Create candidate
+                    // Create new candidate by merging
                     int[] newItemset = new int[itemset1.size() + 1];
                     System.arraycopy(itemset1.getItems(), 0, newItemset, 0, itemset1.size());
                     newItemset[itemset1.size()] = itemset2.getItems()[itemset2.size() - 1];
                     
-                    candidatesGenerated++;
-                    
-                    // Check if this is our target combination
-                    boolean isTarget = (newItemset.length == 3 && 
-                                       ((newItemset[0] == 53 && newItemset[1] == 56 && newItemset[2] == 80) ||
-                                        (newItemset[0] == 53 && newItemset[1] == 80 && newItemset[2] == 56) ||
-                                        (newItemset[0] == 56 && newItemset[1] == 53 && newItemset[2] == 80) ||
-                                        (newItemset[0] == 56 && newItemset[1] == 80 && newItemset[2] == 53) ||
-                                        (newItemset[0] == 80 && newItemset[1] == 53 && newItemset[2] == 56) ||
-                                        (newItemset[0] == 80 && newItemset[1] == 56 && newItemset[2] == 53)));
-                    
-                    if (isTarget) {
-                        targetChecked++;
-                        System.out.println("TARGET CANDIDATE FOUND: {" + newItemset[0] + ", " + newItemset[1] + ", " + newItemset[2] + "}");
-                        System.out.println("  Generated from: {" + itemset1.getItems()[0] + ", " + itemset1.getItems()[1] + "} + {" + itemset2.getItems()[0] + ", " + itemset2.getItems()[1] + "}");
-                    }
-                    
-                    // Calculate support
+                    // Calculate support using FAST BitSet operations
                     BitSet combinedBitset = null;
                     for (int item : newItemset) {
                         BitSetSupport itemBitset = mapItemBitsets.get(item);
                         if (combinedBitset == null) {
                             combinedBitset = (BitSet) itemBitset.bitset.clone();
                         } else {
-                            combinedBitset.and(itemBitset.bitset);
+                            combinedBitset.and(itemBitset.bitset); // FAST AND operation
                         }
                     }
                     
                     int support = combinedBitset.cardinality();
                     
-                    if (isTarget) {
-                        System.out.println("  Support calculated: " + support);
-                        System.out.println("  Threshold check: " + support + " > " + minRareSupportRelative + " && " + support + " <= " + maxFrequentSupportRelative);
-                        System.out.println("  Is rare: " + (support > minRareSupportRelative && support <= maxFrequentSupportRelative));
-                    }
-                    
                     if (support > minRareSupportRelative && support <= maxFrequentSupportRelative) {
                         Itemset candidate = new Itemset(newItemset);
                         candidate.setAbsoluteSupport(support);
+                        candidates.add(candidate);
                         
                         int[] prefix = new int[newItemset.length - 1];
                         System.arraycopy(newItemset, 0, prefix, 0, newItemset.length - 1);
                         saveRareItemsetBitset(prefix, newItemset.length - 1, newItemset[newItemset.length - 1], support);
-                        
-                        if (isTarget) {
-                            System.out.println("  TARGET SAVED!");
-                        }
-                    } else if (isTarget) {
-                        System.out.println("  TARGET REJECTED - not rare!");
                     }
                 }
             }
         }
         
-        System.out.println("3-itemset candidates generated: " + candidatesGenerated);
-        System.out.println("Target {53, 56, 80} checked: " + targetChecked + " times");
-    }
-
-    private BitSetSupport performBitsetIntersection(BitSetSupport bitsetI, BitSetSupport bitsetJ) {
-        BitSet intersection = (BitSet) bitsetI.bitset.clone();
-        intersection.and(bitsetJ.bitset);
-        int support = intersection.cardinality();
-        return new BitSetSupport(intersection, support);
+        return candidates;
     }
 
     private void saveRareSingleItemBitset(int item, BitSetSupport bitsetSupport) throws IOException {
@@ -301,6 +262,23 @@ public class AlgoEclatRareDebug3Items {
             Itemset itemset = new Itemset(new int[]{item});
             itemset.setAbsoluteSupport(bitsetSupport.support);
             rareItemsets.addItemset(itemset, itemset.size());
+        } else {
+            StringBuilder buffer = new StringBuilder();
+            buffer.append(item);
+            buffer.append(" #SUP: ");
+            buffer.append(bitsetSupport.support);
+            
+            if (showTransactionIdentifiers) {
+                buffer.append(" #TID:");
+                // Extract transaction IDs from BitSet efficiently
+                for (int tid = bitsetSupport.bitset.nextSetBit(0); tid != -1; 
+                     tid = bitsetSupport.bitset.nextSetBit(tid + 1)) {
+                    buffer.append(" " + tid);
+                }
+            }
+            
+            writer.write(buffer.toString());
+            writer.newLine();
         }
     }
 
@@ -315,6 +293,18 @@ public class AlgoEclatRareDebug3Items {
             Itemset itemset = new Itemset(itemsetArray);
             itemset.setAbsoluteSupport(support);
             rareItemsets.addItemset(itemset, itemset.size());
+        } else {
+            StringBuilder buffer = new StringBuilder();
+            for (int i = 0; i < prefixLength; i++) {
+                buffer.append(prefix[i]);
+                buffer.append(" ");
+            }
+            buffer.append(suffixItem);
+            buffer.append(" #SUP: ");
+            buffer.append(support);
+            
+            writer.write(buffer.toString());
+            writer.newLine();
         }
     }
 
@@ -327,13 +317,15 @@ public class AlgoEclatRareDebug3Items {
     }
 
     public void printStats() {
-        System.out.println("=============  ECLAT RARE DEBUG - STATS =============");
+        System.out.println("=============  ECLAT RARE BITSET v1.0 - STATS =============");
         long temps = endTime - startTimestamp;
         System.out.println(" Transactions count from database : " + database.size());
         System.out.println(" Rare itemsets count : " + rareItemsetCount);
         System.out.println(" Total time ~ " + temps + " ms");
         System.out.println(" Maximum memory usage : " + MemoryLogger.getInstance().getMaxMemory() + " mb");
-        System.out.println("======================================================");
+        System.out.println(" BitSet optimization: ENABLED");
+        System.out.println(" Definition: MRT < Support(X) <= MFT");
+        System.out.println("============================================================");
     }
 
     public Itemsets getRareItemsets() {

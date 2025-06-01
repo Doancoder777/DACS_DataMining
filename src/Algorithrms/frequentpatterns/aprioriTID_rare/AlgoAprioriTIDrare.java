@@ -107,7 +107,7 @@ public class AlgoAprioriTIDrare {
 				level.add(itemset);
 			} else {
 				saveItemset(itemset);
-				iterator.remove(); // if the item is not frequent we don't
+				iterator.remove(); 
 			}
 		}
 		Collections.sort(level, new Comparator<Itemset>() {
@@ -181,7 +181,7 @@ public class AlgoAprioriTIDrare {
 	        	}
 			}
 			writer.newLine();
-		}// otherwise the result is kept into memory
+		}
 		else{
 			patterns.addItemset(itemset, itemset.size());
 		}
