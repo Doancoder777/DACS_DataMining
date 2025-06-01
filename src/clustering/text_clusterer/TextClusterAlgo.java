@@ -1,5 +1,4 @@
 package clustering.text_clusterer;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,66 +9,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import tools.MemoryLogger;
 import tools.PorterStemmer;
 import tools.StopWordAnalyzer;
-
-/* This file is copyright (c) 2014-2015 Sabarish Raghu
-* 
-* This file is part of the SPMF DATA MINING SOFTWARE
-* (http://www.philippe-fournier-viger.com/spmf).
-* 
-* SPMF is free software: you can redistribute it and/or modify it under the
-* terms of the GNU General Public License as published by the Free Software
-* Foundation, either version 3 of the License, or (at your option) any later
-* version.
-* 
-* SPMF is distributed in the hope that it will be useful, but WITHOUT ANY
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-* A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License along with
-* SPMF. If not, see <http://www.gnu.org/licenses/>.
-*/
-/**
- * @author Sabarish Raghu ClusterAlgo is an implementation of text clustering
- *         algorithm.
- * 
- *         Input is of TSV format which is of format RecordId \t Record Eg: 1
- *         The document about a cat Output is of TSV format which has RecordId
- *         \t clusternumber
- */
-
 public class TextClusterAlgo {
 	private HashSet<String> allWords = new HashSet<String>();
 	private HashMap<Integer, Integer> idMap = new HashMap<Integer, Integer>(); // map
-// between
-// the
-// recordId
-// and
-// its
-// corresponding
-// index.
 	private long startTimestamp = 0; // last execution start time
 	private long endTimeStamp = 0; // last execution end time
 	private boolean stemFlag; // stemming to be done or not
 	private boolean stopWordFlag; // stop words to be removed or not
 	private PorterStemmer stemmer;
-
-	/**
-	 * @param path
-	 * @param stemFlag
-	 * @param stopWordFlag
-	 */
 	public void runAlgorithm(String inputPath, String outputPath, boolean stemFlag, boolean stopWordFlag) {
 		this.stemFlag = stemFlag;
 		this.stopWordFlag = stopWordFlag;
 		runAlgorithm(inputPath, outputPath);
 	}
-
-	/**
-	 * @param path
-	 */
 	public void runAlgorithm(String inputPath, String outputPath) {
 		startTimestamp = System.currentTimeMillis();
 		stemmer = new PorterStemmer();
@@ -90,10 +45,8 @@ public class TextClusterAlgo {
 				double sim[][] = new double[records.size()][records.size()];
 				for (int i = 0; i < records.size(); i++) {
 					for (int j = 0; j < records.size(); j++) {
-
 						sim[i][j] = this.calculateSimilarity(records.get(i).getTfVector(),
 								records.get(j).getTfVector());
-
 					}
 				}
 				ArrayList<SimilarRecords> similarRecordPairs = new ArrayList<SimilarRecords>();
@@ -149,46 +102,20 @@ public class TextClusterAlgo {
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * Print statistics of the latest execution to System.out.
-	 */
 	public void printStatistics() {
 		System.out.println("========== Text Clusterer - STATS ============");
 		System.out.println(" Total time ~: " + (endTimeStamp - startTimestamp) + " ms");
 		System.out.println(" Max memory:" + MemoryLogger.getInstance().getMaxMemory() + " mb ");
 		System.out.println("=====================================");
 	}
-
-	/**
-	 * Calculates the similarity between two documents by calculation between the
-	 * vectors of the corresponding documents.
-	 * 
-	 * @param tfIdfVector1 tfIdf value of record 1
-	 * @param tfIdfVector2 tfIdf value of record 2
-	 * @return similarity value between the record's vectors
-	 */
 	private double calculateSimilarity(double[] tfIdfVector1, double[] tfIdfVector2) {
-
 		double similarity = 0;
 		for (int i = 0; i < tfIdfVector1.length; i++) {
 			similarity += tfIdfVector1[i] * tfIdfVector2[i];
 		}
 		return similarity;
-
 	}
-
-	/**
-	 * load the input as objects of records
-	 * 
-	 * @param inputReader  the reader object to read input
-	 * @param stemFlag     if true, do the stemming; else, do not stem.
-	 * @param stopWordFlag if true, do the stop word removal; else, do not remove
-	 *                     stop words.
-	 * @return the list of records
-	 */
 	private ArrayList<Record> loadInput(BufferedReader inputReader, boolean stemFlag, boolean stopWordFlag) {
-
 		ArrayList<Record> records = new ArrayList<Record>();
 		String currentLine;
 		String[] line;
@@ -208,7 +135,6 @@ public class TextClusterAlgo {
 					attribute = analyzer.removeStopWords(attribute);
 				}
 				idMap.put(i, recordId);
-
 				words = attribute.split(" ");
 				attribute = "";
 				for (String word : words) {
@@ -228,34 +154,11 @@ public class TextClusterAlgo {
 		}
 		return records;
 	}
-
-	/**
-	 * To find the TFIDF value for a given document and a given term in the whole
-	 * set of documents
-	 * 
-	 * @param document The Text record in the input file.
-	 * @param term     The term in the allWords
-	 * @param records  The whole record collection of the input file.
-	 * @return tfidf value of the given document and the term
-	 */
 	private double FindTFIDF(String document, String term, ArrayList<Record> records) {
 		double tf = this.FindTermFrequency(document, term);
 		float idf = this.FindInverseDocumentFrequency(term, records);
 		return tf * idf;
 	}
-
-	/**
-	 * To find the no. of document that contains the term in whole document
-	 * collection i.e.; log of the ratio of total no of document in the collection
-	 * to the no. of document containing the term we can also use
-	 * Math.Log(occurance/(1+documentCollection.size)) to deal with divide by zero
-	 * case;
-	 * 
-	 * @param term    The term in the allWords
-	 * @param records The whole record collection of the input file.
-	 * @return the inverse document frequency
-	 */
-
 	private float FindInverseDocumentFrequency(String term, ArrayList<Record> records) {
 		int occurance = 0;
 		for (Record record : records) {
@@ -265,17 +168,7 @@ public class TextClusterAlgo {
 		}
 		return (float) Math.log((float) occurance / (1 + (float) records.size()));
 	}
-
-	/**
-	 * To find the ratio of no of occurance of term t in document d to the total no
-	 * of terms in the document
-	 * 
-	 * @param document The Text record in the input file
-	 * @param term     The term in the allWords
-	 * @return the term frequency of term in the document
-	 */
 	private double FindTermFrequency(String document, String term) {
-
 		int occurance = 0;
 		String[] words = document.split(" ");
 		for (String word : words) {
@@ -285,5 +178,5 @@ public class TextClusterAlgo {
 		}
 		return (double) ((float) occurance / (float) (words.length));
 	}
-
 }
+

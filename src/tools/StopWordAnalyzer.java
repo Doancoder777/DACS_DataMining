@@ -1,41 +1,12 @@
 package tools;
-
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-/* This file is copyright (c) 2015 Sabarish Raghu
-* 
-* This file is part of the SPMF DATA MINING SOFTWARE
-* (http://www.philippe-fournier-viger.com/spmf).
-* 
-* SPMF is free software: you can redistribute it and/or modify it under the
-* terms of the GNU General Public License as published by the Free Software
-* Foundation, either version 3 of the License, or (at your option) any later
-* version.
-* 
-* SPMF is distributed in the hope that it will be useful, but WITHOUT ANY
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-* A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License along with
-* SPMF. If not, see <http://www.gnu.org/licenses/>.
-*/
-/**
- * This class serves the purpose of stop word removal from the attributes.
- * @author Sabarish Raghu
- *
- */
 public class StopWordAnalyzer {
 Set<String> stopWordList;
-/**
- * Initialize all the stopwords. Stopwords are the common words in 
- * English which does not have much significance in clustering
- * 
- */
 public StopWordAnalyzer()
 {
 		stopWordList=new HashSet<String>();
@@ -582,28 +553,17 @@ public StopWordAnalyzer()
 		stopWordList.add("yourself");
 		stopWordList.add("yourselves");
 		stopWordList.add("zero");
- 
-	
 }
-/**
- * Initialize the user defined stopWordList
- */
 public StopWordAnalyzer(ArrayList<String> stopWordList)
 {
 	this.stopWordList.addAll(stopWordList);
 }
-/**
- * Removes all the stopWords in the record.
- * @param attribute
- * @return attribute/record with stopwords removed.  
- */
-
 public String removeStopWords(String attribute)
 {           
     List<String> listOfStrings = new LinkedList<String>(Arrays.asList(attribute.split(" ")));
     listOfStrings.removeAll(stopWordList);
     attribute = String.join(" ", listOfStrings);
-
 	return attribute;
 }
 }
+
