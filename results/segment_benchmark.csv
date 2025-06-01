@@ -1,0 +1,36 @@
+MinSupport,MaxSupport,Algorithm,Runtime(ms),Memory(MB),ItemsetsFound,Dataset,Segment
+5.0,10.0,Apriori TID,5856,820.00,37,accidents.hui,5-10%
+5.0,10.0,ECLAT Rare,3694,1300.61,37,accidents.hui,5-10%
+5.0,10.0,PrePost Rare,6390,1404.21,37,accidents.hui,5-10%
+5.0,10.0,RareItemsetTree,40514,1400.44,37,accidents.hui,5-10%
+5.0,10.0,RP-Growth,6916,1321.55,37,accidents.hui,5-10%
+10.0,15.0,Apriori TID,5601,1566.00,12,accidents.hui,10-15%
+10.0,15.0,ECLAT Rare,3593,219.18,12,accidents.hui,10-15%
+10.0,15.0,PrePost Rare,6317,125.48,12,accidents.hui,10-15%
+10.0,15.0,RareItemsetTree,12607,279.79,12,accidents.hui,10-15%
+10.0,15.0,RP-Growth,7009,279.79,12,accidents.hui,10-15%
+15.0,20.0,Apriori TID,5594,1045.77,15,accidents.hui,15-20%
+15.0,20.0,ECLAT Rare,3741,1029.54,15,accidents.hui,15-20%
+15.0,20.0,PrePost Rare,5981,125.84,15,accidents.hui,15-20%
+15.0,20.0,RareItemsetTree,12355,567.10,15,accidents.hui,15-20%
+15.0,20.0,RP-Growth,6585,532.68,15,accidents.hui,15-20%
+20.0,25.0,Apriori TID,5421,892.39,7,accidents.hui,20-25%
+20.0,25.0,ECLAT Rare,3602,820.02,7,accidents.hui,20-25%
+20.0,25.0,PrePost Rare,5872,665.23,7,accidents.hui,20-25%
+20.0,25.0,RareItemsetTree,9724,389.52,7,accidents.hui,20-25%
+20.0,25.0,RP-Growth,6543,558.90,7,accidents.hui,20-25%
+25.0,30.0,Apriori TID,5007,800.00,3,accidents.hui,25-30%
+25.0,30.0,ECLAT Rare,3697,632.39,3,accidents.hui,25-30%
+25.0,30.0,PrePost Rare,5603,683.02,3,accidents.hui,25-30%
+25.0,30.0,RareItemsetTree,9087,916.61,3,accidents.hui,25-30%
+25.0,30.0,RP-Growth,7004,632.57,3,accidents.hui,25-30%
+30.0,35.0,Apriori TID,5426,808.17,1,accidents.hui,30-35%
+30.0,35.0,ECLAT Rare,3931,1510.02,1,accidents.hui,30-35%
+30.0,35.0,PrePost Rare,6185,59.76,1,accidents.hui,30-35%
+30.0,35.0,RareItemsetTree,9290,515.26,1,accidents.hui,30-35%
+30.0,35.0,RP-Growth,7057,515.26,1,accidents.hui,30-35%
+35.0,40.0,Apriori TID,5097,993.50,2,accidents.hui,35-40%
+35.0,40.0,ECLAT Rare,3992,348.49,2,accidents.hui,35-40%
+35.0,40.0,PrePost Rare,5892,765.71,2,accidents.hui,35-40%
+35.0,40.0,RareItemsetTree,8501,448.39,2,accidents.hui,35-40%
+35.0,40.0,RP-Growth,6684,335.36,2,accidents.hui,35-40%
