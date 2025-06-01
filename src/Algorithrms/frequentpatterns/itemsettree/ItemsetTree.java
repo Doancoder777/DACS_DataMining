@@ -1,4 +1,4 @@
-package frequentpatterns.itemsettree;
+package Algorithrms.frequentpatterns.itemsettree;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

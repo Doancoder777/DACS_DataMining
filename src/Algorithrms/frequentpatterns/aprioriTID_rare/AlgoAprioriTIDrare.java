@@ -1,4 +1,4 @@
-package frequentpatterns.aprioriTID_rare;
+package Algorithrms.frequentpatterns.aprioriTID_rare;
 /* This file is copyright (c) 2008-2013 Philippe Fournier-Viger
 * 
 * This file is part of the SPMF DATA MINING SOFTWARE

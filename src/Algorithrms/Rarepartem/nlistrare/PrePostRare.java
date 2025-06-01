@@ -1,4 +1,4 @@
-package Rarepartem.nlistrare;
+package Algorithrms.Rarepartem.nlistrare;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

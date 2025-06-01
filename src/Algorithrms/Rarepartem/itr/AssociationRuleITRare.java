@@ -1,4 +1,4 @@
-package Rarepartem.itr;
+package Algorithrms.Rarepartem.itr;
 
 public class AssociationRuleITRare {
 	// support of the rule

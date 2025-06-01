@@ -1,4 +1,4 @@
-package frequentpatterns.fin_prepost;
+package Algorithrms.frequentpatterns.fin_prepost;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

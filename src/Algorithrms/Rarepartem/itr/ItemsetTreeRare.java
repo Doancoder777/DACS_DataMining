@@ -1,4 +1,4 @@
-package Rarepartem.itr;
+package Algorithrms.Rarepartem.itr;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

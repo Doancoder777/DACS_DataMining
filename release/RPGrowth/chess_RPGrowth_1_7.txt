@@ -1,0 +1,50 @@
+=== RP-GROWTH - RARE PATTERN MINING ===
+File dữ liệu: chess.hui
+MinRareSupport (minsup): 1.0%
+MinFrequentSupport (maxsup): 7.0%
+Thời gian bắt đầu: Sun Jun 01 07:59:11 ICT 2025
+Output folder: release/RPGrowth/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (1.0%, 7.000000000000001%]
+Định nghĩa: MRT < Support(X) <= MFT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 3196
+
+--- 1-itemsets HIẾM ---
+61  #SUP: 47 (1.47%)
+37  #SUP: 97 (3.04%)
+8  #SUP: 120 (3.75%)
+63  #SUP: 136 (4.26%)
+35  #SUP: 156 (4.88%)
+67  #SUP: 175 (5.48%)
+57  #SUP: 175 (5.48%)
+49  #SUP: 183 (5.73%)
+33  #SUP: 224 (7.01%)
+
+--- 2-itemsets HIẾM ---
+61 67  #SUP: 47 (1.47%)
+37 49  #SUP: 71 (2.22%)
+57 63  #SUP: 38 (1.19%)
+49 67  #SUP: 35 (1.10%)
+33 67  #SUP: 37 (1.16%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 14
+Thuật toán: RP-Growth
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/RPGrowth/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: RP-Growth
+Tổng thời gian thực thi: 00:03.402 (phút:giây.mili giây) [3402 ms]
+Bộ nhớ tối đa sử dụng: 25.33 MB
+Thời gian kết thúc: Sun Jun 01 07:59:14 ICT 2025
+Output folder: release/RPGrowth/
+Định nghĩa: MRT < Support(X) <= MFT

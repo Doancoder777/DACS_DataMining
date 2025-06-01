@@ -1,4 +1,4 @@
-package Rarepartem.eclatrptree;
+package Algorithrms.Rarepartem.eclatrptree;
 
 import java.io.Serializable;
 import java.util.ArrayList;

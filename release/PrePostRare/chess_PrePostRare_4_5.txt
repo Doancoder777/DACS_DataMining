@@ -1,0 +1,36 @@
+=== PREPOST RARE - RARE ITEMSETS MINING ===
+File dữ liệu: chess.hui
+MinRareSupport (minsup): 4.0%
+MinFrequentSupport (maxsup): 5.0%
+Thời gian bắt đầu: Sun Jun 01 08:01:38 ICT 2025
+Output folder: release/PrePostRare/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 3196
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (4.0%, 5.0%]
+Định nghĩa: MRT < Support(X) <= MFT
+
+--- 1-itemsets HIẾM ---
+63 #SUP: 136 (4.26%)
+35 #SUP: 156 (4.88%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 2
+Thuật toán: PrePost Rare
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/PrePostRare/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: PrePost Rare
+Tổng thời gian thực thi: 00:03.064 (phút:giây.mili giây) [3064 ms]
+Bộ nhớ tối đa sử dụng: 68.81 MB
+Thời gian kết thúc: Sun Jun 01 08:01:41 ICT 2025
+Output folder: release/PrePostRare/
+Định nghĩa: MRT < Support(X) <= MFT

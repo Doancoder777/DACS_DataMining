@@ -1,4 +1,4 @@
-package frequentpatterns.itemsettree;
+package Algorithrms.frequentpatterns.itemsettree;
 
 public class AssociationRuleIT {
 	// support of the rule

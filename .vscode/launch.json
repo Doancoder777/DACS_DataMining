@@ -3,13 +3,7 @@
     "configurations": [
    
         
-        {
-            "type": "java",
-            "name": "App",
-            "request": "launch",
-            "mainClass": "App",
-            "projectName": "JavaRare_784a2947"
-        },
+  
         {
             "type": "java",
             "name": "Launch Current File",
@@ -22,7 +16,7 @@
             "name": "Launch test",
             "request": "launch",
             "mainClass": "test",
-            "projectName": "JavaRare"
+            "projectName": "DACS_DATAMINING"
         }
     ]
 }

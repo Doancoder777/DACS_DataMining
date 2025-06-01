@@ -1,4 +1,4 @@
-package Rarepartem.rpgrowth;
+package Algorithrms.Rarepartem.rpgrowth;
 
 import java.util.ArrayList;
 import java.util.List;

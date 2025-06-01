@@ -1,4 +1,4 @@
-package frequentpatterns.itemsettree;
+package Algorithrms.frequentpatterns.itemsettree;
 
 import java.util.ArrayList;
 import java.util.HashSet;

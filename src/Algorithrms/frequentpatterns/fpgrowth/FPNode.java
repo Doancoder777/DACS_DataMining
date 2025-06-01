@@ -1,4 +1,4 @@
-package frequentpatterns.fpgrowth;
+package Algorithrms.frequentpatterns.fpgrowth;
 
 /* This file is copyright (c) 2008-2013 Philippe Fournier-Viger
 * 

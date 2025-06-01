@@ -1,4 +1,4 @@
-package frequentpatterns.itemsettree;
+package Algorithrms.frequentpatterns.itemsettree;
 
 import java.io.Serializable;
 import java.util.Collection;

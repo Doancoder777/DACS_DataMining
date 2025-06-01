@@ -1,4 +1,4 @@
-package frequentpatterns.eclatrptree;
+package Algorithrms.frequentpatterns.eclatrptree;
 
 import java.util.BitSet;
 

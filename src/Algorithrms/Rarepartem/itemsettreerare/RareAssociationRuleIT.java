@@ -1,4 +1,4 @@
-package Rarepartem.itemsettreerare;
+package Algorithrms.Rarepartem.itemsettreerare;
 
 public class RareAssociationRuleIT {
 	public int support; 

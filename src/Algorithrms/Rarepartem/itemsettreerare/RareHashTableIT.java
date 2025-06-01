@@ -1,4 +1,4 @@
-package Rarepartem.itemsettreerare;
+package Algorithrms.Rarepartem.itemsettreerare;
 
 import java.util.ArrayList;
 import java.util.List;
