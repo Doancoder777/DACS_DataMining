@@ -1,30 +1,5 @@
 package datastructures.redblacktree;
-/* This file is copyright (c) 2008-2013 Philippe Fournier-Viger
-* 
-* This file is part of the SPMF DATA MINING SOFTWARE
-* (http://www.philippe-fournier-viger.com/spmf).
-* 
-* SPMF is free software: you can redistribute it and/or modify it under the
-* terms of the GNU General Public License as published by the Free Software
-* Foundation, either version 3 of the License, or (at your option) any later
-* version.
-* 
-* SPMF is distributed in the hope that it will be useful, but WITHOUT ANY
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-* A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License along with
-* SPMF. If not, see <http://www.gnu.org/licenses/>.
-*/
-/**
- * This is a class for testing the red-black tree from code and it is intended for developers only.
- * 
-* @author Philippe Fournier-Viger
-**/
 class MainRedBlackTree {
-
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		System.out.println("Create a redblack that can have the same element multiple times");
 		RedBlackTree<Integer> tree = new RedBlackTree<Integer>(true);
@@ -64,21 +39,18 @@ class MainRedBlackTree {
 		System.out.println("all elements : " + tree.toString() + "   Size of tree: " + tree.size());
 		System.out.println("... will remove 999 ");
 		tree.remove(999);
-		
 		System.out.println("all elements : " + tree.toString() + "   Size of tree: " + tree.size());
 		System.out.println(" lower than 5  = " + tree.lower(5));
 		System.out.println(" lower than 1 = " + tree.lower(1));
 		System.out.println(" lower than 10 = " + tree.lower(10));
 		System.out.println(" lower than 8 = " + tree.lower(8));
 		System.out.println(" lower than 200 = " + tree.lower(200));
-		
 		System.out.println("all elements : " + tree.toString() + "   Size of tree: " + tree.size());
 		System.out.println(" higher than 5  = " + tree.higher(5));
 		System.out.println(" higher than 1 = " + tree.higher(1));
 		System.out.println(" higher than 10 = " + tree.higher(10));
 		System.out.println(" higher than 8 = " + tree.higher(8));
 		System.out.println(" higher than 200 = " + tree.higher(200));
-
 		System.out.println("all elements : " + tree.toString() + "   Size of tree: " + tree.size());
 		System.out.println("... will pop maximum ...");
 		System.out.println(" maximum " + tree.popMaximum());
@@ -90,5 +62,5 @@ class MainRedBlackTree {
 		System.out.println(" minimum " + tree.popMinimum());
 		System.out.println("all elements : " + tree.toString() + "   Size of tree: " + tree.size());
 	}
-
 }
+

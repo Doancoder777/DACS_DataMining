@@ -1,11 +1,9 @@
 package Algorithrms.Rarepartem.itemsettreerare;
-
 public class RareAssociationRuleIT {
 	public int support; 
 	public double confidence;
 	public int[] itemset1;
 	public int[] itemset2;
-	
 	public String toString(){
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("[ ");

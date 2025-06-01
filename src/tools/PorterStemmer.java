@@ -1,72 +1,17 @@
 package tools;
-
-/* 
-* This file is part of the SPMF DATA MINING SOFTWARE
-* (http://www.philippe-fournier-viger.com/spmf).
-* 
-* SPMF is free software: you can redistribute it and/or modify it under the
-* terms of the GNU General Public License as published by the Free Software
-* Foundation, either version 3 of the License, or (at your option) any later
-* version.
-* 
-* SPMF is distributed in the hope that it will be useful, but WITHOUT ANY
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-* A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License along with
-* SPMF. If not, see <http://www.gnu.org/licenses/>.
-*/
-/*
-
-   Porter stemmer in Java. The original paper is in
-
-       Porter, 1980, An algorithm for suffix stripping, Program, Vol. 14,
-       no. 3, pp 130-137,
-
-  This version is based on:
-   http://www.tartarus.org/~martin/PorterStemmer/index.html
-
-   Release 3.
-
-   [ This version is derived from Release 3, modified by Brian Goetz to
-     optimize for fewer object creations.  ]
-     
-*/
-
-
-/**
- *
- * Stemmer, implementing the Porter Stemming Algorithm
- *
- * The Stemmer class transforms a word into its root form.  The input
- * word can be provided a character at time (by calling add()), or at once
- * by calling one of the various stem(something) methods.
- */
-
 public class PorterStemmer
 {
   private char[] b;
-  private int i,    /* offset into b */
+  private int i,    
     j, k, k0;
   private boolean dirty = false;
-  private static final int INC = 50; /* unit of size whereby b is increased */
+  private static final int INC = 50; 
   private static final int EXTRA = 1;
-
   public PorterStemmer() {
     b = new char[INC];
     i = 0;
   }
-
-  /**
-   * reset() resets the stemmer so it can stem another word.  If you invoke
-   * the stemmer by calling add(char) and then stem(), you must call reset()
-   * before starting another word.
-   */
   public void reset() { i = 0; dirty = false; }
-
-  /**
-   * Add a character to the word being stemmed.  When you are finished
-   * adding characters, you can call stem(void) to process the word.
-   */
   public void add(char ch) {
     if (b.length <= i + EXTRA) {
       char[] new_b = new char[b.length+INC];
@@ -75,29 +20,10 @@ public class PorterStemmer
     }
     b[i++] = ch;
   }
-
-  /**
-   * After a word has been stemmed, it can be retrieved by toString(),
-   * or a reference to the internal buffer can be retrieved by getResultBuffer
-   * and getResultLength (which is generally more efficient.)
-   */
   @Override
   public String toString() { return new String(b,0,i); }
-
-  /**
-   * Returns the length of the word resulting from the stemming process.
-   */
   public int getResultLength() { return i; }
-
-  /**
-   * Returns a reference to a character buffer containing the results of
-   * the stemming process.  You also need to consult getResultLength()
-   * to determine the length of the result.
-   */
   public char[] getResultBuffer() { return b; }
-
-  /* cons(i) is true <=> b[i] is a consonant. */
-
   private final boolean cons(int i) {
     switch (b[i]) {
     case 'a': case 'e': case 'i': case 'o': case 'u':
@@ -108,18 +34,6 @@ public class PorterStemmer
       return true;
     }
   }
-
-  /* m() measures the number of consonant sequences between k0 and j. if c is
-     a consonant sequence and v a vowel sequence, and <..> indicates arbitrary
-     presence,
-
-          <c><v>       gives 0
-          <c>vc<v>     gives 1
-          <c>vcvc<v>   gives 2
-          <c>vcvcvc<v> gives 3
-          ....
-  */
-
   private final int m() {
     int n = 0;
     int i = k0;
@@ -151,9 +65,6 @@ public class PorterStemmer
       i++;
     }
   }
-
-  /* vowelinstem() is true <=> k0,...j contains a vowel */
-
   private final boolean vowelinstem() {
     int i;
     for (i = k0; i <= j; i++)
@@ -161,9 +72,6 @@ public class PorterStemmer
         return true;
     return false;
   }
-
-  /* doublec(j) is true <=> j,(j-1) contain a double consonant. */
-
   private final boolean doublec(int j) {
     if (j < k0+1)
       return false;
@@ -171,16 +79,6 @@ public class PorterStemmer
       return false;
     return cons(j);
   }
-
-  /* cvc(i) is true <=> i-2,i-1,i has the form consonant - vowel - consonant
-     and also if the second c is not w,x or y. this is used when trying to
-     restore an e at the end of a short word. e.g.
-
-          cav(e), lov(e), hop(e), crim(e), but
-          snow, box, tray.
-
-  */
-
   private final boolean cvc(int i) {
     if (i < k0+2 || !cons(i) || cons(i-1) || !cons(i-2))
       return false;
@@ -190,7 +88,6 @@ public class PorterStemmer
     }
     return true;
   }
-
   private final boolean ends(String s) {
     int l = s.length();
     int o = k-l+1;
@@ -202,10 +99,6 @@ public class PorterStemmer
     j = k-l;
     return true;
   }
-
-  /* setto(s) sets (j+1),...k to the characters in the string s, readjusting
-     k. */
-
   void setto(String s) {
     int l = s.length();
     int o = j+1;
@@ -214,33 +107,7 @@ public class PorterStemmer
     k = j+l;
     dirty = true;
   }
-
-  /* r(s) is used further down. */
-
   void r(String s) { if (m() > 0) setto(s); }
-
-  /* step1() gets rid of plurals and -ed or -ing. e.g.
-
-           caresses  ->  caress
-           ponies    ->  poni
-           ties      ->  ti
-           caress    ->  caress
-           cats      ->  cat
-
-           feed      ->  feed
-           agreed    ->  agree
-           disabled  ->  disable
-
-           matting   ->  mat
-           mating    ->  mate
-           meeting   ->  meet
-           milling   ->  mill
-           messing   ->  mess
-
-           meetings  ->  meet
-
-  */
-
   private final void step1() {
     if (b[k] == 's') {
       if (ends("sses")) k -= 2;
@@ -265,20 +132,12 @@ public class PorterStemmer
         setto("e");
     }
   }
-
-  /* step2() turns terminal y to i when there is another vowel in the stem. */
-
   private final void step2() {
     if (ends("y") && vowelinstem()) {
       b[k] = 'i';
       dirty = true;
     }
   }
-
-  /* step3() maps double suffices to single ones. so -ization ( = -ize plus
-     -ation) maps to -ize etc. note that the string before the suffix must give
-     m() > 0. */
-
   private final void step3() {
     if (k == k0) return; 
     switch (b[k-1]) {
@@ -320,9 +179,6 @@ public class PorterStemmer
       if (ends("logi")) { r("log"); break; }
     }
   }
-
-  /* step4() deals with -ic-, -full, -ness etc. similar strategy to step3. */
-
   private final void step4() {
     switch (b[k]) {
     case 'e':
@@ -342,9 +198,6 @@ public class PorterStemmer
       break;
     }
   }
-
-  /* step5() takes off -ant, -ence etc., in context <c>vcvc<v>. */
-
   private final void step5() {
     if (k == k0) return; 
     switch (b[k-1]) {
@@ -366,14 +219,12 @@ public class PorterStemmer
       if (ends("ant")) break;
       if (ends("ement")) break;
       if (ends("ment")) break;
-      /* element etc. not stripped before the m */
       if (ends("ent")) break;
       return;
     case 'o':
       if (ends("ion") && j >= 0 && (b[j] == 's' || b[j] == 't')) break;
       if (ends("ou")) break;
       return;
-      /* takes care of -ous */
     case 's':
       if (ends("ism")) break;
       return;
@@ -396,9 +247,6 @@ public class PorterStemmer
     if (m() > 1)
       k = j;
   }
-
-  /* step6() removes a final -e if m() > 1. */
-
   private final void step6() {
     j = k;
     if (b[k] == 'e') {
@@ -409,32 +257,15 @@ public class PorterStemmer
     if (b[k] == 'l' && doublec(k) && m() > 1)
       k--;
   }
-
-
-  /**
-   * Stem a word provided as a String.  Returns the result as a String.
-   */
   public String stem(String s) {
-	  //System.out.println(stem(s.toCharArray(), s.length()));
     if (stem(s.toCharArray(), s.length()))
       return toString();
     else
       return s;
   }
-
-  /** Stem a word contained in a char[].  Returns true if the stemming process
-   * resulted in a word different from the input.  You can retrieve the
-   * result with getResultLength()/getResultBuffer() or toString().
-   */
   public boolean stem(char[] word) {
     return stem(word, word.length);
   }
-
-  /** Stem a word contained in a portion of a char[] array.  Returns
-   * true if the stemming process resulted in a word different from
-   * the input.  You can retrieve the result with
-   * getResultLength()/getResultBuffer() or toString().
-   */
   public boolean stem(char[] wordBuffer, int offset, int wordLen) {
     reset();
     if (b.length < wordLen) {
@@ -445,39 +276,22 @@ public class PorterStemmer
     i = wordLen;
     return stem(0);
   }
-
-  /** Stem a word contained in a leading portion of a char[] array.
-   * Returns true if the stemming process resulted in a word different
-   * from the input.  You can retrieve the result with
-   * getResultLength()/getResultBuffer() or toString().
-   */
   public boolean stem(char[] word, int wordLen) {
     return stem(word, 0, wordLen);
   }
-
-  /** Stem the word placed into the Stemmer buffer through calls to add().
-   * Returns true if the stemming process resulted in a word different
-   * from the input.  You can retrieve the result with
-   * getResultLength()/getResultBuffer() or toString().
-   */
   public boolean stem() {
     return stem(0);
   }
-
   public boolean stem(int i0) {
     k = i - 1;
     k0 = i0;
     if (k > k0+1) {
       step1(); step2(); step3(); step4(); step5(); step6();
     }
-    // Also, a word is considered dirty if we lopped off letters
-    // Thanks to Ifigenia Vairelles for pointing this out.
     if (i != k+1)
       dirty = true;
     i = k+1;
     return dirty;
   }
-
 }
-
 

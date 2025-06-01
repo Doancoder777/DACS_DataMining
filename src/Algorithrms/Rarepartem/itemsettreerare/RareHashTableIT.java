@@ -1,18 +1,12 @@
 package Algorithrms.Rarepartem.itemsettreerare;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import patterns.itemset_array_integers_with_count.Itemset;
-
 public class RareHashTableIT {
-	
 	public List<Itemset>[] table;
-	
 	public RareHashTableIT(int size){
 		table = new ArrayList[size];
 	}
-	
 	public void put(int[] items, int support) {
 		int hashcode = hashCode(items);
 		if(table[hashcode] ==  null){
@@ -34,7 +28,6 @@ public class RareHashTableIT {
 			table[hashcode].add(itemset);
 		}
 	}
-
 	public int hashCode(int[] items){
 		int hashcode = 0;
 		for (int i=0; i< items.length; i++) {
@@ -45,7 +38,6 @@ public class RareHashTableIT {
 		}
 		return (hashcode % table.length);
 	}
-	
 	private boolean same(int[] itemset1, int[] itemset2) {
 		if(itemset2 == null || itemset1 == null){
 			return false;

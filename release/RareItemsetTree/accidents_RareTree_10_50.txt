@@ -2,7 +2,7 @@
 File dữ liệu: accidents.hui
 MinRareSupport (minsup): 10.0%
 MinFrequentSupport (maxsup): 50.0%
-Thời gian bắt đầu: Sun Jun 01 10:24:00 ICT 2025
+Thời gian bắt đầu: Sun Jun 01 11:28:41 ICT 2025
 Output folder: release/RareItemsetTree/
 Tối ưu: Transaction pruning + Candidate pruning + Support caching
 
@@ -14,13 +14,13 @@ Tối ưu: Transaction pruning + Candidate pruning + Support caching
 
 ========== DATABASE INFO ==========
 Số lượng giao dịch: 340183
-Thời gian xây dựng cây: 3870 ms
+Thời gian xây dựng cây: 4065 ms
 
 ========== RARE ITEMSETS ==========
 Tìm itemsets với support trong khoảng (34018, 170092]
 Định nghĩa: MRT < Support(X) <= MFT
-Thời gian xây dựng cây: 3870 ms
-Thời gian khai thác: 37352 ms
+Thời gian xây dựng cây: 4065 ms
+Thời gian khai thác: 69847 ms
 Tối ưu: Transaction pruning + Candidate pruning + Support caching
 
 --- 2-itemsets HIẾM ---
@@ -353,11 +353,11 @@ Output folder: release/RareItemsetTree/
 
 ========== THÔNG TIN HIỆU SUẤT ==========
 Thuật toán: Rare Itemset Tree
-Tổng thời gian thực thi: 00:48.663 (phút:giây.mili giây) [48663 ms]
-- Thời gian xây dựng cây: 3870 ms
-- Thời gian khai thác: 37352 ms
-Bộ nhớ tối đa sử dụng: 689.05 MB
-Thời gian kết thúc: Sun Jun 01 10:24:49 ICT 2025
+Tổng thời gian thực thi: 01:18.183 (phút:giây.mili giây) [78183 ms]
+- Thời gian xây dựng cây: 4065 ms
+- Thời gian khai thác: 69847 ms
+Bộ nhớ tối đa sử dụng: 649.04 MB
+Thời gian kết thúc: Sun Jun 01 11:29:59 ICT 2025
 Output folder: release/RareItemsetTree/
 Định nghĩa: MRT < Support(X) <= MFT
 
