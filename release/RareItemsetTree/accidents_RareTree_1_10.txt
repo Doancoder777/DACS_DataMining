@@ -1,0 +1,152 @@
+=== RARE ITEMSET TREE - RARE PATTERN MINING ===
+File dữ liệu: accidents.hui
+MinRareSupport (minsup): 1.0%
+MinFrequentSupport (maxsup): 10.0%
+Thời gian bắt đầu: Sun Jun 01 10:10:53 ICT 2025
+Output folder: release/RareItemsetTree/
+Tối ưu: Transaction pruning + Candidate pruning + Support caching
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+- Định nghĩa: 3401 < Support(X) <= 34019
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 340183
+Thời gian xây dựng cây: 3743 ms
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (3401, 34019]
+Định nghĩa: MRT < Support(X) <= MFT
+Thời gian xây dựng cây: 3743 ms
+Thời gian khai thác: 2598 ms
+Tối ưu: Transaction pruning + Candidate pruning + Support caching
+
+--- 1-itemsets HIẾM ---
+180  #SUP: 3425 (1.01%)
+178  #SUP: 3543 (1.04%)
+143  #SUP: 3719 (1.09%)
+204  #SUP: 3897 (1.15%)
+147  #SUP: 3907 (1.15%)
+166  #SUP: 3954 (1.16%)
+87  #SUP: 3967 (1.17%)
+167  #SUP: 3988 (1.17%)
+76  #SUP: 4122 (1.21%)
+164  #SUP: 4137 (1.22%)
+163  #SUP: 4268 (1.25%)
+110  #SUP: 4390 (1.29%)
+139  #SUP: 4453 (1.31%)
+230  #SUP: 4546 (1.34%)
+155  #SUP: 4589 (1.35%)
+154  #SUP: 4594 (1.35%)
+179  #SUP: 4766 (1.40%)
+186  #SUP: 5525 (1.62%)
+113  #SUP: 5568 (1.64%)
+116  #SUP: 5628 (1.65%)
+32  #SUP: 5676 (1.67%)
+3  #SUP: 5899 (1.73%)
+114  #SUP: 6238 (1.83%)
+162  #SUP: 6268 (1.84%)
+79  #SUP: 6399 (1.88%)
+112  #SUP: 6402 (1.88%)
+40  #SUP: 6429 (1.89%)
+134  #SUP: 6477 (1.90%)
+104  #SUP: 6604 (1.94%)
+92  #SUP: 6606 (1.94%)
+91  #SUP: 6902 (2.03%)
+138  #SUP: 6932 (2.04%)
+210  #SUP: 7043 (2.07%)
+85  #SUP: 7171 (2.11%)
+97  #SUP: 7312 (2.15%)
+115  #SUP: 7438 (2.19%)
+127  #SUP: 7820 (2.30%)
+249  #SUP: 8071 (2.37%)
+185  #SUP: 8151 (2.40%)
+168  #SUP: 8193 (2.41%)
+90  #SUP: 8341 (2.45%)
+193  #SUP: 8351 (2.45%)
+6  #SUP: 8422 (2.48%)
+145  #SUP: 8433 (2.48%)
+146  #SUP: 8676 (2.55%)
+142  #SUP: 9406 (2.76%)
+129  #SUP: 9414 (2.77%)
+123  #SUP: 9456 (2.78%)
+128  #SUP: 9598 (2.82%)
+103  #SUP: 9979 (2.93%)
+89  #SUP: 11196 (3.29%)
+73  #SUP: 11652 (3.43%)
+111  #SUP: 11893 (3.50%)
+109  #SUP: 12253 (3.60%)
+141  #SUP: 12273 (3.61%)
+11  #SUP: 12426 (3.65%)
+105  #SUP: 14434 (4.24%)
+106  #SUP: 14789 (4.35%)
+124  #SUP: 15351 (4.51%)
+101  #SUP: 16319 (4.80%)
+117  #SUP: 17274 (5.08%)
+161  #SUP: 17807 (5.23%)
+159  #SUP: 18146 (5.33%)
+99  #SUP: 18653 (5.48%)
+122  #SUP: 18959 (5.57%)
+83  #SUP: 19387 (5.70%)
+176  #SUP: 19530 (5.74%)
+121  #SUP: 19700 (5.79%)
+74  #SUP: 19870 (5.84%)
+67  #SUP: 20695 (6.08%)
+57  #SUP: 20799 (6.11%)
+96  #SUP: 21431 (6.30%)
+65  #SUP: 22779 (6.70%)
+100  #SUP: 23289 (6.85%)
+34  #SUP: 23568 (6.93%)
+81  #SUP: 23593 (6.94%)
+94  #SUP: 23883 (7.02%)
+4  #SUP: 23929 (7.03%)
+70  #SUP: 25424 (7.47%)
+75  #SUP: 27562 (8.10%)
+385  #SUP: 28369 (8.34%)
+52  #SUP: 28515 (8.38%)
+48  #SUP: 28657 (8.42%)
+346  #SUP: 29201 (8.58%)
+58  #SUP: 29410 (8.65%)
+402  #SUP: 29697 (8.73%)
+441  #SUP: 29739 (8.74%)
+416  #SUP: 30187 (8.87%)
+71  #SUP: 30216 (8.88%)
+307  #SUP: 30778 (9.05%)
+66  #SUP: 31567 (9.28%)
+69  #SUP: 32433 (9.53%)
+437  #SUP: 32464 (9.54%)
+88  #SUP: 33037 (9.71%)
+107  #SUP: 33132 (9.74%)
+20  #SUP: 33249 (9.77%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 96
+Thuật toán: Rare Itemset Tree
+Tối ưu áp dụng:
+- Transaction pruning: Loại bỏ items không rare
+- Candidate pruning: Kiểm tra subset conditions
+- Support upper bound estimation
+- Support value caching
+- Quick join conditions checking
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/RareItemsetTree/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: Rare Itemset Tree
+Tổng thời gian thực thi: 00:12.560 (phút:giây.mili giây) [12560 ms]
+- Thời gian xây dựng cây: 3743 ms
+- Thời gian khai thác: 2598 ms
+Bộ nhớ tối đa sử dụng: 537.09 MB
+Thời gian kết thúc: Sun Jun 01 10:11:05 ICT 2025
+Output folder: release/RareItemsetTree/
+Định nghĩa: MRT < Support(X) <= MFT
+
+========== TỐI ƯU ÁP DỤNG ==========
+1. Transaction Pruning: Loại bỏ transactions chỉ chứa items không rare
+2. Candidate Pruning: Kiểm tra subset conditions trước khi tính support
+3. Support Upper Bound: Ước tính upper bound để skip candidates
+4. Support Caching: Cache kết quả tính support để tái sử dụng
+5. Quick Join Check: Kiểm tra điều kiện join nhanh
+6. Early Termination: Dừng sớm khi không còn candidates

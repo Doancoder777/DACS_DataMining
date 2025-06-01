@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.Iterator;
-import java.util.Arrays;
 
 import patterns.itemset_array_integers_with_count.Itemset;
 import tools.MemoryLogger;
@@ -26,9 +25,7 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
     private int minRareSupport = 0;
     private int maxRareSupport = 0;
     
-    // TỐI ƯU 1: CACHE MẠNH MẼ HƠN
-    private final Map<String, Integer> cacheManhMe = new ConcurrentHashMap<>();
-    private final Map<Integer, Integer> cacheSupportDon = new HashMap<>(); // Cache cho 1-itemsets
+    private final Map<String, Integer> supportCache = new ConcurrentHashMap<>();
     private Map<Integer, Integer> itemFrequency = new HashMap<>();
 
     public RareItemsetTree() {
@@ -84,9 +81,6 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         reader.close();
         transactionCount = transactionMap.size();
         
-        // TỐI ƯU 1: XÂY DỰNG CACHE CHO 1-ITEMSETS
-        xayDungCacheSupportDon();
-        
         // Xác định rare items
         HashSet<Integer> rareItems = new HashSet<>();
         int frequentCount = 0;
@@ -109,8 +103,8 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         System.out.println("- Infrequent items (support <= MRT): " + infrequentCount);
         System.out.println("- Định nghĩa: " + minRareSupport + " < Support(X) <= " + maxRareSupport);
         
-        // Cắt tỉa transactions
-        catTiaTransactions(transactionMap, rareItems);
+        // CẮT TỈA TRANSACTIONS: Loại bỏ items không rare và transactions rỗng
+        pruneTransactions(transactionMap, rareItems);
         System.out.println("- Transactions sau cắt tỉa: " + transactionMap.size());
         
         // Xây dựng cây
@@ -127,49 +121,12 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
             }
         }
 
-        // TỐI ƯU 4: NÉN CÂY SAU KHI XÂY DỰNG
-        nenCay();
-        
         MemoryLogger.getInstance().checkMemory();
         endTimestamp = System.currentTimeMillis();
     }
 
-    // TỐI ƯU 1: XÂY DỰNG CACHE CHO 1-ITEMSETS
-    private void xayDungCacheSupportDon() {
-        System.out.println("Xây dựng cache support cho 1-itemsets...");
-        for (Map.Entry<Integer, Integer> entry : itemFrequency.entrySet()) {
-            cacheSupportDon.put(entry.getKey(), entry.getValue());
-        }
-        System.out.println("Đã cache " + cacheSupportDon.size() + " 1-itemsets");
-    }
-
-    // TỐI ƯU 4: NÉN CÂY ĐỂ TRUY CẬP TỐT HƠN
-    private void nenCay() {
-        System.out.println("Đang nén cây để tối ưu truy cập...");
-        nenCayDeQuy(root);
-        System.out.println("Đã hoàn thành nén cây");
-    }
-
-    private void nenCayDeQuy(RareItemsetTreeNode node) {
-        if (node.childs.isEmpty()) return;
-        
-        // Sắp xếp con để truy cập bộ nhớ tốt hơn
-        List<RareItemsetTreeNode> conDaSapXep = new ArrayList<>(node.childs);
-        conDaSapXep.sort((a, b) -> {
-            if (a.itemset == null || b.itemset == null) return 0;
-            return Arrays.compare(a.itemset, b.itemset);
-        });
-        
-        node.childs = new ArrayList<>(conDaSapXep);
-        
-        // Nén đệ quy
-        for (RareItemsetTreeNode child : node.childs) {
-            nenCayDeQuy(child);
-        }
-    }
-
-    // Cắt tỉa transactions
-    private void catTiaTransactions(Map<Integer, List<Integer>> transactionMap, Set<Integer> rareItems) {
+    // CẮT TỈA TRANSACTIONS
+    private void pruneTransactions(Map<Integer, List<Integer>> transactionMap, Set<Integer> rareItems) {
         Iterator<Map.Entry<Integer, List<Integer>>> iterator = transactionMap.entrySet().iterator();
         
         while (iterator.hasNext()) {
@@ -186,219 +143,28 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         }
     }
 
-    // TỐI ƯU 1: SUPPORT CALCULATION VỚI CACHE MẠNH VÀ ĐƯỜNG DẪN NHANH
-    @Override
-    public int getSupportOfItemset(int[] s) {
-        String key = Arrays.toString(s);
-        Integer cached = cacheManhMe.get(key);
-        if (cached != null) {
-            return cached;
-        }
-        
-        int result;
-        
-        // TỐI ƯU 2: ĐƯỜNG DẪN NHANH CHO 1-ITEMSETS
-        if (s.length == 1) {
-            result = cacheSupportDon.getOrDefault(s[0], 0);
-        }
-        // TỐI ƯU 2: ĐƯỜNG DẪN NHANH CHO 2-ITEMSETS  
-        else if (s.length == 2) {
-            result = tinhHaiItemsetNhanh(s[0], s[1], root);
-        }
-        // Dùng thuật toán gốc cho itemsets lớn hơn
-        else {
-            result = countTuuHoa(s, root);
-        }
-        
-        // Cache kết quả
-        if (cacheManhMe.size() < 100000) { // Giới hạn cache size
-            cacheManhMe.put(key, result);
-        }
-        
-        return result;
+    public int getTransactionCount() {
+        return transactionCount;
     }
 
-    // TỐI ƯU 2: TÍNH NHANH CHO 2-ITEMSETS
-    private int tinhHaiItemsetNhanh(int item1, int item2, RareItemsetTreeNode node) {
-        int count = 0;
-        
-        // Dừng sớm nếu không có con
-        if (node.childs.isEmpty()) return 0;
-        
-        for (RareItemsetTreeNode child : node.childs) {
-            if (child.itemset == null) continue;
-            
-            // Kiểm tra nhanh cho 2-itemset
-            if (chuaItem(child.itemset, item1) && chuaItem(child.itemset, item2)) {
-                count += child.support;
-            } else if (child.itemset.length > 0 && child.itemset[child.itemset.length - 1] >= Math.max(item1, item2)) {
-                count += tinhHaiItemsetNhanh(item1, item2, child);
-            }
-        }
-        
-        return count;
+    public int getMinRareSupport() {
+        return minRareSupport;
     }
 
-    // TỐI ƯU 3: DUYỆT CÂY VỚI CẮT NHÁNH
-    private int countTuuHoa(int[] s, RareItemsetTreeNode root) {
-        int count = 0;
-        
-        // Không cần sắp xếp lại vì đã nén cây
-        for (RareItemsetTreeNode ci : root.childs) {
-            if (ci.itemset == null) continue;
-            
-            // TỐI ƯU 3: CẮT NHÁNH - Dừng sớm nếu item đầu > mục tiêu
-            if (ci.itemset.length > 0 && ci.itemset[0] > s[s.length - 1]) {
-                break; // Không cần kiểm tra con nữa vì đã sắp xếp
-            }
-            
-            if (ci.itemset.length > 0 && ci.itemset[0] <= s[0]) {
-                if (includedIn(s, ci.itemset)) {
-                    count += ci.support;
-                } else if (ci.itemset[ci.itemset.length - 1] < s[s.length - 1]) {
-                    count += countTuuHoa(s, ci);
-                }
-            }
-        }
-        return count;
+    public int getMaxRareSupport() {
+        return maxRareSupport;
     }
 
-    // Hàm phụ trợ kiểm tra chứa item
-    private boolean chuaItem(int[] itemset, int item) {
-        for (int i : itemset) {
-            if (i == item) return true;
-        }
-        return false;
-    }
-
-    // TỐI ƯU 2: TÍNH SUPPORT THEO LÔ
-    public Map<String, Integer> tinhSupportTheoLo(List<int[]> itemsets) {
-        Map<String, Integer> ketQua = new HashMap<>();
-        
-        // Nhóm itemsets theo kích thước
-        Map<Integer, List<int[]>> nhomTheoKichThuoc = new HashMap<>();
-        for (int[] itemset : itemsets) {
-            int size = itemset.length;
-            nhomTheoKichThuoc.computeIfAbsent(size, k -> new ArrayList<>()).add(itemset);
-        }
-        
-        // Xử lý từng nhóm kích thước
-        for (Map.Entry<Integer, List<int[]>> entry : nhomTheoKichThuoc.entrySet()) {
-            int kichThuoc = entry.getKey();
-            List<int[]> cungKichThuoc = entry.getValue();
-            
-            if (kichThuoc == 1) {
-                // Xử lý nhanh cho 1-itemsets
-                for (int[] itemset : cungKichThuoc) {
-                    String key = Arrays.toString(itemset);
-                    ketQua.put(key, cacheSupportDon.getOrDefault(itemset[0], 0));
-                }
-            } else {
-                // Xử lý cho itemsets lớn hơn
-                for (int[] itemset : cungKichThuoc) {
-                    String key = Arrays.toString(itemset);
-                    ketQua.put(key, getSupportOfItemset(itemset));
-                }
-            }
-        }
-        
-        return ketQua;
-    }
-
-    // KHAI THÁC VỚI TỐI ƯU - SỬ DỤNG SUPPORT THEO LÔ
-    public List<Itemset> mineAllRareItemsetsWithPruning(String inputFile, int minRareSupport, int maxRareSupport) throws IOException {
-        List<Itemset> allRareItemsets = new ArrayList<>();
-        
-        Set<Integer> allItems = findAllItems(inputFile);
-        List<Integer> sortedItems = new ArrayList<>(allItems);
-        Collections.sort(sortedItems);
-        
-        System.out.println("Tổng số items trong dữ liệu: " + sortedItems.size());
-        
-        // Tìm rare 1-itemsets sử dụng cache
-        List<Integer> rareItems = new ArrayList<>();
-        List<int[]> itemsets1 = new ArrayList<>();
-        for (int item : sortedItems) {
-            itemsets1.add(new int[]{item});
-        }
-        
-        // TỐI ƯU 2: Tính support theo lô cho 1-itemsets
-        Map<String, Integer> supports1 = tinhSupportTheoLo(itemsets1);
-        
-        for (int item : sortedItems) {
-            String key = Arrays.toString(new int[]{item});
-            int support = supports1.get(key);
-            
-            if (support > minRareSupport && support <= maxRareSupport) {
-                rareItems.add(item);
-                Itemset is = new Itemset(new int[]{item});
-                is.support = support;
-                allRareItemsets.add(is);
-            }
-        }
-        
-        Collections.sort(rareItems);
-        System.out.println("Tìm thấy " + rareItems.size() + " rare 1-itemsets");
-        
-        // Khai thác từ 2-itemsets trở lên
-        List<List<Integer>> currentLevel = new ArrayList<>();
-        for (Integer item : rareItems) {
-            List<Integer> singleItem = new ArrayList<>();
-            singleItem.add(item);
-            currentLevel.add(singleItem);
-        }
-        
-        int k = 2;
-        while (!currentLevel.isEmpty() && k <= rareItems.size()) {
-            System.out.println("Đang tìm rare " + k + "-itemsets...");
-            
-            // Sinh candidates với cắt tỉa
-            List<List<Integer>> candidates = generateCandidatesWithPruning(currentLevel, k, minRareSupport, maxRareSupport);
-            List<List<Integer>> nextLevel = new ArrayList<>();
-            
-            System.out.println("Candidates sau cắt tỉa: " + candidates.size());
-            
-            // TỐI ƯU 2: Tính support theo lô cho candidates
-            List<int[]> candidateArrays = candidates.stream()
-                .map(list -> list.stream().mapToInt(i -> i).toArray())
-                .collect(Collectors.toList());
-            
-            Map<String, Integer> candidateSupports = tinhSupportTheoLo(candidateArrays);
-            
-            for (int i = 0; i < candidates.size(); i++) {
-                List<Integer> candidate = candidates.get(i);
-                String key = Arrays.toString(candidateArrays.get(i));
-                Integer support = candidateSupports.get(key);
-                
-                if (support != null && support > minRareSupport && support <= maxRareSupport) {
-                    Itemset is = new Itemset(candidateArrays.get(i));
-                    is.support = support;
-                    allRareItemsets.add(is);
-                    nextLevel.add(candidate);
-                }
-            }
-            
-            System.out.println("Tìm thấy " + nextLevel.size() + " rare " + k + "-itemsets");
-            currentLevel = nextLevel;
-            k++;
-        }
-        
-        return allRareItemsets;
-    }
-
-    // Các methods còn lại giữ nguyên từ version trước...
-    public int getTransactionCount() { return transactionCount; }
-    public int getMinRareSupport() { return minRareSupport; }
-    public int getMaxRareSupport() { return maxRareSupport; }
     public void setRareSupport(int minRareSupport, int maxRareSupport) {
         this.minRareSupport = minRareSupport;
         this.maxRareSupport = maxRareSupport;
     }
 
-    public void addTransaction(int[] transaction){ construct(null, root, transaction); }
+    public void addTransaction(int[] transaction){
+        construct(null, root, transaction);
+    }
 
     private void construct(RareItemsetTreeNode parentOfR, RareItemsetTreeNode r, int[] s) {
-        // Implementation giữ nguyên từ version trước
         int[] sr = r.itemset;
         
         if(same(s, sr)){
@@ -447,8 +213,7 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
                 return;
             }
 
-            if(ci.itemset.length > indexLastItemOfR && s.length > indexLastItemOfR && 
-               ci.itemset[indexLastItemOfR] == s[indexLastItemOfR]){
+            if(ci.itemset[indexLastItemOfR] == s[indexLastItemOfR]){
                 int[] ancestor = getLargestCommonAncestor(s, ci.itemset);
                 RareItemsetTreeNode newNode = new RareItemsetTreeNode(ancestor, ci.support+ 1);
                 r.childs.add(newNode);
@@ -474,8 +239,6 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         System.out.println(" Số lượng nút: " + nodeCount);
         System.out.println(" Tổng các mục trong tất cả các nút: " + totalItemCountInNodes + " trung bình mỗi nút :" + totalItemCountInNodes / ((double)nodeCount));
         System.out.println(" Định nghĩa rare: " + minRareSupport + " < Support(X) <= " + maxRareSupport);
-        System.out.println(" Cache 1-itemsets: " + cacheSupportDon.size());
-        System.out.println(" Cache tổng support: " + cacheManhMe.size());
         System.out.println("=====================================");
     }
 
@@ -489,8 +252,35 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         }
     }
 
+    @Override
+    public int getSupportOfItemset(int[] s) {
+        String key = java.util.Arrays.toString(s);
+        Integer cached = supportCache.get(key);
+        if (cached != null) {
+            return cached;
+        }
+        
+        int result = count(s, root);
+        
+        if (supportCache.size() < Integer.MAX_VALUE) {
+            supportCache.put(key, result);
+        }
+        
+        return result;
+    }
+
     private int count(int[] s, RareItemsetTreeNode root) {
-        return countTuuHoa(s, root);
+        int count = 0;
+        for(RareItemsetTreeNode ci : root.childs){
+            if(ci.itemset[0] <= s[0]){
+                if(includedIn(s, ci.itemset)){
+                    count += ci.support;
+                }else if(ci.itemset[ci.itemset.length -1] < s[s.length -1]){  
+                    count += count(s, ci);
+                }
+            }
+        }
+        return count;
     }
 
     private boolean includedIn(int[] itemset1, int[] itemset2) {
@@ -522,7 +312,7 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         int childrenSup = 0;
         for(RareItemsetTreeNode ci : t.childs){
             childrenSup += ci.support;
-            if(ci.itemset != null && ci.itemset.length > 0 && ci.itemset[0] <= s[0]){
+            if(ci.itemset[0] <= s[0]){
                 if(includedIn(s, ci.itemset)){
                     if(ci.childs.size() ==0){
                         hash.put(s, ci.support);
@@ -577,7 +367,72 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
             .collect(Collectors.toList());
     }
 
-    // Implementation các methods còn lại từ version trước...
+    // KHAI THÁC VỚI CẮT TỈA - THAY THẾ FUNCTION GỐC
+    public List<Itemset> mineAllRareItemsetsWithPruning(String inputFile, int minRareSupport, int maxRareSupport) throws IOException {
+        List<Itemset> allRareItemsets = new ArrayList<>();
+        
+        Set<Integer> allItems = findAllItems(inputFile);
+        List<Integer> sortedItems = new ArrayList<>(allItems);
+        Collections.sort(sortedItems);
+        
+        System.out.println("Tổng số items trong dữ liệu: " + sortedItems.size());
+        
+        // Tìm rare 1-itemsets
+        List<Integer> rareItems = new ArrayList<>();
+        for (int item : sortedItems) {
+            int[] itemset = new int[]{item};
+            int support = getSupportOfItemset(itemset);
+            
+            if (support > minRareSupport && support <= maxRareSupport) {
+                rareItems.add(item);
+                Itemset is = new Itemset(itemset);
+                is.support = support;
+                allRareItemsets.add(is);
+            }
+        }
+        
+        Collections.sort(rareItems);
+        System.out.println("Tìm thấy " + rareItems.size() + " rare 1-itemsets");
+        
+        // Khai thác từ 2-itemsets trở lên với cắt tỉa
+        List<List<Integer>> currentLevel = new ArrayList<>();
+        for (Integer item : rareItems) {
+            List<Integer> singleItem = new ArrayList<>();
+            singleItem.add(item);
+            currentLevel.add(singleItem);
+        }
+        
+        int k = 2;
+        while (!currentLevel.isEmpty() && k <= rareItems.size()) {
+            System.out.println("Đang tìm rare " + k + "-itemsets...");
+            
+            // SINH CANDIDATES VỚI CẮT TỈA
+            List<List<Integer>> candidates = generateCandidatesWithPruning(currentLevel, k, minRareSupport, maxRareSupport);
+            List<List<Integer>> nextLevel = new ArrayList<>();
+            
+            System.out.println("Candidates sau cắt tỉa: " + candidates.size());
+            
+            for (List<Integer> candidate : candidates) {
+                int[] itemsetArray = candidate.stream().mapToInt(i -> i).toArray();
+                int support = getSupportOfItemset(itemsetArray);
+                
+                if (support > minRareSupport && support <= maxRareSupport) {
+                    Itemset is = new Itemset(itemsetArray);
+                    is.support = support;
+                    allRareItemsets.add(is);
+                    nextLevel.add(candidate);
+                }
+            }
+            
+            System.out.println("Tìm thấy " + nextLevel.size() + " rare " + k + "-itemsets");
+            currentLevel = nextLevel;
+            k++;
+        }
+        
+        return allRareItemsets;
+    }
+
+    // SINH CANDIDATES VỚI CẮT TỈA
     private List<List<Integer>> generateCandidatesWithPruning(List<List<Integer>> previousLevel, int k, int minRareSupport, int maxRareSupport) {
         List<List<Integer>> candidates = new ArrayList<>();
         
@@ -586,6 +441,7 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
                 List<Integer> itemset1 = previousLevel.get(i);
                 List<Integer> itemset2 = previousLevel.get(j);
                 
+                // CẮT TỈA: Kiểm tra điều kiện join nhanh
                 if (!canJoinQuickCheck(itemset1, itemset2, k)) {
                     continue;
                 }
@@ -593,7 +449,9 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
                 List<Integer> candidate = joinItemsets(itemset1, itemset2, k);
                 if (candidate == null) continue;
                 
+                // CẮT TỈA: Kiểm tra tất cả subsets có rare không
                 if (hasRareSubsets(candidate, previousLevel)) {
+                    // CẮT TỈA: Ước tính upper bound support
                     int upperBound = estimateUpperBoundSupport(candidate);
                     if (upperBound > minRareSupport) {
                         candidates.add(candidate);
@@ -605,20 +463,24 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         return candidates;
     }
 
+    // KIỂM TRA ĐIỀU KIỆN JOIN NHANH
     private boolean canJoinQuickCheck(List<Integer> itemset1, List<Integer> itemset2, int k) {
         if (k == 2) {
             return !itemset1.get(0).equals(itemset2.get(0));
         }
         
+        // Kiểm tra k-2 items đầu có giống nhau không
         for (int i = 0; i < k - 2; i++) {
             if (!itemset1.get(i).equals(itemset2.get(i))) {
                 return false;
             }
         }
         
+        // Item cuối cùng phải khác nhau
         return !itemset1.get(k-2).equals(itemset2.get(k-2));
     }
 
+    // JOIN HAI ITEMSETS
     private List<Integer> joinItemsets(List<Integer> itemset1, List<Integer> itemset2, int k) {
         List<Integer> candidate = new ArrayList<>();
         
@@ -634,6 +496,7 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         return candidate;
     }
 
+    // KIỂM TRA TẤT CẢ SUBSETS CÓ RARE KHÔNG
     private boolean hasRareSubsets(List<Integer> candidate, List<List<Integer>> previousLevel) {
         for (int i = 0; i < candidate.size(); i++) {
             List<Integer> subset = new ArrayList<>(candidate);
@@ -654,6 +517,7 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         return true;
     }
 
+    // ƯỚC TÍNH UPPER BOUND SUPPORT
     private int estimateUpperBoundSupport(List<Integer> candidate) {
         int minSupport = Integer.MAX_VALUE;
         
@@ -672,13 +536,14 @@ public class RareItemsetTree extends AbstractRareItemsetTree implements Serializ
         return minSupport == Integer.MAX_VALUE ? 0 : minSupport;
     }
 
+    // TÌM TẤT CẢ ITEMS
     private Set<Integer> findAllItems(String inputFilePath) throws IOException {
         Set<Integer> items = new HashSet<>();
         
         BufferedReader reader = new BufferedReader(new FileReader(inputFilePath));
         String line;
         
-        reader.readLine();
+        reader.readLine(); // Skip header
         
         while ((line = reader.readLine()) != null) {
             if (line.isEmpty() || line.startsWith("#") || line.startsWith("%") || line.startsWith("@")) {

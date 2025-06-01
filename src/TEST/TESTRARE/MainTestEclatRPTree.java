@@ -75,6 +75,16 @@ public class MainTestEclatRPTree {
             maxsupPercent = scanner.nextDouble();
         }
 
+        // GỢI Ý THRESHOLD DỰA TRÊN DATASET
+        if (fileName.toLowerCase().contains("accidents")) {
+            System.out.println("\n*** GỢI Ý CHO ACCIDENTS.HUI ***");
+            System.out.println("Dataset này có items với support rất cao (30K+) và rất thấp (1-10)");
+            System.out.println("Để tìm rare patterns, thử:");
+            System.out.println("- MRT = 5-8%, MFT = 12-18%");
+            System.out.println("- Hoặc MRT = 1%, MFT = 10%");
+            System.out.println("*********************************");
+        }
+
         File releaseDir = new File("release");
         if (!releaseDir.exists()) {
             releaseDir.mkdirs();

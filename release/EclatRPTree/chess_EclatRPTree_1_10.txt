@@ -1,0 +1,57 @@
+=== ECLAT RPTREE - RARE PATTERN MINING ===
+File dữ liệu: chess.hui
+MinRareSupport (minsup): 1.0%
+MinFrequentSupport (maxsup): 10.0%
+Thời gian bắt đầu: Sun Jun 01 09:52:33 ICT 2025
+Output folder: release/EclatRPTree/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 3196
+Thời gian xây dựng: 191 ms
+Định nghĩa: 31 < Support(X) <= 320
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (31, 320]
+Định nghĩa: MRT < Support(X) <= MFT
+Thời gian xây dựng: 191 ms
+
+--- 1-itemsets HIẾM ---
+{61} #SUP: 47 (1.47%)
+{37} #SUP: 97 (3.04%)
+{8} #SUP: 120 (3.75%)
+{63} #SUP: 136 (4.26%)
+{35} #SUP: 156 (4.88%)
+{57} #SUP: 175 (5.48%)
+{67} #SUP: 175 (5.48%)
+{49} #SUP: 183 (5.73%)
+{33} #SUP: 224 (7.01%)
+{6} #SUP: 225 (7.04%)
+
+--- 2-itemsets HIẾM ---
+{49 67} #SUP: 35 (1.10%)
+{6 67} #SUP: 36 (1.13%)
+{33 67} #SUP: 37 (1.16%)
+{57 63} #SUP: 38 (1.19%)
+{61 67} #SUP: 47 (1.47%)
+{37 49} #SUP: 71 (2.22%)
+{6 35} #SUP: 74 (2.32%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 17
+Thuật toán: Eclat RPTree
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/EclatRPTree/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: Eclat RPTree
+Tổng thời gian thực thi: 00:03.647 (phút:giây.mili giây) [3647 ms]
+- Thời gian xây dựng: 191 ms
+Bộ nhớ tối đa sử dụng: 31.34 MB
+Thời gian kết thúc: Sun Jun 01 09:52:36 ICT 2025
+Output folder: release/EclatRPTree/
+Định nghĩa: MRT < Support(X) <= MFT

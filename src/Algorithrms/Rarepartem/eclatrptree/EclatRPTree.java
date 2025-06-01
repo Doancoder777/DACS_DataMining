@@ -69,62 +69,59 @@ public class EclatRPTree {
     
     private Map<Integer, BitSet> readVerticalDB(String input) throws IOException {
         Map<Integer, BitSet> verticalDB = new HashMap<>();
-        Map<Integer, Set<Integer>> transactionMap = new HashMap<>();
+        List<List<Integer>> transactions = new ArrayList<>();
         
         BufferedReader reader = new BufferedReader(new FileReader(input));
         String line;
         
-        // Skip header
-        line = reader.readLine();
+        // Skip header nếu có
+        reader.readLine();
         
         while ((line = reader.readLine()) != null) {
             if (line.isEmpty() || line.charAt(0) == '#' || line.charAt(0) == '%' || line.charAt(0) == '@') {
                 continue; 
             }
             
-            String[] parts = line.trim().split(" ");
-            if (parts.length < 2) {
-                continue;
+            // ĐỌC THEO TRANSACTION FORMAT GIỐNG CÁC THUẬT TOÁN KHÁC
+            String[] items = line.trim().split(" ");
+            List<Integer> transaction = new ArrayList<>();
+            
+            for (String itemString : items) {
+                if (!itemString.trim().isEmpty()) {
+                    try {
+                        int item = Integer.parseInt(itemString.trim());
+                        transaction.add(item);
+                    } catch (NumberFormatException e) {
+                        // Skip invalid items
+                        continue;
+                    }
+                }
             }
             
-            try {
-                // ĐỌC ĐÚNG ITEMSETTREE FORMAT: TID ITEM_ID
-                int tid = Integer.parseInt(parts[0]);
-                int item = Integer.parseInt(parts[1]);
-                
-                transactionMap.computeIfAbsent(tid, k -> new HashSet<>()).add(item);
-                
-            } catch (NumberFormatException e) {
-                continue;
+            if (!transaction.isEmpty()) {
+                transactions.add(transaction);
             }
         }
         reader.close();
         
-        transactionCount = transactionMap.size();
+        transactionCount = transactions.size();
         System.out.println("Số giao dịch đã đọc: " + transactionCount);
         
-        // Tạo vertical database
+        // Tìm tất cả items duy nhất
         Set<Integer> allItems = new HashSet<>();
-        for (Set<Integer> transaction : transactionMap.values()) {
+        for (List<Integer> transaction : transactions) {
             allItems.addAll(transaction);
         }
         
         System.out.println("Số items duy nhất: " + allItems.size());
         
-        // Tạo BitSet cho mỗi item
-        Map<Integer, Integer> tidMapping = new HashMap<>();
-        int tidIndex = 0;
-        for (Integer tid : transactionMap.keySet()) {
-            tidMapping.put(tid, tidIndex++);
-        }
-        
+        // Tạo vertical database
         for (Integer item : allItems) {
             BitSet bitset = new BitSet(transactionCount);
             
-            for (Map.Entry<Integer, Set<Integer>> entry : transactionMap.entrySet()) {
-                if (entry.getValue().contains(item)) {
-                    int mappedTid = tidMapping.get(entry.getKey());
-                    bitset.set(mappedTid);
+            for (int tid = 0; tid < transactions.size(); tid++) {
+                if (transactions.get(tid).contains(item)) {
+                    bitset.set(tid);
                 }
             }
             
