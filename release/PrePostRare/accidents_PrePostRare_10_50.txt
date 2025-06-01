@@ -2,7 +2,7 @@
 File dữ liệu: accidents.hui
 MinRareSupport (minsup): 10.0%
 MinFrequentSupport (maxsup): 50.0%
-Thời gian bắt đầu: Sun Jun 01 09:58:28 ICT 2025
+Thời gian bắt đầu: Sun Jun 01 11:37:36 ICT 2025
 Output folder: release/PrePostRare/
 
 ========== ĐỊNH NGHĨA ==========
@@ -201,8 +201,8 @@ Output folder: release/PrePostRare/
 
 ========== THÔNG TIN HIỆU SUẤT ==========
 Thuật toán: PrePost Rare
-Tổng thời gian thực thi: 00:10.407 (phút:giây.mili giây) [10407 ms]
-Bộ nhớ tối đa sử dụng: 571.44 MB
-Thời gian kết thúc: Sun Jun 01 09:58:38 ICT 2025
+Tổng thời gian thực thi: 00:09.254 (phút:giây.mili giây) [9254 ms]
+Bộ nhớ tối đa sử dụng: 395.49 MB
+Thời gian kết thúc: Sun Jun 01 11:37:45 ICT 2025
 Output folder: release/PrePostRare/
 Định nghĩa: MRT < Support(X) <= MFT
