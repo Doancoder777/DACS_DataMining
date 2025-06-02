@@ -10,7 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import Algorithrms.frequentpatterns.aprioriTID_inverse.AlgoAprioriTIDInverse;
+
+import Algorithrms.Rarepartem.aprioriTID_inverse.AlgoAprioriTIDInverse;
 import input.transaction_database_list_integers.TransactionDatabase;
 import patterns.itemset_array_integers_with_tids.Itemset;
 import patterns.itemset_array_integers_with_tids.Itemsets;

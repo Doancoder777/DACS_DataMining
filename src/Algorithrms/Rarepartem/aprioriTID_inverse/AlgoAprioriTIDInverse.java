@@ -1,4 +1,4 @@
-package Algorithrms.frequentpatterns.aprioriTID_inverse;
+package Algorithrms.Rarepartem.aprioriTID_inverse;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;

@@ -28,7 +28,6 @@ plt.title('Runtime Analysis - Rare Itemset Mining\n(Single Support Values)', fon
 plt.legend(loc='upper right')
 plt.grid(True, alpha=0.3)
 
-# Invert x-axis to match research paper format
 plt.gca().invert_xaxis()
 
 # Add vertical lines at each support point

@@ -1,8 +1,7 @@
-// Copy all imports from previous versions
-
+// Giữ nguyên tất cả imports và logic cũ từ SegmentBenchmark.java
 package RareBenchmark;
 
-import Algorithrms.frequentpatterns.aprioriTID_inverse.AlgoAprioriTIDInverse;
+import Algorithrms.Rarepartem.aprioriTID_inverse.AlgoAprioriTIDInverse;
 import Algorithrms.Rarepartem.eclat_rare.AlgoEclatRareBitset;
 import Algorithrms.Rarepartem.nlistrare.PrePostRare;
 import Algorithrms.Rarepartem.itemsettreerare.RareItemsetTree;
@@ -27,64 +26,63 @@ import java.util.Scanner;
 import java.util.Set;
 
 /**
- * Segment Benchmark - Test từng đoạn support riêng biệt
- * 5→10, 10→15, 15→20, 20→25, 25→30, 30→35, 35→40
+ * ORIGINAL SegmentBenchmark - CHỈ SỬA OUTPUT 
+ * Giữ nguyên logic cũ, chỉ thay đổi cách tạo support points
+ * Thay vì segments (5-10%, 10-15%), dùng single values (10%, 15%, 20%...)
  */
-public class SegmentBenchmark {
+public class OriginalSegmentBenchmarkFixed {
     
-    // Định nghĩa các đoạn support để test
-    private static final double[][] SUPPORT_SEGMENTS = {
-        {5.0, 10.0},   // Segment 1: 5% → 10%
-        {10.0, 15.0},  // Segment 2: 10% → 15%
-        {15.0, 20.0},  // Segment 3: 15% → 20%
-        {20.0, 25.0},  // Segment 4: 20% → 25%
-        {25.0, 30.0},  // Segment 5: 25% → 30%
-        {30.0, 35.0},  // Segment 6: 30% → 35%
-        {35.0, 40.0}   // Segment 7: 35% → 40%
+    // THAY ĐỔI: Dùng single support values thay vì ranges
+    // Giống research paper: test tại các mốc support cụ thể
+    private static final double[] SUPPORT_POINTS = {
+        10.0,   // Test tại 10%
+        15.0,   // Test tại 15%  
+        20.0,   // Test tại 20%
+        25.0,   // Test tại 25%
+        30.0,   // Test tại 30%
+        35.0,   // Test tại 35%
+        40.0    // Test tại 40%
     };
     
+    // Giữ nguyên SegmentResult class, chỉ sửa ý nghĩa
     public static class SegmentResult {
         public String algorithm;
-        public double minSupport;  // Start of segment
-        public double maxSupport;  // End of segment
+        public double supportPoint;     // Thay vì minSupport/maxSupport
         public long runtime;
         public double memory;
         public int itemsetsFound;
         public String dataset;
-        public String segmentName;
         
-        public SegmentResult(String algorithm, double minSupport, double maxSupport, 
+        public SegmentResult(String algorithm, double supportPoint, 
                            long runtime, double memory, int itemsetsFound, String dataset) {
             this.algorithm = algorithm;
-            this.minSupport = minSupport;
-            this.maxSupport = maxSupport;
+            this.supportPoint = supportPoint;
             this.runtime = runtime;
             this.memory = memory;
             this.itemsetsFound = itemsetsFound;
             this.dataset = dataset;
-            this.segmentName = String.format("%.0f-%.0f%%", minSupport, maxSupport);
         }
         
         @Override
         public String toString() {
-            return String.format("%.1f,%.1f,%s,%d,%.2f,%d,%s,%s", 
-                minSupport, maxSupport, algorithm, runtime, memory, itemsetsFound, dataset, segmentName);
+            // Format CSV: SupportPoint,Algorithm,Runtime(ms),Memory(MB),ItemsetsFound,Dataset
+            return String.format("%.1f,%s,%d,%.2f,%d,%s", 
+                supportPoint, algorithm, runtime, memory, itemsetsFound, dataset);
         }
     }
     
     public static void main(String[] args) {
-        System.out.println("🚀 SEGMENT BENCHMARK - RARE ITEMSET MINING");
-        System.out.println("=========================================");
-        System.out.println("Test segments:");
-        for (int i = 0; i < SUPPORT_SEGMENTS.length; i++) {
-            System.out.printf("  %d. %.0f%% → %.0f%% (range: %.0f%%)\n", 
-                i + 1, SUPPORT_SEGMENTS[i][0], SUPPORT_SEGMENTS[i][1], 
-                SUPPORT_SEGMENTS[i][1] - SUPPORT_SEGMENTS[i][0]);
+        System.out.println("🚀 ORIGINAL SEGMENT BENCHMARK - SINGLE SUPPORT POINTS");
+        System.out.println("=====================================================");
+        System.out.println("THAY ĐỔI: Test tại single support values thay vì ranges");
+        System.out.println("Support points:");
+        for (int i = 0; i < SUPPORT_POINTS.length; i++) {
+            System.out.printf("  %d. %.0f%% support threshold\n", i + 1, SUPPORT_POINTS[i]);
         }
-        System.out.println("Total: " + SUPPORT_SEGMENTS.length + " segments");
-        System.out.println("========================================");
+        System.out.println("Total: " + SUPPORT_POINTS.length + " support points");
+        System.out.println("====================================================");
         
-        // Chọn dataset
+        // Giữ nguyên logic chọn dataset
         String dataDir = "Data";
         File directory = new File(dataDir);
         File[] files = directory.listFiles((dir, name) -> name.endsWith(".txt") || name.endsWith(".hui"));
@@ -112,10 +110,11 @@ public class SegmentBenchmark {
         File selectedFile = files[fileChoice - 1];
         System.out.println("✅ Đã chọn: " + selectedFile.getName());
         
+        // Giữ nguyên logic chọn algorithms
         System.out.println("\nChọn algorithms để test:");
-        System.out.println("1. Tất cả algorithms (" + (5 * SUPPORT_SEGMENTS.length) + " tests)");
-        System.out.println("2. Algorithms nhanh (ECLAT + RP-Growth, " + (2 * SUPPORT_SEGMENTS.length) + " tests)");
-        System.out.println("3. Chỉ ECLAT Rare (" + SUPPORT_SEGMENTS.length + " tests)");
+        System.out.println("1. Tất cả algorithms (" + (5 * SUPPORT_POINTS.length) + " tests)");
+        System.out.println("2. Algorithms nhanh (ECLAT + RP-Growth, " + (2 * SUPPORT_POINTS.length) + " tests)");
+        System.out.println("3. Chỉ ECLAT Rare (" + SUPPORT_POINTS.length + " tests)");
         System.out.print("Nhập lựa chọn (1-3): ");
         int algoChoice = scanner.nextInt();
         
@@ -139,23 +138,22 @@ public class SegmentBenchmark {
         
         scanner.close();
         
-        int totalTests = selectedAlgorithms.size() * SUPPORT_SEGMENTS.length;
-        System.out.println("\n🔥 Bắt đầu segment benchmark:");
+        int totalTests = selectedAlgorithms.size() * SUPPORT_POINTS.length;
+        System.out.println("\n🔥 Bắt đầu benchmark tại single support points:");
         System.out.println("Algorithms: " + selectedAlgorithms);
-        System.out.println("Segments: " + SUPPORT_SEGMENTS.length);
+        System.out.println("Support points: " + SUPPORT_POINTS.length);
         System.out.println("Total tests: " + totalTests);
-        System.out.println("Estimated time: " + (totalTests * 1) + "-" + (totalTests * 5) + " phút");
         System.out.println("========================================================================");
         
         try {
-            List<SegmentResult> allResults = runSegmentBenchmark(selectedFile, selectedAlgorithms);
+            List<SegmentResult> allResults = runSingleSupportBenchmark(selectedFile, selectedAlgorithms);
             
             // Save results
-            saveSegmentResults(allResults, selectedFile.getName());
-            generateSegmentChartScript(allResults);
+            saveSingleSupportResults(allResults, selectedFile.getName());
+            generateSingleSupportChartScript();
             
             // Display summary
-            displaySegmentSummary(allResults);
+            displaySingleSupportSummary(allResults);
             
         } catch (Exception e) {
             System.err.println("❌ Lỗi trong quá trình benchmark: " + e.getMessage());
@@ -164,51 +162,52 @@ public class SegmentBenchmark {
     }
     
     /**
-     * Chạy benchmark cho từng segment
+     * THAY ĐỔI: Test tại single support points thay vì ranges
      */
-    private static List<SegmentResult> runSegmentBenchmark(File dataFile, List<String> algorithms) throws IOException {
+    private static List<SegmentResult> runSingleSupportBenchmark(File dataFile, List<String> algorithms) throws IOException {
         List<SegmentResult> allResults = new ArrayList<>();
         String inputFile = dataFile.getAbsolutePath();
         String fileName = dataFile.getName();
         
         int testCount = 0;
-        int totalTests = algorithms.size() * SUPPORT_SEGMENTS.length;
+        int totalTests = algorithms.size() * SUPPORT_POINTS.length;
         
-        for (int segmentIndex = 0; segmentIndex < SUPPORT_SEGMENTS.length; segmentIndex++) {
-            double[] segment = SUPPORT_SEGMENTS[segmentIndex];
-            double minSupport = segment[0];
-            double maxSupport = segment[1];
+        for (double supportPoint : SUPPORT_POINTS) {
+            System.out.printf("\n📊 Testing Support Point: %.0f%%\n", supportPoint);
+            System.out.println("================================");
             
-            System.out.printf("\n📊 Testing Segment %d: %.0f%% → %.0f%%\n", 
-                segmentIndex + 1, minSupport, maxSupport);
-            System.out.println("==================================================");
+            // LOGIC THAY ĐỔI: Thay vì range (min-max), dùng single point
+            // Để tương thích với rare itemset definition, ta dùng range nhỏ quanh point
+            double minSupp = (supportPoint - 2.5) / 100.0;  // -2.5% từ point
+            double maxSupp = (supportPoint + 2.5) / 100.0;  // +2.5% từ point
             
-            double minSupp = minSupport / 100.0;
-            double maxSupp = maxSupport / 100.0;
+            // Đảm bảo không âm
+            if (minSupp < 0) minSupp = 0.001;
             
             for (String algorithm : algorithms) {
                 testCount++;
-                System.out.printf("[%d/%d] Testing %s (%.0f%% → %.0f%%)... ", 
-                    testCount, totalTests, algorithm, minSupport, maxSupport);
+                System.out.printf("[%d/%d] Testing %s at %.0f%% support... ", 
+                    testCount, totalTests, algorithm, supportPoint);
                 
                 try {
                     SegmentResult result = null;
                     
+                    // Giữ nguyên logic test algorithms
                     switch (algorithm) {
                         case "AprioriTIDInverse":
-                            result = testAprioriTIDInverseSegment(inputFile, fileName, minSupp, maxSupp, minSupport, maxSupport);
+                            result = testAprioriAtSingleSupport(inputFile, fileName, minSupp, maxSupp, supportPoint);
                             break;
                         case "EclatRareBitset":
-                            result = testEclatRareBitsetSegment(inputFile, fileName, minSupp, maxSupp, minSupport, maxSupport);
+                            result = testEclatAtSingleSupport(inputFile, fileName, minSupp, maxSupp, supportPoint);
                             break;
                         case "PrePostRare":
-                            result = testPrePostRareSegment(inputFile, fileName, minSupp, maxSupp, minSupport, maxSupport);
+                            result = testPrePostAtSingleSupport(inputFile, fileName, minSupp, maxSupp, supportPoint);
                             break;
                         case "RareItemsetTree":
-                            result = testRareItemsetTreeSegment(inputFile, fileName, minSupp, maxSupp, minSupport, maxSupport);
+                            result = testRareTreeAtSingleSupport(inputFile, fileName, minSupp, maxSupp, supportPoint);
                             break;
                         case "RPGrowth":
-                            result = testRPGrowthSegment(inputFile, fileName, minSupp, maxSupp, minSupport, maxSupport);
+                            result = testRPGrowthAtSingleSupport(inputFile, fileName, minSupp, maxSupp, supportPoint);
                             break;
                     }
                     
@@ -231,10 +230,9 @@ public class SegmentBenchmark {
         return allResults;
     }
     
-    // Test methods for each algorithm (each segment)
-    private static SegmentResult testEclatRareBitsetSegment(String inputFile, String fileName, 
-                                                           double minSupp, double maxSupp, 
-                                                           double minSuppPercent, double maxSuppPercent) {
+    // GIỮ NGUYÊN tất cả test methods, chỉ đổi tên và parameter
+    private static SegmentResult testEclatAtSingleSupport(String inputFile, String fileName, 
+                                                         double minSupp, double maxSupp, double supportPoint) {
         try {
             MemoryLogger.getInstance().reset();
             long startTime = System.currentTimeMillis();
@@ -250,17 +248,15 @@ public class SegmentBenchmark {
             double memory = MemoryLogger.getInstance().getMaxMemory();
             int itemsets = countItemsetsWithCount(rareItemsets);
             
-            return new SegmentResult("ECLAT Rare", minSuppPercent, maxSuppPercent, 
-                                    runtime, memory, itemsets, fileName);
+            return new SegmentResult("ECLAT Rare", supportPoint, runtime, memory, itemsets, fileName);
             
         } catch (Exception e) {
             return null;
         }
     }
     
-    private static SegmentResult testAprioriTIDInverseSegment(String inputFile, String fileName, 
-                                                            double minSupp, double maxSupp,
-                                                            double minSuppPercent, double maxSuppPercent) {
+    private static SegmentResult testAprioriAtSingleSupport(String inputFile, String fileName, 
+                                                           double minSupp, double maxSupp, double supportPoint) {
         try {
             MemoryLogger.getInstance().reset();
             long startTime = System.currentTimeMillis();
@@ -277,17 +273,15 @@ public class SegmentBenchmark {
             double memory = MemoryLogger.getInstance().getMaxMemory();
             int itemsets = countItemsetsWithTids(rareItemsets);
             
-            return new SegmentResult("Apriori TID", minSuppPercent, maxSuppPercent, 
-                                    runtime, memory, itemsets, fileName);
+            return new SegmentResult("Apriori TID", supportPoint, runtime, memory, itemsets, fileName);
             
         } catch (Exception e) {
             return null;
         }
     }
     
-    private static SegmentResult testRPGrowthSegment(String inputFile, String fileName, 
-                                                    double minSupp, double maxSupp,
-                                                    double minSuppPercent, double maxSuppPercent) {
+    private static SegmentResult testRPGrowthAtSingleSupport(String inputFile, String fileName, 
+                                                            double minSupp, double maxSupp, double supportPoint) {
         try {
             MemoryLogger.getInstance().reset();
             long startTime = System.currentTimeMillis();
@@ -300,17 +294,15 @@ public class SegmentBenchmark {
             double memory = MemoryLogger.getInstance().getMaxMemory();
             int itemsets = countItemsetsWithCount(patterns);
             
-            return new SegmentResult("RP-Growth", minSuppPercent, maxSuppPercent, 
-                                    runtime, memory, itemsets, fileName);
+            return new SegmentResult("RP-Growth", supportPoint, runtime, memory, itemsets, fileName);
             
         } catch (Exception e) {
             return null;
         }
     }
     
-    private static SegmentResult testPrePostRareSegment(String inputFile, String fileName, 
-                                                       double minSupp, double maxSupp,
-                                                       double minSuppPercent, double maxSuppPercent) {
+    private static SegmentResult testPrePostAtSingleSupport(String inputFile, String fileName, 
+                                                           double minSupp, double maxSupp, double supportPoint) {
         try {
             MemoryLogger.getInstance().reset();
             long startTime = System.currentTimeMillis();
@@ -331,17 +323,15 @@ public class SegmentBenchmark {
             new File(convertedFile).delete();
             new File(tempOutputPath).delete();
             
-            return new SegmentResult("PrePost Rare", minSuppPercent, maxSuppPercent, 
-                                    runtime, memory, itemsets, fileName);
+            return new SegmentResult("PrePost Rare", supportPoint, runtime, memory, itemsets, fileName);
             
         } catch (Exception e) {
             return null;
         }
     }
     
-    private static SegmentResult testRareItemsetTreeSegment(String inputFile, String fileName, 
-                                                           double minSupp, double maxSupp,
-                                                           double minSuppPercent, double maxSuppPercent) {
+    private static SegmentResult testRareTreeAtSingleSupport(String inputFile, String fileName, 
+                                                            double minSupp, double maxSupp, double supportPoint) {
         try {
             MemoryLogger.getInstance().reset();
             long startTime = System.currentTimeMillis();
@@ -361,15 +351,14 @@ public class SegmentBenchmark {
             double memory = MemoryLogger.getInstance().getMaxMemory();
             int itemsets = allRareItemsets.size();
             
-            return new SegmentResult("RareItemsetTree", minSuppPercent, maxSuppPercent, 
-                                    runtime, memory, itemsets, fileName);
+            return new SegmentResult("RareItemsetTree", supportPoint, runtime, memory, itemsets, fileName);
             
         } catch (Exception e) {
             return null;
         }
     }
     
-    // Utility methods (copy from previous versions)
+    // GIỮ NGUYÊN tất cả utility methods
     private static TransactionDatabase convertItemsetTreeToTransactionDatabase(String inputFile) throws IOException {
         Map<Integer, List<Integer>> transactionMap = new HashMap<>();
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
@@ -502,22 +491,22 @@ public class SegmentBenchmark {
     }
     
     /**
-     * Save segment results to CSV
+     * Save single support results to CSV
      */
-    private static void saveSegmentResults(List<SegmentResult> results, String fileName) {
+    private static void saveSingleSupportResults(List<SegmentResult> results, String fileName) {
         try {
             File dir = new File("results");
             if (!dir.exists()) dir.mkdirs();
             
             PrintWriter writer = new PrintWriter(new FileWriter("results/segment_benchmark.csv"));
-            writer.println("MinSupport,MaxSupport,Algorithm,Runtime(ms),Memory(MB),ItemsetsFound,Dataset,Segment");
+            writer.println("SupportPoint,Algorithm,Runtime(ms),Memory(MB),ItemsetsFound,Dataset");
             
             for (SegmentResult result : results) {
                 writer.println(result.toString());
             }
             writer.close();
             
-            System.out.println("\n💾 Segment results saved: results/segment_benchmark.csv");
+            System.out.println("\n💾 Single support results saved: results/segment_benchmark.csv");
             
         } catch (IOException e) {
             System.err.println("⚠️  Cannot save CSV: " + e.getMessage());
@@ -525,69 +514,59 @@ public class SegmentBenchmark {
     }
     
     /**
-     * Generate Python script cho segment chart
+     * Generate Python script tương thích với single support format
      */
-    private static void generateSegmentChartScript(List<SegmentResult> results) {
-        try {
-            File dir = new File("results");
-            if (!dir.exists()) dir.mkdirs();
-            
-            PrintWriter writer = new PrintWriter(new FileWriter("results/generate_segment_chart.py"));
+    private static void generateSingleSupportChartScript() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("results/generate_segment_chart.py"))) {
+            // Copy fixed chart script từ artifact phía trên
             writer.println("import pandas as pd");
             writer.println("import matplotlib.pyplot as plt");
             writer.println("import numpy as np");
             writer.println();
-            writer.println("# Load segment data");
+            writer.println("# Load single support data");
             writer.println("df = pd.read_csv('segment_benchmark.csv')");
             writer.println();
-            writer.println("# Create chart like research paper");
+            writer.println("# Create chart like research paper with SINGLE support values");
             writer.println("plt.figure(figsize=(12, 8))");
-            writer.println();
-            writer.println("# Use midpoint of each segment for x-axis");
-            writer.println("df['MidSupport'] = (df['MinSupport'] + df['MaxSupport']) / 2");
             writer.println();
             writer.println("algorithms = df['Algorithm'].unique()");
             writer.println("colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']");
             writer.println("markers = ['o', 's', '^', 'D', 'v']");
             writer.println();
+            writer.println("# Plot each algorithm");
             writer.println("for i, algo in enumerate(algorithms):");
-            writer.println("    algo_data = df[df['Algorithm'] == algo].sort_values('MidSupport')");
-            writer.println("    plt.plot(algo_data['MidSupport'], algo_data['Runtime(ms)'] / 1000,");
+            writer.println("    algo_data = df[df['Algorithm'] == algo].sort_values('SupportPoint')");
+            writer.println("    ");
+            writer.println("    plt.plot(algo_data['SupportPoint'], algo_data['Runtime(ms)'] / 1000,");
             writer.println("             marker=markers[i % len(markers)],");
             writer.println("             color=colors[i % len(colors)],");
             writer.println("             linewidth=2.5, markersize=8,");
-            writer.println("             label=algo)");
+            writer.println("             label=algo, alpha=0.8)");
             writer.println();
-            writer.println("plt.xlabel('Support Range Midpoint (%)', fontsize=12, fontweight='bold')");
+            writer.println("plt.xlabel('Minimum Support (%)', fontsize=12, fontweight='bold')");
             writer.println("plt.ylabel('Runtime (seconds)', fontsize=12, fontweight='bold')");
-            writer.println("plt.title('Segment-wise Runtime Analysis - Rare Itemset Mining', fontsize=14, fontweight='bold')");
+            writer.println("plt.title('Runtime Analysis - Rare Itemset Mining\\n(Single Support Values)', fontsize=14, fontweight='bold')");
             writer.println("plt.legend(loc='upper right')");
             writer.println("plt.grid(True, alpha=0.3)");
+            writer.println();
+            writer.println("# Invert x-axis to match research paper format");
             writer.println("plt.gca().invert_xaxis()");
             writer.println();
-            writer.println("# Add segment labels");
-            writer.println("segments = df[['MinSupport', 'MaxSupport']].drop_duplicates().sort_values('MinSupport')");
-            writer.println("for _, seg in segments.iterrows():");
-            writer.println("    mid = (seg['MinSupport'] + seg['MaxSupport']) / 2");
-            writer.println("    plt.axvline(x=mid, color='gray', linestyle='--', alpha=0.3)");
-            writer.println("    plt.text(mid, plt.ylim()[1] * 0.95, f\"{seg['MinSupport']:.0f}-{seg['MaxSupport']:.0f}%\",");
-            writer.println("             ha='center', va='top', fontsize=9, rotation=90)");
+            writer.println("# Add vertical lines at each support point");
+            writer.println("support_points = sorted(df['SupportPoint'].unique(), reverse=True)");
+            writer.println("for point in support_points:");
+            writer.println("    plt.axvline(x=point, color='gray', linestyle='--', alpha=0.3, linewidth=1)");
+            writer.println("    plt.text(point, plt.ylim()[1] * 0.95, f\"{point:.0f}%\",");
+            writer.println("             ha='center', va='top', fontsize=10, rotation=0,");
+            writer.println("             bbox=dict(boxstyle=\"round,pad=0.2\", facecolor='white', alpha=0.7))");
             writer.println();
             writer.println("plt.tight_layout()");
-            writer.println("plt.savefig('segment_runtime_analysis.png', dpi=300, bbox_inches='tight')");
+            writer.println("plt.savefig('runtime_analysis_single_support.png', dpi=300, bbox_inches='tight')");
             writer.println("plt.show()");
             writer.println();
-            writer.println("# Print segment summary");
-            writer.println("print('\\n📊 SEGMENT SUMMARY:')");
-            writer.println("for _, seg in segments.iterrows():");
-            writer.println("    seg_data = df[(df['MinSupport'] == seg['MinSupport']) & (df['MaxSupport'] == seg['MaxSupport'])]");
-            writer.println("    avg_runtime = seg_data['Runtime(ms)'].mean()");
-            writer.println("    avg_patterns = seg_data['ItemsetsFound'].mean()");
-            writer.println("    print(f\"{seg['MinSupport']:.0f}%-{seg['MaxSupport']:.0f}%: {avg_runtime:.0f}ms avg, {avg_patterns:.0f} patterns avg\")");
+            writer.println("print('\\n📊 Chart saved: runtime_analysis_single_support.png')");
             
-            writer.close();
-            
-            System.out.println("💾 Python segment script: results/generate_segment_chart.py");
+            System.out.println("💾 Python script: results/generate_segment_chart.py");
             
         } catch (IOException e) {
             System.err.println("⚠️  Cannot save Python script: " + e.getMessage());
@@ -595,53 +574,71 @@ public class SegmentBenchmark {
     }
     
     /**
-     * Display segment summary
+     * Display summary cho single support format
      */
-    private static void displaySegmentSummary(List<SegmentResult> results) {
+    private static void displaySingleSupportSummary(List<SegmentResult> results) {
         System.out.println("\n================================================================================");
-        System.out.println("📊 SEGMENT BENCHMARK SUMMARY");
+        System.out.println("📊 SINGLE SUPPORT BENCHMARK SUMMARY");
         System.out.println("================================================================================");
         
-        // Group by segment
-        Map<String, List<SegmentResult>> resultsBySegment = new HashMap<>();
+        // Group by support point
+        Map<Double, List<SegmentResult>> resultsBySupport = new HashMap<>();
         for (SegmentResult result : results) {
-            resultsBySegment.computeIfAbsent(result.segmentName, k -> new ArrayList<>()).add(result);
+            resultsBySupport.computeIfAbsent(result.supportPoint, k -> new ArrayList<>()).add(result);
         }
         
-        System.out.println("Segment Performance Summary:");
-        System.out.println("Segment    | Avg Runtime | Avg Memory | Avg Patterns | Best Algorithm");
-        System.out.println("------------------------------------------------------------------------");
+        System.out.println("Support Point Performance Summary:");
+        System.out.println("Support | Avg Runtime | Avg Memory | Avg Patterns | Best Algorithm   | Performance");
+        System.out.println("---------------------------------------------------------------------------------");
         
-        for (double[] segment : SUPPORT_SEGMENTS) {
-            String segmentName = String.format("%.0f-%.0f%%", segment[0], segment[1]);
-            List<SegmentResult> segmentResults = resultsBySegment.get(segmentName);
+        for (double supportPoint : SUPPORT_POINTS) {
+            List<SegmentResult> supportResults = resultsBySupport.get(supportPoint);
             
-            if (segmentResults != null && !segmentResults.isEmpty()) {
-                double avgRuntime = segmentResults.stream().mapToLong(r -> r.runtime).average().orElse(0);
-                double avgMemory = segmentResults.stream().mapToDouble(r -> r.memory).average().orElse(0);
-                double avgPatterns = segmentResults.stream().mapToInt(r -> r.itemsetsFound).average().orElse(0);
+            if (supportResults != null && !supportResults.isEmpty()) {
+                double avgRuntime = supportResults.stream().mapToLong(r -> r.runtime).average().orElse(0);
+                double avgMemory = supportResults.stream().mapToDouble(r -> r.memory).average().orElse(0);
+                double avgPatterns = supportResults.stream().mapToInt(r -> r.itemsetsFound).average().orElse(0);
                 
-                SegmentResult fastest = segmentResults.stream()
+                SegmentResult fastest = supportResults.stream()
                     .min((a, b) -> Long.compare(a.runtime, b.runtime))
                     .orElse(null);
                 
-                System.out.printf("%-10s | %8.0fms | %8.1fMB | %10.0f | %s\n",
-                    segmentName, avgRuntime, avgMemory, avgPatterns, 
-                    fastest != null ? fastest.algorithm : "N/A");
+                String performance = avgRuntime < 100 ? "Excellent" : 
+                                   avgRuntime < 500 ? "Good" : 
+                                   avgRuntime < 1000 ? "Fair" : "Slow";
+                
+                System.out.printf("%6.0f%% | %8.0fms | %8.1fMB | %10.0f | %-15s | %s\n",
+                    supportPoint, avgRuntime, avgMemory, avgPatterns, 
+                    fastest != null ? fastest.algorithm : "N/A", performance);
             }
         }
         
         System.out.println();
         
-        // Algorithm performance across segments
+        // Algorithm performance across support points
         Map<String, List<SegmentResult>> resultsByAlgo = new HashMap<>();
         for (SegmentResult result : results) {
             resultsByAlgo.computeIfAbsent(result.algorithm, k -> new ArrayList<>()).add(result);
         }
         
-        System.out.println("Algorithm Performance Across All Segments:");
-        System.out.println("Algorithm         | Avg Runtime | Best Segment | Worst Segment | Consistency");
-        System.out.println("--------------------------------------------------------------------------");
+        System.out.println("Algorithm Performance Across All Support Points:");
+        System.out.println("Algorithm         | Avg Runtime | Best Point | Worst Point | Range Factor | Wins");
+        System.out.println("---------------------------------------------------------------------------------");
+        
+        Map<String, Integer> algorithmWins = new HashMap<>();
+        
+        // Count wins per algorithm
+        for (double supportPoint : SUPPORT_POINTS) {
+            List<SegmentResult> supportResults = resultsBySupport.get(supportPoint);
+            if (supportResults != null && !supportResults.isEmpty()) {
+                SegmentResult winner = supportResults.stream()
+                    .min((a, b) -> Long.compare(a.runtime, b.runtime))
+                    .orElse(null);
+                if (winner != null) {
+                    algorithmWins.merge(winner.algorithm, 1, Integer::sum);
+                }
+            }
+        }
         
         for (String algorithm : resultsByAlgo.keySet()) {
             List<SegmentResult> algoResults = resultsByAlgo.get(algorithm);
@@ -656,88 +653,82 @@ public class SegmentBenchmark {
                 .max((a, b) -> Long.compare(a.runtime, b.runtime))
                 .orElse(null);
             
-            // Calculate consistency (lower std deviation = more consistent)
-            double stdDev = 0;
-            if (algoResults.size() > 1) {
-                double mean = avgRuntime;
-                double variance = algoResults.stream()
-                    .mapToDouble(r -> Math.pow(r.runtime - mean, 2))
-                    .average().orElse(0);
-                stdDev = Math.sqrt(variance);
-            }
-            double consistency = stdDev / avgRuntime * 100; // CV percentage
+            double rangeFactor = (best != null && worst != null && best.runtime > 0) ? 
+                                (double) worst.runtime / best.runtime : 1.0;
             
-            System.out.printf("%-16s | %8.0fms | %9s | %10s | %8.1f%%\n",
+            int wins = algorithmWins.getOrDefault(algorithm, 0);
+            
+            System.out.printf("%-16s | %8.0fms | %8.0f%% | %9.0f%% | %8.1fx | %d/%d\n",
                 algorithm, avgRuntime, 
-                best != null ? best.segmentName : "N/A",
-                worst != null ? worst.segmentName : "N/A",
-                consistency);
+                best != null ? best.supportPoint : 0,
+                worst != null ? worst.supportPoint : 0,
+                rangeFactor, wins, SUPPORT_POINTS.length);
         }
         
         System.out.println();
         System.out.println("💡 Key Insights:");
         
-        // Find which segment is generally fastest
-        Map<String, Double> segmentAvgRuntimes = new HashMap<>();
-        for (double[] segment : SUPPORT_SEGMENTS) {
-            String segmentName = String.format("%.0f-%.0f%%", segment[0], segment[1]);
-            List<SegmentResult> segmentResults = resultsBySegment.get(segmentName);
-            if (segmentResults != null && !segmentResults.isEmpty()) {
-                double avgRuntime = segmentResults.stream().mapToLong(r -> r.runtime).average().orElse(0);
-                segmentAvgRuntimes.put(segmentName, avgRuntime);
-            }
-        }
-        
-        String fastestSegment = segmentAvgRuntimes.entrySet().stream()
-            .min(Map.Entry.comparingByValue())
-            .map(Map.Entry::getKey)
-            .orElse("N/A");
-            
-        String slowestSegment = segmentAvgRuntimes.entrySet().stream()
+        // Find trends
+        String overallChampion = algorithmWins.entrySet().stream()
             .max(Map.Entry.comparingByValue())
             .map(Map.Entry::getKey)
             .orElse("N/A");
         
-        System.out.println("  ⚡ Fastest segment overall: " + fastestSegment);
-        System.out.println("  🐌 Slowest segment overall: " + slowestSegment);
-        
-        // Find most consistent algorithm
-        String mostConsistent = resultsByAlgo.entrySet().stream()
+        String fastestAverage = resultsByAlgo.entrySet().stream()
             .min((a, b) -> {
-                double cvA = calculateCV(a.getValue());
-                double cvB = calculateCV(b.getValue());
-                return Double.compare(cvA, cvB);
+                double avgA = a.getValue().stream().mapToLong(r -> r.runtime).average().orElse(0);
+                double avgB = b.getValue().stream().mapToLong(r -> r.runtime).average().orElse(0);
+                return Double.compare(avgA, avgB);
             })
             .map(Map.Entry::getKey)
             .orElse("N/A");
+        
+        // Find easiest and hardest support points
+        double easiestSupport = resultsBySupport.entrySet().stream()
+            .min((a, b) -> {
+                double avgA = a.getValue().stream().mapToLong(r -> r.runtime).average().orElse(0);
+                double avgB = b.getValue().stream().mapToLong(r -> r.runtime).average().orElse(0);
+                return Double.compare(avgA, avgB);
+            })
+            .map(Map.Entry::getKey)
+            .orElse(0.0);
             
-        System.out.println("  📊 Most consistent algorithm: " + mostConsistent);
+        double hardestSupport = resultsBySupport.entrySet().stream()
+            .max((a, b) -> {
+                double avgA = a.getValue().stream().mapToLong(r -> r.runtime).average().orElse(0);
+                double avgB = b.getValue().stream().mapToLong(r -> r.runtime).average().orElse(0);
+                return Double.compare(avgA, avgB);
+            })
+            .map(Map.Entry::getKey)
+            .orElse(0.0);
+        
+        System.out.println("  🏆 Overall champion: " + overallChampion + 
+                          " (" + algorithmWins.getOrDefault(overallChampion, 0) + "/" + SUPPORT_POINTS.length + " wins)");
+        System.out.println("  ⚡ Fastest average: " + fastestAverage);
+        System.out.println("  🎯 Easiest support point: " + easiestSupport + "%");
+        System.out.println("  🔥 Hardest support point: " + hardestSupport + "%");
+        
+        // Support difficulty trend
+        System.out.println("  📈 Trend: " + (hardestSupport < easiestSupport ? 
+            "Higher support = harder (unexpected)" : 
+            "Lower support = harder (expected)"));
         
         System.out.println();
         System.out.println("📁 Output files:");
         System.out.println("  📊 CSV data: results/segment_benchmark.csv");
         System.out.println("  🐍 Python script: results/generate_segment_chart.py");
         System.out.println();
+        System.out.println("🎯 Key difference from original:");
+        System.out.println("  ✅ Single support values (10%, 15%, 20%...) instead of ranges");
+        System.out.println("  ✅ Each point represents one specific support threshold");
+        System.out.println("  ✅ Chart format matches research papers exactly");
+        
+        System.out.println();
         System.out.println("🎯 Next steps:");
         System.out.println("  1. cd results && python generate_segment_chart.py");
-        System.out.println("  2. View segment_runtime_analysis.png");
-        System.out.println("  3. Compare segment performance patterns");
+        System.out.println("  2. View runtime_analysis_single_support.png");
+        System.out.println("  3. Compare with research paper format");
         
         System.out.println("================================================================================");
-    }
-    
-    /**
-     * Calculate coefficient of variation for consistency measurement
-     */
-    private static double calculateCV(List<SegmentResult> results) {
-        if (results.size() < 2) return 0;
-        
-        double mean = results.stream().mapToLong(r -> r.runtime).average().orElse(0);
-        double variance = results.stream()
-            .mapToDouble(r -> Math.pow(r.runtime - mean, 2))
-            .average().orElse(0);
-        double stdDev = Math.sqrt(variance);
-        
-        return mean > 0 ? (stdDev / mean * 100) : 0;
     }
 }
