@@ -1,0 +1,64 @@
+=== PREPOST RARE - RARE ITEMSETS MINING ===
+File dữ liệu: accidents.hui
+MinRareSupport (minsup): 1.0%
+MinFrequentSupport (maxsup): 2.0%
+Thời gian bắt đầu: Mon Jun 02 16:53:22 ICT 2025
+Output folder: release/PrePostRare/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 340183
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (1.0%, 2.0%]
+Định nghĩa: MRT < Support(X) <= MFT
+
+--- 1-itemsets HIẾM ---
+180 #SUP: 3425 (1.01%)
+178 #SUP: 3543 (1.04%)
+143 #SUP: 3719 (1.09%)
+204 #SUP: 3897 (1.15%)
+147 #SUP: 3907 (1.15%)
+166 #SUP: 3954 (1.16%)
+87 #SUP: 3967 (1.17%)
+167 #SUP: 3988 (1.17%)
+76 #SUP: 4122 (1.21%)
+164 #SUP: 4137 (1.22%)
+163 #SUP: 4268 (1.25%)
+110 #SUP: 4390 (1.29%)
+139 #SUP: 4453 (1.31%)
+230 #SUP: 4546 (1.34%)
+155 #SUP: 4589 (1.35%)
+154 #SUP: 4594 (1.35%)
+179 #SUP: 4766 (1.40%)
+186 #SUP: 5525 (1.62%)
+113 #SUP: 5568 (1.64%)
+116 #SUP: 5628 (1.65%)
+32 #SUP: 5676 (1.67%)
+3 #SUP: 5899 (1.73%)
+114 #SUP: 6238 (1.83%)
+162 #SUP: 6268 (1.84%)
+79 #SUP: 6399 (1.88%)
+112 #SUP: 6402 (1.88%)
+40 #SUP: 6429 (1.89%)
+134 #SUP: 6477 (1.90%)
+104 #SUP: 6604 (1.94%)
+92 #SUP: 6606 (1.94%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 30
+Thuật toán: PrePost Rare
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/PrePostRare/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: PrePost Rare
+Tổng thời gian thực thi: 00:11.268 (phút:giây.mili giây) [11268 ms]
+Bộ nhớ tối đa sử dụng: 237.09 MB
+Thời gian kết thúc: Mon Jun 02 16:53:34 ICT 2025
+Output folder: release/PrePostRare/
+Định nghĩa: MRT < Support(X) <= MFT

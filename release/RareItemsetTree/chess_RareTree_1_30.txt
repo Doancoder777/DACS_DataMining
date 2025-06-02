@@ -1,0 +1,439 @@
+=== RARE ITEMSET TREE - RARE PATTERN MINING ===
+File dữ liệu: chess.hui
+MinRareSupport (minsup): 1.0%
+MinFrequentSupport (maxsup): 30.0%
+Thời gian bắt đầu: Mon Jun 02 17:06:53 ICT 2025
+Output folder: release/RareItemsetTree/
+Tối ưu: Transaction pruning + Candidate pruning + Support caching
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+- Định nghĩa: 31 < Support(X) <= 959
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 3196
+Thời gian xây dựng cây: 107 ms
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (31, 959]
+Định nghĩa: MRT < Support(X) <= MFT
+Thời gian xây dựng cây: 107 ms
+Thời gian khai thác: 223 ms
+Tối ưu: Transaction pruning + Candidate pruning + Support caching
+
+--- 2-itemsets HIẾM ---
+10 47  #SUP: 32 (1.00%)
+18 35  #SUP: 32 (1.00%)
+
+--- 3-itemsets HIẾM ---
+10 18 75  #SUP: 32 (1.00%)
+
+--- 2-itemsets HIẾM ---
+43 49  #SUP: 33 (1.03%)
+
+--- 3-itemsets HIẾM ---
+6 35 65  #SUP: 33 (1.03%)
+
+--- 2-itemsets HIẾM ---
+6 10  #SUP: 34 (1.06%)
+8 75  #SUP: 34 (1.06%)
+45 57  #SUP: 34 (1.06%)
+
+--- 3-itemsets HIẾM ---
+10 43 65  #SUP: 34 (1.06%)
+18 43 65  #SUP: 34 (1.06%)
+35 43 65  #SUP: 34 (1.06%)
+
+--- 2-itemsets HIẾM ---
+10 35  #SUP: 35 (1.10%)
+49 67  #SUP: 35 (1.10%)
+
+--- 3-itemsets HIẾM ---
+4 18 32  #SUP: 35 (1.10%)
+49 67 73  #SUP: 35 (1.10%)
+
+--- 2-itemsets HIẾM ---
+6 67  #SUP: 36 (1.13%)
+32 67  #SUP: 36 (1.13%)
+
+--- 3-itemsets HIẾM ---
+6 67 73  #SUP: 36 (1.13%)
+18 47 73  #SUP: 36 (1.13%)
+32 67 73  #SUP: 36 (1.13%)
+
+--- 4-itemsets HIẾM ---
+32 43 45 47  #SUP: 36 (1.13%)
+
+--- 5-itemsets HIẾM ---
+32 43 45 47 65  #SUP: 36 (1.13%)
+
+--- 2-itemsets HIẾM ---
+18 57  #SUP: 37 (1.16%)
+33 67  #SUP: 37 (1.16%)
+63 73  #SUP: 37 (1.16%)
+
+--- 3-itemsets HIẾM ---
+4 18 43  #SUP: 37 (1.16%)
+4 32 73  #SUP: 37 (1.16%)
+18 32 43  #SUP: 37 (1.16%)
+33 67 73  #SUP: 37 (1.16%)
+
+--- 2-itemsets HIẾM ---
+26 43  #SUP: 38 (1.19%)
+57 63  #SUP: 38 (1.19%)
+
+--- 3-itemsets HIẾM ---
+4 43 73  #SUP: 38 (1.19%)
+6 43 45  #SUP: 38 (1.19%)
+6 45 65  #SUP: 38 (1.19%)
+45 47 75  #SUP: 38 (1.19%)
+
+--- 4-itemsets HIẾM ---
+6 43 45 65  #SUP: 38 (1.19%)
+
+--- 5-itemsets HIẾM ---
+32 43 45 65 73  #SUP: 38 (1.19%)
+
+--- 2-itemsets HIẾM ---
+4 67  #SUP: 39 (1.22%)
+35 75  #SUP: 39 (1.22%)
+
+--- 3-itemsets HIẾM ---
+4 67 73  #SUP: 39 (1.22%)
+
+--- 2-itemsets HIẾM ---
+4 57  #SUP: 40 (1.25%)
+18 65  #SUP: 40 (1.25%)
+33 47  #SUP: 40 (1.25%)
+
+--- 3-itemsets HIẾM ---
+6 32 43  #SUP: 40 (1.25%)
+6 32 65  #SUP: 40 (1.25%)
+6 35 73  #SUP: 40 (1.25%)
+35 43 73  #SUP: 40 (1.25%)
+
+--- 4-itemsets HIẾM ---
+6 32 43 65  #SUP: 40 (1.25%)
+
+--- 2-itemsets HIẾM ---
+65 67  #SUP: 41 (1.28%)
+
+--- 3-itemsets HIẾM ---
+65 67 73  #SUP: 41 (1.28%)
+
+--- 4-itemsets HIẾM ---
+43 45 47 73  #SUP: 41 (1.28%)
+
+--- 5-itemsets HIẾM ---
+43 45 47 65 73  #SUP: 41 (1.28%)
+
+--- 2-itemsets HIẾM ---
+8 18  #SUP: 42 (1.31%)
+10 32  #SUP: 42 (1.31%)
+57 65  #SUP: 42 (1.31%)
+
+--- 4-itemsets HIẾM ---
+6 43 65 73  #SUP: 42 (1.31%)
+32 43 45 73  #SUP: 42 (1.31%)
+
+--- 2-itemsets HIẾM ---
+6 32  #SUP: 44 (1.38%)
+35 43  #SUP: 44 (1.38%)
+47 67  #SUP: 44 (1.38%)
+
+--- 3-itemsets HIẾM ---
+47 67 73  #SUP: 44 (1.38%)
+
+--- 2-itemsets HIẾM ---
+4 8  #SUP: 46 (1.44%)
+18 33  #SUP: 46 (1.44%)
+45 63  #SUP: 46 (1.44%)
+
+--- 3-itemsets HIẾM ---
+4 33 73  #SUP: 46 (1.44%)
+4 65 73  #SUP: 46 (1.44%)
+32 47 73  #SUP: 46 (1.44%)
+
+--- 1-itemsets HIẾM ---
+61  #SUP: 47 (1.47%)
+
+--- 2-itemsets HIẾM ---
+61 67  #SUP: 47 (1.47%)
+61 73  #SUP: 47 (1.47%)
+
+--- 3-itemsets HIẾM ---
+61 67 73  #SUP: 47 (1.47%)
+26 49 73  #SUP: 48 (1.50%)
+6 43 73  #SUP: 49 (1.53%)
+32 45 47  #SUP: 49 (1.53%)
+
+--- 4-itemsets HIẾM ---
+32 43 47 65  #SUP: 49 (1.53%)
+32 45 47 65  #SUP: 49 (1.53%)
+
+--- 3-itemsets HIẾM ---
+35 65 73  #SUP: 50 (1.56%)
+
+--- 2-itemsets HIẾM ---
+4 47  #SUP: 52 (1.63%)
+10 57  #SUP: 53 (1.66%)
+
+--- 3-itemsets HIẾM ---
+45 47 73  #SUP: 53 (1.66%)
+
+--- 4-itemsets HIẾM ---
+45 47 65 73  #SUP: 53 (1.66%)
+
+--- 2-itemsets HIẾM ---
+4 10  #SUP: 54 (1.69%)
+4 43  #SUP: 54 (1.69%)
+6 47  #SUP: 54 (1.69%)
+10 43  #SUP: 54 (1.69%)
+
+--- 3-itemsets HIẾM ---
+6 45 47  #SUP: 54 (1.69%)
+32 43 47  #SUP: 55 (1.72%)
+
+--- 2-itemsets HIẾM ---
+10 65  #SUP: 56 (1.75%)
+35 65  #SUP: 56 (1.75%)
+
+--- 3-itemsets HIẾM ---
+43 45 47  #SUP: 57 (1.78%)
+
+--- 4-itemsets HIẾM ---
+43 45 47 65  #SUP: 57 (1.78%)
+
+--- 2-itemsets HIẾM ---
+6 75  #SUP: 58 (1.81%)
+
+--- 3-itemsets HIẾM ---
+18 32 73  #SUP: 58 (1.81%)
+4 18 73  #SUP: 59 (1.85%)
+6 65 73  #SUP: 59 (1.85%)
+
+--- 4-itemsets HIẾM ---
+32 45 65 73  #SUP: 59 (1.85%)
+
+--- 2-itemsets HIẾM ---
+10 73  #SUP: 62 (1.94%)
+
+--- 3-itemsets HIẾM ---
+32 47 65  #SUP: 62 (1.94%)
+
+--- 2-itemsets HIẾM ---
+10 45  #SUP: 63 (1.97%)
+
+--- 3-itemsets HIẾM ---
+18 43 73  #SUP: 63 (1.97%)
+6 43 65  #SUP: 66 (2.07%)
+
+--- 4-itemsets HIẾM ---
+43 45 65 73  #SUP: 66 (2.07%)
+32 43 65 73  #SUP: 67 (2.10%)
+43 47 65 73  #SUP: 67 (2.10%)
+
+--- 2-itemsets HIẾM ---
+49 73  #SUP: 69 (2.16%)
+
+--- 3-itemsets HIẾM ---
+32 45 73  #SUP: 69 (2.16%)
+
+--- 2-itemsets HIẾM ---
+63 75  #SUP: 70 (2.19%)
+4 32  #SUP: 71 (2.22%)
+37 49  #SUP: 71 (2.22%)
+26 49  #SUP: 72 (2.25%)
+
+--- 3-itemsets HIẾM ---
+43 45 73  #SUP: 72 (2.25%)
+
+--- 2-itemsets HIẾM ---
+6 43  #SUP: 73 (2.28%)
+43 67  #SUP: 73 (2.28%)
+
+--- 3-itemsets HIẾM ---
+43 67 73  #SUP: 73 (2.28%)
+
+--- 2-itemsets HIẾM ---
+6 35  #SUP: 74 (2.32%)
+6 45  #SUP: 74 (2.32%)
+
+--- 4-itemsets HIẾM ---
+32 43 45 65  #SUP: 74 (2.32%)
+
+--- 2-itemsets HIẾM ---
+26 45  #SUP: 76 (2.38%)
+35 73  #SUP: 76 (2.38%)
+
+--- 3-itemsets HIẾM ---
+45 47 65  #SUP: 76 (2.38%)
+32 43 45  #SUP: 78 (2.44%)
+
+--- 2-itemsets HIẾM ---
+4 65  #SUP: 79 (2.47%)
+26 47  #SUP: 80 (2.50%)
+6 65  #SUP: 83 (2.60%)
+6 73  #SUP: 84 (2.63%)
+33 73  #SUP: 86 (2.69%)
+
+--- 3-itemsets HIẾM ---
+47 65 73  #SUP: 86 (2.69%)
+
+--- 2-itemsets HIẾM ---
+26 73  #SUP: 87 (2.72%)
+
+--- 3-itemsets HIẾM ---
+43 47 73  #SUP: 92 (2.88%)
+
+--- 2-itemsets HIẾM ---
+26 75  #SUP: 94 (2.94%)
+18 43  #SUP: 96 (3.00%)
+
+--- 1-itemsets HIẾM ---
+37  #SUP: 97 (3.04%)
+
+--- 2-itemsets HIẾM ---
+32 47  #SUP: 100 (3.13%)
+10 75  #SUP: 101 (3.16%)
+
+--- 3-itemsets HIẾM ---
+45 65 73  #SUP: 101 (3.16%)
+
+--- 2-itemsets HIẾM ---
+10 18  #SUP: 102 (3.19%)
+18 32  #SUP: 103 (3.22%)
+
+--- 3-itemsets HIẾM ---
+32 65 73  #SUP: 106 (3.32%)
+43 45 65  #SUP: 107 (3.35%)
+
+--- 2-itemsets HIẾM ---
+57 75  #SUP: 108 (3.38%)
+
+--- 3-itemsets HIẾM ---
+32 43 73  #SUP: 109 (3.41%)
+
+--- 2-itemsets HIẾM ---
+45 73  #SUP: 113 (3.54%)
+
+--- 3-itemsets HIẾM ---
+43 47 65  #SUP: 114 (3.57%)
+32 45 65  #SUP: 117 (3.66%)
+
+--- 1-itemsets HIẾM ---
+8  #SUP: 120 (3.75%)
+
+--- 2-itemsets HIẾM ---
+4 33  #SUP: 120 (3.75%)
+18 47  #SUP: 120 (3.75%)
+43 45  #SUP: 120 (3.75%)
+4 18  #SUP: 129 (4.04%)
+
+--- 1-itemsets HIẾM ---
+63  #SUP: 136 (4.26%)
+
+--- 2-itemsets HIẾM ---
+32 45  #SUP: 136 (4.26%)
+45 47  #SUP: 142 (4.44%)
+
+--- 3-itemsets HIẾM ---
+32 43 65  #SUP: 143 (4.47%)
+
+--- 2-itemsets HIẾM ---
+43 47  #SUP: 146 (4.57%)
+47 65  #SUP: 154 (4.82%)
+
+--- 1-itemsets HIẾM ---
+35  #SUP: 156 (4.88%)
+
+--- 2-itemsets HIẾM ---
+47 75  #SUP: 158 (4.94%)
+18 75  #SUP: 164 (5.13%)
+45 65  #SUP: 164 (5.13%)
+
+--- 1-itemsets HIẾM ---
+57  #SUP: 175 (5.48%)
+67  #SUP: 175 (5.48%)
+
+--- 2-itemsets HIẾM ---
+67 73  #SUP: 175 (5.48%)
+18 73  #SUP: 179 (5.60%)
+
+--- 1-itemsets HIẾM ---
+49  #SUP: 183 (5.73%)
+
+--- 2-itemsets HIẾM ---
+47 73  #SUP: 186 (5.82%)
+4 73  #SUP: 187 (5.85%)
+32 43  #SUP: 197 (6.16%)
+
+--- 3-itemsets HIẾM ---
+43 65 73  #SUP: 201 (6.29%)
+
+--- 2-itemsets HIẾM ---
+45 75  #SUP: 203 (6.35%)
+32 65  #SUP: 220 (6.88%)
+
+--- 1-itemsets HIẾM ---
+33  #SUP: 224 (7.01%)
+6  #SUP: 225 (7.04%)
+
+--- 2-itemsets HIẾM ---
+32 73  #SUP: 230 (7.20%)
+43 65  #SUP: 315 (9.86%)
+
+--- 1-itemsets HIẾM ---
+10  #SUP: 322 (10.08%)
+
+--- 2-itemsets HIẾM ---
+43 73  #SUP: 330 (10.33%)
+
+--- 1-itemsets HIẾM ---
+26  #SUP: 336 (10.51%)
+
+--- 2-itemsets HIẾM ---
+65 73  #SUP: 353 (11.05%)
+
+--- 1-itemsets HIẾM ---
+4  #SUP: 357 (11.17%)
+32  #SUP: 446 (13.95%)
+43  #SUP: 482 (15.08%)
+65  #SUP: 565 (17.68%)
+45  #SUP: 584 (18.27%)
+47  #SUP: 640 (20.03%)
+18  #SUP: 696 (21.78%)
+75  #SUP: 789 (24.69%)
+73  #SUP: 851 (26.63%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 187
+Thuật toán: Rare Itemset Tree
+Tối ưu áp dụng:
+- Transaction pruning: Loại bỏ items không rare
+- Candidate pruning: Kiểm tra subset conditions
+- Support upper bound estimation
+- Support value caching
+- Quick join conditions checking
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/RareItemsetTree/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: Rare Itemset Tree
+Tổng thời gian thực thi: 00:03.963 (phút:giây.mili giây) [3963 ms]
+- Thời gian xây dựng cây: 107 ms
+- Thời gian khai thác: 223 ms
+Bộ nhớ tối đa sử dụng: 62.61 MB
+Thời gian kết thúc: Mon Jun 02 17:06:57 ICT 2025
+Output folder: release/RareItemsetTree/
+Định nghĩa: MRT < Support(X) <= MFT
+
+========== TỐI ƯU ÁP DỤNG ==========
+1. Transaction Pruning: Loại bỏ transactions chỉ chứa items không rare
+2. Candidate Pruning: Kiểm tra subset conditions trước khi tính support
+3. Support Upper Bound: Ước tính upper bound để skip candidates
+4. Support Caching: Cache kết quả tính support để tái sử dụng
+5. Quick Join Check: Kiểm tra điều kiện join nhanh
+6. Early Termination: Dừng sớm khi không còn candidates
