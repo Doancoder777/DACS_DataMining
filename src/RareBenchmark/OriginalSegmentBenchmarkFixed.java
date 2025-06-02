@@ -24,10 +24,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-/**
- * FIXED: Dependency issues resolved
- * Single support point benchmark compatible with all algorithm implementations
- */
 public class OriginalSegmentBenchmarkFixed {
     
     private static final double[] SUPPORT_POINTS = {
@@ -188,7 +184,7 @@ public class OriginalSegmentBenchmarkFixed {
         return allResults;
     }
     
-    // FIXED: Sử dụng direct access thay vì abstract class
+    
     private static SegmentResult testPrePostAtSingleSupport(String inputFile, String fileName, 
                                                            double minSupp, double maxSupp, double supportPoint) {
         try {
@@ -206,7 +202,7 @@ public class OriginalSegmentBenchmarkFixed {
             MemoryLogger.getInstance().checkMemory();
             double memory = MemoryLogger.getInstance().getMaxMemory();
             
-            // FIXED: Sử dụng getter method thay vì direct field access
+            
             int itemsets = algo.getOutputCount();
             
             new File(convertedFile).delete();
@@ -318,7 +314,7 @@ public class OriginalSegmentBenchmarkFixed {
         }
     }
     
-    // Utility methods
+    
     private static TransactionDatabase convertItemsetTreeToTransactionDatabase(String inputFile) throws IOException {
         Map<Integer, List<Integer>> transactionMap = new HashMap<>();
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));

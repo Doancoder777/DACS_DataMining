@@ -12,8 +12,15 @@ import java.util.Map.Entry;
 import Algorithrms.Rarepartem.nlistrare.AbstractPrePostAlgorithm;
 import tools.MemoryLogger;
 
+/**
+ * PrePost Rare Algorithm Implementation
+ * Thuật toán khai phá rare itemsets sử dụng Pre/Post order indexing
+ */
 public class PrePostRare extends AbstractPrePostAlgorithm {
     
+    /**
+     * Main algorithm execution
+     */
     @Override
     public void runAlgorithm(String filename, double minsup, double maxsup, String output)
             throws IOException {
@@ -57,6 +64,9 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         finalizeExecution();
     }
     
+    /**
+     * Tìm rare items từ database
+     */
     @Override
     protected void findTargetItems(String filename, double minsup, double maxsup) throws IOException {
         numOfTrans = 0;
@@ -106,6 +116,9 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         Arrays.sort(item, comp);
     }
     
+    /**
+     * Xây dựng PPC Tree với pre/post order indexing
+     */
     @Override
     protected void buildTree(String filename) throws IOException {
         ppcRoot.label = -1;
@@ -143,6 +156,9 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         buildHeaderTableAndIndexing();
     }
     
+    /**
+     * Insert transaction vào PPC Tree
+     */
     private void insertTransactionIntoTree(Item[] transaction, int tLen) {
         int curPos = 0;
         PPCTreeNode curRoot = ppcRoot;
@@ -191,6 +207,9 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         }
     }
     
+    /**
+     * Xây dựng header table và pre/post order indexing
+     */
     private void buildHeaderTableAndIndexing() {
         headTable = new PPCTreeNode[numOfRareItem];
         headTableLen = new int[numOfRareItem];
@@ -244,6 +263,9 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         }
     }
     
+    /**
+     * Khởi tạo NodeList Tree từ PPC Tree
+     */
     @Override
     protected void initializeTree() {
         NodeListTreeNode lastChild = null;
@@ -282,6 +304,9 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         }
     }
     
+    /**
+     * Two-pointer intersection algorithm
+     */
     private NodeListTreeNode isRareItemSetFreq(NodeListTreeNode ni, NodeListTreeNode nj,
             int level, NodeListTreeNode lastChild, IntegerByRef sameCountRef) {
         
@@ -351,6 +376,9 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         return lastChild;
     }
     
+    /**
+     * Main traversal function
+     */
     @Override
     protected void traverse(NodeListTreeNode curNode, NodeListTreeNode curRoot,
             int level, int sameCount) throws IOException {
@@ -401,6 +429,9 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         resultLen--;
     }
     
+    /**
+     * Ghi rare itemsets ra file
+     */
     private void writeRareItemsetsToFile(NodeListTreeNode curNode, int sameCount)
             throws IOException {
         StringBuilder buffer = new StringBuilder();
@@ -442,6 +473,9 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         writer.write(buffer.toString());
     }
     
+    /**
+     * Override printStats để hiển thị thông tin specific cho rare mining
+     */
     @Override
     public void printStats() {
         System.out.println("========== PREPOST RARE - STATS ============");
@@ -454,5 +488,13 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         System.out.println(" Total time: " + (endTimestamp - startTimestamp) + " ms");
         System.out.println(" Definition: MRT < Support(X) <= MFT");
         System.out.println("=====================================================");
+    }
+    
+    /**
+     * Getter method để access outputCount từ external classes
+     * FIXED: Added for benchmark compatibility
+     */
+    public int getOutputCount() {
+        return outputCount;
     }
 }
