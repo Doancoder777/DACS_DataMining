@@ -1,0 +1,22 @@
+SupportPoint,Algorithm,Runtime(ms),Memory(MB),PatternsFound,Dataset
+10.0,PrePost Mixed,8969,1581.00,334,accidents.hui
+10.0,ECLAT Mixed,4479,125.31,334,accidents.hui
+10.0,RP-Growth Mixed,63399,1023.41,334,accidents.hui
+15.0,PrePost Mixed,9068,1694.62,172,accidents.hui
+15.0,ECLAT Mixed,3809,1138.45,172,accidents.hui
+15.0,RP-Growth Mixed,34808,2157.00,172,accidents.hui
+20.0,PrePost Mixed,7140,2731.00,39,accidents.hui
+20.0,ECLAT Mixed,3274,1958.15,39,accidents.hui
+20.0,RP-Growth Mixed,23963,1958.15,39,accidents.hui
+25.0,PrePost Mixed,6650,534.99,13,accidents.hui
+25.0,ECLAT Mixed,3426,687.35,13,accidents.hui
+25.0,RP-Growth Mixed,16245,687.35,13,accidents.hui
+30.0,PrePost Mixed,6335,535.76,1,accidents.hui
+30.0,ECLAT Mixed,3360,332.68,1,accidents.hui
+30.0,RP-Growth Mixed,12959,871.45,1,accidents.hui
+35.0,PrePost Mixed,6709,235.25,1,accidents.hui
+35.0,ECLAT Mixed,3246,289.67,1,accidents.hui
+35.0,RP-Growth Mixed,11619,665.26,1,accidents.hui
+40.0,PrePost Mixed,6697,596.04,6,accidents.hui
+40.0,ECLAT Mixed,3149,600.16,6,accidents.hui
+40.0,RP-Growth Mixed,9865,600.16,6,accidents.hui

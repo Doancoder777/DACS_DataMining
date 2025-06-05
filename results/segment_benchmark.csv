@@ -1,36 +1,22 @@
-SupportPoint,Algorithm,Runtime(ms),Memory(MB),ItemsetsFound,Dataset
-10.0,Apriori TID,198,35.29,3,chess.hui
-10.0,ECLAT Rare,77,28.54,3,chess.hui
-10.0,PrePost Rare,226,153.62,3,chess.hui
-10.0,RareItemsetTree,182,75.57,3,chess.hui
-10.0,RP-Growth,163,75.57,3,chess.hui
-15.0,Apriori TID,42,55.13,2,chess.hui
-15.0,ECLAT Rare,35,97.13,2,chess.hui
-15.0,PrePost Rare,108,71.30,2,chess.hui
-15.0,RareItemsetTree,112,182.30,2,chess.hui
-15.0,RP-Growth,79,182.30,2,chess.hui
-20.0,Apriori TID,40,121.58,4,chess.hui
-20.0,ECLAT Rare,33,12.00,4,chess.hui
-20.0,PrePost Rare,84,135.00,4,chess.hui
-20.0,RareItemsetTree,111,53.00,4,chess.hui
-20.0,RP-Growth,58,134.00,4,chess.hui
-25.0,Apriori TID,53,31.82,2,chess.hui
-25.0,ECLAT Rare,33,71.82,2,chess.hui
-25.0,PrePost Rare,98,44.77,2,chess.hui
-25.0,RareItemsetTree,77,152.77,2,chess.hui
-25.0,RP-Growth,68,152.77,2,chess.hui
-30.0,Apriori TID,37,91.29,4,chess.hui
-30.0,ECLAT Rare,63,132.29,4,chess.hui
-30.0,PrePost Rare,84,105.92,4,chess.hui
-30.0,RareItemsetTree,81,181.92,4,chess.hui
-30.0,RP-Growth,58,106.37,4,chess.hui
-35.0,Apriori TID,40,9.89,3,chess.hui
-35.0,ECLAT Rare,55,49.89,3,chess.hui
-35.0,PrePost Rare,87,171.89,3,chess.hui
-35.0,RareItemsetTree,80,90.78,3,chess.hui
-35.0,RP-Growth,62,90.78,3,chess.hui
-40.0,Apriori TID,55,69.93,3,chess.hui
-40.0,ECLAT Rare,63,109.93,3,chess.hui
-40.0,PrePost Rare,79,83.35,3,chess.hui
-40.0,RareItemsetTree,69,191.35,3,chess.hui
-40.0,RP-Growth,62,191.35,3,chess.hui
+SupportPoint,Algorithm,Runtime(ms),Memory(MB),PatternsFound,Dataset
+10.0,PrePost Rare,9097,1581.00,334,accidents.hui
+10.0,ECLAT Rare,4507,256.44,334,accidents.hui
+10.0,RP-Growth,63824,1465.00,334,accidents.hui
+15.0,PrePost Rare,9900,2584.92,172,accidents.hui
+15.0,ECLAT Rare,3443,2429.31,172,accidents.hui
+15.0,RP-Growth,33926,2429.31,172,accidents.hui
+20.0,PrePost Rare,7133,1370.00,39,accidents.hui
+20.0,ECLAT Rare,3362,1533.74,39,accidents.hui
+20.0,RP-Growth,23079,1533.74,39,accidents.hui
+25.0,PrePost Rare,6476,531.34,13,accidents.hui
+25.0,ECLAT Rare,3289,401.19,13,accidents.hui
+25.0,RP-Growth,15584,831.95,13,accidents.hui
+30.0,PrePost Rare,6221,658.81,1,accidents.hui
+30.0,ECLAT Rare,3180,678.24,1,accidents.hui
+30.0,RP-Growth,12134,714.95,1,accidents.hui
+35.0,PrePost Rare,6099,431.25,1,accidents.hui
+35.0,ECLAT Rare,3281,294.82,1,accidents.hui
+35.0,RP-Growth,10639,552.78,1,accidents.hui
+40.0,PrePost Rare,5915,412.76,6,accidents.hui
+40.0,ECLAT Rare,3303,384.04,6,accidents.hui
+40.0,RP-Growth,9473,384.04,6,accidents.hui
