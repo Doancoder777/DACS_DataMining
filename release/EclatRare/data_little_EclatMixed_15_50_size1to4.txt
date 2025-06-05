@@ -1,0 +1,69 @@
+=== ECLAT RARE MIXED - RARE ITEMSETS MINING ===
+File dữ liệu: data_little.txt
+MinRareSupport (minsup): 15.0%
+MinFrequentSupport (maxsup): 50.0%
+MinSize: 1 items
+MaxSize: 4 items
+Thời gian bắt đầu: Thu Jun 05 11:13:01 ICT 2025
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+- Rare ItemSet: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
+- Kích thước itemset: 1 <= size <= 4
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 20
+
+========== RARE ITEMSETS ==========
+Support range: (15.0%, 50.0%]
+Size range: [1, 4]
+
+--- 1-itemsets ---
+3  #SUP: 10 (50.00%)
+4  #SUP: 8 (40.00%)
+5  #SUP: 8 (40.00%)
+6  #SUP: 7 (35.00%)
+7  #SUP: 7 (35.00%)
+8  #SUP: 5 (25.00%)
+9  #SUP: 5 (25.00%)
+10  #SUP: 5 (25.00%)
+
+--- 2-itemsets ---
+1 3  #SUP: 4 (20.00%)
+1 4  #SUP: 3 (15.00%)
+1 5  #SUP: 4 (20.00%)
+1 6  #SUP: 5 (25.00%)
+1 7  #SUP: 3 (15.00%)
+1 10  #SUP: 3 (15.00%)
+2 3  #SUP: 5 (25.00%)
+2 4  #SUP: 4 (20.00%)
+2 5  #SUP: 6 (30.00%)
+2 7  #SUP: 3 (15.00%)
+2 8  #SUP: 3 (15.00%)
+2 9  #SUP: 3 (15.00%)
+2 10  #SUP: 3 (15.00%)
+3 4  #SUP: 4 (20.00%)
+3 5  #SUP: 3 (15.00%)
+3 7  #SUP: 4 (20.00%)
+3 8  #SUP: 3 (15.00%)
+3 9  #SUP: 3 (15.00%)
+4 6  #SUP: 4 (20.00%)
+4 7  #SUP: 3 (15.00%)
+5 10  #SUP: 4 (20.00%)
+6 9  #SUP: 4 (20.00%)
+7 8  #SUP: 3 (15.00%)
+
+--- 3-itemsets ---
+1 2 5  #SUP: 3 (15.00%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets: 32
+Kích thước: 1 - 4 items
+Thuật toán: ECLAT Rare Mixed
+
+========== HIỆU SUẤT ==========
+Thời gian thực thi: 00:08.166 (8166 ms)
+Bộ nhớ sử dụng: 6.96 MB
+Thời gian kết thúc: Thu Jun 05 11:13:10 ICT 2025

@@ -1,4 +1,5 @@
 package Algorithrms.Rarepartem.aprioriTID_inverse;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -14,224 +15,451 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import input.transaction_database_list_integers.TransactionDatabase;
 import patterns.itemset_array_integers_with_tids.Itemset;
 import patterns.itemset_array_integers_with_tids.Itemsets;
 import tools.MemoryLogger;
+
+/**
+ * FIXED: AprioriTID Mixed Mode for Rare Pattern Mining
+ * 
+ * Key Features:
+ * 1. Mixed Mode: Accepts both frequent and rare items in patterns
+ * 2. Size Constraints: minSize and maxSize parameters
+ * 3. Proper Rare Definition: MRT < Support(Pattern) <= MFT AND has ≥1 rare item
+ * 4. TID-based optimization for improved performance
+ */
 public class AlgoAprioriTIDInverse {
-	protected int k; 
-	Map<Integer, Set<Integer>> mapItemTIDS = new HashMap<Integer, Set<Integer>>();
-	int minSuppRelative;
-	int maxSuppRelative;
-	int maxItemsetSize = Integer.MAX_VALUE;
-	long startTimestamp = 0; 
-	long endTimeStamp = 0; 
-	BufferedWriter writer = null;
-	protected Itemsets patterns = null;
-	private int itemsetCount = 0;
-	private int databaseSize = 0;
-	private TransactionDatabase database = null;
-	private boolean emptySetIsRequired = false;
-	boolean showTransactionIdentifiers = false;
-	public AlgoAprioriTIDInverse() {
-	}
-	public Itemsets runAlgorithm(TransactionDatabase database, double minsup, double maxsup)
-			throws NumberFormatException, IOException {
-		this.database = database;
-		Itemsets result = runAlgorithm(null, null, minsup, maxsup);
-		this.database = null;
-		return result;
-	}
-	public Itemsets runAlgorithm(String input, String output, double minsup, double maxsup)
-			throws NumberFormatException, IOException {
-		startTimestamp = System.currentTimeMillis();
-		itemsetCount = 0;
-		if(output == null){
-			writer = null;
-			patterns =  new Itemsets("FREQUENT ITEMSETS");
-	    }else{ // if the user wants to save the result to a file
-			patterns = null;
-			writer = new BufferedWriter(new FileWriter(output)); 
-		}
-		mapItemTIDS = new HashMap<Integer, Set<Integer>>(); // id item, count
-		databaseSize = 0; 
-		if(database != null){
-			for(List<Integer> transaction : database.getTransactions()){ // for each transaction
-				for (int item : transaction) {
-					Set<Integer> tids = mapItemTIDS.get(item);
-					if (tids == null) {
-						tids = new HashSet<Integer>();
-						mapItemTIDS.put(item, tids);
-					}
-					tids.add(databaseSize);
-				}
-				databaseSize++; // increment the tid number
-			}
-		}else{
-			BufferedReader reader = new BufferedReader(new FileReader(input));
-			String line;
-			while (((line = reader.readLine()) != null)) { // for each transaction
-				if (line.isEmpty() == true ||
-						line.charAt(0) == '#' || line.charAt(0) == '%'
-								|| line.charAt(0) == '@') {
-					continue;
-				}
-				String[] lineSplited = line.split(" ");
-				for (String token : lineSplited) {
-					int item = Integer.parseInt(token);
-					Set<Integer> tids = mapItemTIDS.get(item);
-					if (tids == null) {
-						tids = new HashSet<Integer>();
-						mapItemTIDS.put(item, tids);
-					}
-					tids.add(databaseSize);
-				}
-				databaseSize++; // increment the tid number
-			}
-			reader.close(); // close the input file
-		}
-		if(emptySetIsRequired ){
-			patterns.addItemset(new Itemset(new int[]{}), 0);
-		}
-		double rawMinSupp = minsup * databaseSize;
-		double rawMaxSupp = maxsup * databaseSize;
-		int oldMinSuppRelative = (int) Math.ceil(minsup * databaseSize);
-		int oldMaxSuppRelative = (int) Math.ceil(maxsup * databaseSize);
-		this.minSuppRelative = (int) Math.ceil(minsup * databaseSize) - 1;
-		this.maxSuppRelative = (int) Math.ceil(maxsup * databaseSize);
-		System.out.println("=== APRIORI-TID INVERSE THRESHOLD CALCULATION (FINAL FIXED) ===");
-		System.out.println("Input parameters:");
-		System.out.println("- minsup: " + (minsup*100) + "%");  
-		System.out.println("- maxsup: " + (maxsup*100) + "%");
-		System.out.println("- Database size: " + databaseSize);
-		System.out.println();
-		System.out.println("Raw calculations:");  
-		System.out.println("- minsup * databaseSize = " + rawMinSupp);
-		System.out.println("- maxsup * databaseSize = " + rawMaxSupp);
-		System.out.println();
-		System.out.println("OLD (BUGGY) thresholds:");
-		System.out.println("- minSuppRelative = ceil(" + rawMinSupp + ") = " + oldMinSuppRelative);
-		System.out.println("- maxSuppRelative = ceil(" + rawMaxSupp + ") = " + oldMaxSuppRelative);
-		System.out.println("- Definition would be: " + oldMinSuppRelative + " < Support(X) <= " + oldMaxSuppRelative);
-		System.out.println("- Problem: Items with support=" + oldMinSuppRelative + " would NOT be rare!");
-		System.out.println();
-		System.out.println("NEW (FIXED) thresholds:");
-		System.out.println("- minSuppRelative = ceil(" + rawMinSupp + ") - 1 = " + minSuppRelative + " (FIXED)");
-		System.out.println("- maxSuppRelative = ceil(" + rawMaxSupp + ") = " + maxSuppRelative);
-		System.out.println("- Definition: " + minSuppRelative + " < Support(X) <= " + maxSuppRelative);
-		System.out.println("- Now items with support=" + oldMinSuppRelative + " WILL be rare! ✓");
-		System.out.println("================================================================");
-		k = 1;
-		List<Itemset> level = new ArrayList<Itemset>();
-		Iterator<Entry<Integer, Set<Integer>>> iterator = mapItemTIDS.entrySet().iterator();
-		while (iterator.hasNext()) {
-			MemoryLogger.getInstance().checkMemory();
-			Map.Entry<Integer, Set<Integer>> entry = (Map.Entry<Integer, Set<Integer>>) iterator
-					.next();
-			if (entry.getValue().size() > minSuppRelative
-					&& entry.getValue().size() <= maxSuppRelative){
-				Integer item = entry.getKey();
-				Itemset itemset = new Itemset(item);
-				itemset.setTIDs(mapItemTIDS.get(item));
-				level.add(itemset);
-				saveItemset(itemset);
-			} else {
-				iterator.remove(); // if the item is not frequent we don't
-			}
-		}
-		Collections.sort(level, new Comparator<Itemset>() {
-			public int compare(Itemset o1, Itemset o2) {
-				return o1.get(0) - o2.get(0);
-			}
-		});
-		k = 2;
-		while (!level.isEmpty() && k <= maxItemsetSize) {
-			level = generateCandidateSizeK(level);
-			k++;
-		}
-		if(writer != null){
-			writer.close();
-		}
-		endTimeStamp = System.currentTimeMillis();
-		return patterns;
-	}
-	protected List<Itemset> generateCandidateSizeK(List<Itemset> levelK_1)
-			throws IOException {
-		List<Itemset> candidates = new ArrayList<Itemset>();
-		loop1: for (int i = 0; i < levelK_1.size(); i++) {
-			Itemset itemset1 = levelK_1.get(i);
-			loop2: for (int j = i + 1; j < levelK_1.size(); j++) {
-				Itemset itemset2 = levelK_1.get(j);
-				for (int k = 0; k < itemset1.size(); k++) {
-					if (k == itemset1.size() - 1) {
-						if (itemset1.getItems()[k] >= itemset2.get(k)) {
-							continue loop1;
-						}
-					}
-					else if (itemset1.getItems()[k] < itemset2.getItems()[k]) {
-						continue loop2; // we continue searching
-					} else if (itemset1.getItems()[k] > itemset2.getItems()[k]) {
-						continue loop1; // we stop searching: because of lexical
-					}
-				}
-				Set<Integer> list = new HashSet<Integer>();
-				for (Integer val1 : itemset1.getTransactionsIds()) {
-					if (itemset2.getTransactionsIds().contains(val1)) {
-						list.add(val1);
-					}
-				}
-				if (list.size() > minSuppRelative && list.size() <= maxSuppRelative) {
-					int newItemset[] = new int[itemset1.size()+1];
-					System.arraycopy(itemset1.itemset, 0, newItemset, 0, itemset1.size());
-					newItemset[itemset1.size()] = itemset2.getItems()[itemset2.size() -1];
-					Itemset candidate = new Itemset(newItemset);
-					candidate.setTIDs(list);
-					candidates.add(candidate);
-					saveItemset(candidate);
-				}
-			}
-		}
-		return candidates;
-	}
-	public void setMaxItemsetSize(int maxItemsetSize) {
-		this.maxItemsetSize = maxItemsetSize;
-	}
-	void saveItemset(Itemset itemset) throws IOException {
-		itemsetCount++;
-		if(writer != null){
-			writer.write(itemset.toString() + " #SUP: "
-					+ itemset.getTransactionsIds().size() );
-			if(showTransactionIdentifiers) {
-	        	writer.append(" #TID:");
-	        	for (Integer tid: itemset.getTransactionsIds()) {
-	        		writer.append(" " + tid); 
-	        	}
-			}
-			writer.newLine();
-		}// otherwise the result is kept into memory
-		else{
-			patterns.addItemset(itemset, itemset.size());
-		}
-	}
-	public void setEmptySetIsRequired(boolean emptySetIsRequired) {
-		this.emptySetIsRequired = emptySetIsRequired;
-	}
-	public void setShowTransactionIdentifiers(boolean showTransactionIdentifiers) {
-		this.showTransactionIdentifiers = showTransactionIdentifiers;
-	}
-	public void printStats() {
-		System.out.println("=============  APRIORI INVERSE TID v2.18 - STATS (FINAL FIXED) =============");
-		System.out.println(" Transactions count from database : " + databaseSize);
-		System.out.println(" Rare itemsets count : " + itemsetCount);
-		System.out.println(" Maximum memory usage : " + 
-				MemoryLogger.getInstance().getMaxMemory() + " mb");
-		System.out.println(" Total time ~ " + (endTimeStamp - startTimestamp)
-				+ " ms");
-		System.out.println(" Definition: MRT < Support(X) <= MFT (FINAL FIXED)");
-		System.out
-				.println("===================================================================");
-	}
-	public int getDatabaseSize() {
-		return databaseSize;
-	}
+    
+    protected int k; 
+    Map<Integer, Set<Integer>> mapItemTIDS = new HashMap<Integer, Set<Integer>>();
+    int minSuppRelative;
+    int maxSuppRelative;
+    
+    // ADDED: Size constraints
+    private int minPatternLength = 1;
+    private int maxPatternLength = Integer.MAX_VALUE;
+    
+    // ADDED: Item classification for mixed mode
+    private Set<Integer> rareItemsSet = null;
+    private Set<Integer> allValidItemsSet = null;
+    
+    long startTimestamp = 0; 
+    long endTimeStamp = 0; 
+    BufferedWriter writer = null;
+    protected Itemsets patterns = null;
+    private int itemsetCount = 0;
+    private int databaseSize = 0;
+    private TransactionDatabase database = null;
+    private boolean emptySetIsRequired = false;
+    boolean showTransactionIdentifiers = false;
+
+    public AlgoAprioriTIDInverse() {
+    }
+
+    /**
+     * Main algorithm with 4 parameters (backward compatibility)
+     */
+    public Itemsets runAlgorithm(TransactionDatabase database, double minsup, double maxsup)
+            throws NumberFormatException, IOException {
+        return runAlgorithm(database, minsup, maxsup, 1, Integer.MAX_VALUE);
+    }
+    
+    /**
+     * NEW: Main algorithm with 6 parameters including size constraints
+     */
+    public Itemsets runAlgorithm(TransactionDatabase database, double minsup, double maxsup,
+                                int minSize, int maxSize) throws NumberFormatException, IOException {
+        this.database = database;
+        
+        // Set size constraints
+        this.minPatternLength = Math.max(1, minSize);
+        this.maxPatternLength = Math.max(minSize, maxSize);
+        
+        System.out.println("=== APRIORI-TID MIXED MODE PARAMETERS ===");
+        System.out.println("MinSize: " + this.minPatternLength);
+        System.out.println("MaxSize: " + this.maxPatternLength);
+        System.out.println("MinRareSupport: " + minsup);
+        System.out.println("MaxSupport: " + maxsup);
+        System.out.println("Mode: MIXED (Frequent + Rare Items)");
+        System.out.println("=========================================");
+        
+        Itemsets result = runAlgorithmMixed(null, null, minsup, maxsup);
+        this.database = null;
+        return result;
+    }
+
+    /**
+     * MODIFIED: Core algorithm with mixed mode support
+     */
+    public Itemsets runAlgorithmMixed(String input, String output, double minsup, double maxsup)
+            throws NumberFormatException, IOException {
+        
+        startTimestamp = System.currentTimeMillis();
+        itemsetCount = 0;
+        
+        if(output == null){
+            writer = null;
+            patterns = new Itemsets("MIXED RARE ITEMSETS");
+        } else { 
+            patterns = null;
+            writer = new BufferedWriter(new FileWriter(output)); 
+        }
+
+        mapItemTIDS = new HashMap<Integer, Set<Integer>>();
+        databaseSize = 0; 
+        
+        // Build TID sets for all items
+        if(database != null){
+            for(List<Integer> transaction : database.getTransactions()){ 
+                for (int item : transaction) {
+                    Set<Integer> tids = mapItemTIDS.get(item);
+                    if (tids == null) {
+                        tids = new HashSet<Integer>();
+                        mapItemTIDS.put(item, tids);
+                    }
+                    tids.add(databaseSize);
+                }
+                databaseSize++;
+            }
+        } else {
+            BufferedReader reader = new BufferedReader(new FileReader(input));
+            String line;
+            while (((line = reader.readLine()) != null)) {
+                if (line.isEmpty() == true ||
+                        line.charAt(0) == '#' || line.charAt(0) == '%'
+                                || line.charAt(0) == '@') {
+                    continue;
+                }
+                String[] lineSplited = line.split(" ");
+                for (String token : lineSplited) {
+                    int item = Integer.parseInt(token);
+                    Set<Integer> tids = mapItemTIDS.get(item);
+                    if (tids == null) {
+                        tids = new HashSet<Integer>();
+                        mapItemTIDS.put(item, tids);
+                    }
+                    tids.add(databaseSize);
+                }
+                databaseSize++;
+            }
+            reader.close();
+        }
+
+        if(emptySetIsRequired ){
+            patterns.addItemset(new Itemset(new int[]{}), 0);
+        }
+
+        // Calculate thresholds
+        this.minSuppRelative = (int) Math.ceil(minsup * databaseSize) - 1;
+        this.maxSuppRelative = (int) Math.ceil(maxsup * databaseSize);
+        
+        System.out.println("=== APRIORI-TID MIXED THRESHOLD CALCULATION ===");
+        System.out.println("Database size: " + databaseSize);
+        System.out.println("MinRareSupport threshold (MRT): " + minSuppRelative);
+        System.out.println("MaxSupport threshold (MFT): " + maxSuppRelative);
+        System.out.println("Definition: " + minSuppRelative + " < Support(X) <= " + maxSuppRelative);
+        System.out.println("===============================================");
+
+        // ADDED: Classify items BEFORE scalability check
+        classifyItemsMixed();
+
+        // SCALABILITY CHECK with user choice
+        if (databaseSize > 50000) {
+            System.out.println("========== SCALABILITY WARNING ==========");
+            System.out.println("Database size: " + databaseSize + " transactions");
+            System.out.println("AprioriTID requires significant memory for large datasets due to TID sets");
+            System.out.println("Estimated memory needed: ~" + (databaseSize * allValidItemsSet.size() / 1000) + " MB");
+            System.out.println();
+            System.out.println("RECOMMENDATIONS:");
+            System.out.println("- For best performance: Use ECLAT Rare Mixed or PrePost Rare");
+            System.out.println("- For full accuracy: Use RP-Growth Mixed");
+            System.out.println();
+            System.out.println("PROCEEDING with AprioriTID (may encounter memory issues)...");
+            System.out.println("If OutOfMemoryError occurs, please use other algorithms");
+            System.out.println("=========================================");
+        }
+
+        // Generate 1-itemsets
+        k = 1;
+        List<Itemset> level = new ArrayList<Itemset>();
+        Iterator<Entry<Integer, Set<Integer>>> iterator = mapItemTIDS.entrySet().iterator();
+        
+        while (iterator.hasNext()) {
+            MemoryLogger.getInstance().checkMemory();
+            Map.Entry<Integer, Set<Integer>> entry = (Map.Entry<Integer, Set<Integer>>) iterator.next();
+            
+            // CRITICAL: Include ALL valid items in level (not just rare patterns)
+            // This ensures complete 2-itemset generation for 3-itemset candidates
+            if (entry.getValue().size() > minSuppRelative && allValidItemsSet.contains(entry.getKey())) {
+                Integer item = entry.getKey();
+                Itemset itemset = new Itemset(item);
+                itemset.setTIDs(mapItemTIDS.get(item));
+                level.add(itemset);
+                
+                // Only save if forms valid mixed rare pattern
+                if (isValidMixedRarePattern(new int[]{item}, 1, entry.getValue().size())) {
+                    saveItemset(itemset);
+                }
+            } else {
+                iterator.remove(); // Remove items that won't be used
+            }
+        }
+
+        Collections.sort(level, new Comparator<Itemset>() {
+            public int compare(Itemset o1, Itemset o2) {
+                return o1.get(0) - o2.get(0);
+            }
+        });
+
+        // Generate k-itemsets (k >= 2) with balanced memory protection
+        k = 2;
+        while (!level.isEmpty() && k <= maxPatternLength) {
+            System.out.println("Processing level " + k + " with " + level.size() + " candidates");
+            
+            // BALANCED MEMORY PROTECTION
+            int maxCandidates = databaseSize > 100000 ? 500 : (databaseSize > 50000 ? 2000 : 50000);
+            
+            if (level.size() > maxCandidates) {
+                System.out.println("MEMORY PROTECTION: Limiting candidates from " + level.size() + 
+                                  " to " + maxCandidates + " for memory safety");
+                level = level.subList(0, maxCandidates);
+            }
+            
+            List<Itemset> newLevel = generateCandidateSizeKMixed(level);
+            
+            if (newLevel.isEmpty()) {
+                System.out.println("No more candidates generated, stopping");
+                break;
+            }
+            
+            level = newLevel;
+            k++;
+            
+            // Memory pressure check
+            if (level.size() > maxCandidates * 5) {
+                System.out.println("MEMORY PRESSURE: Too many candidates at level " + k + ", stopping");
+                break;
+            }
+        }
+
+        if(writer != null){
+            writer.close();
+        }
+        endTimeStamp = System.currentTimeMillis();
+        return patterns;
+    }
+    
+    /**
+     * ADDED: Classify items into rare/frequent/infrequent for mixed mode
+     */
+    private void classifyItemsMixed() {
+        this.rareItemsSet = new HashSet<>();
+        this.allValidItemsSet = new HashSet<>();
+        
+        int rareCount = 0, frequentCount = 0, infrequentCount = 0;
+        
+        for (Entry<Integer, Set<Integer>> entry : mapItemTIDS.entrySet()) {
+            int item = entry.getKey();
+            int support = entry.getValue().size();
+            
+            if (support > minSuppRelative && support <= maxSuppRelative) {
+                // Rare items: MRT < support <= MFT
+                rareItemsSet.add(item);
+                allValidItemsSet.add(item);
+                rareCount++;
+            } else if (support > maxSuppRelative) {
+                // Frequent items: support > MFT
+                allValidItemsSet.add(item); // CRITICAL: Include in mixed mode
+                frequentCount++;
+            } else {
+                // Infrequent items: support <= MRT
+                infrequentCount++;
+            }
+        }
+        
+        System.out.println("Item classification:");
+        System.out.println("- Rare items (MRT < sup <= MFT): " + rareCount);
+        System.out.println("- Frequent items (sup > MFT): " + frequentCount);
+        System.out.println("- Infrequent items (sup <= MRT): " + infrequentCount);
+        System.out.println("- Total valid items: " + allValidItemsSet.size());
+    }
+    
+    /**
+     * ADDED: Check if pattern is valid mixed rare itemset
+     */
+    private boolean isValidMixedRarePattern(int[] itemset, int size, int support) {
+        // Check size constraints
+        if (size < minPatternLength || size > maxPatternLength) {
+            return false;
+        }
+        
+        // Check support range: MRT < support <= MFT
+        if (support <= minSuppRelative || support > maxSuppRelative) {
+            return false;
+        }
+        
+        // Check if contains at least one rare item
+        boolean hasRareItem = false;
+        for (int item : itemset) {
+            if (rareItemsSet.contains(item)) {
+                hasRareItem = true;
+                break;
+            }
+        }
+        
+        return hasRareItem;
+    }
+
+    /**
+     * BALANCED: Generate candidates with memory protection and selective inclusion
+     */
+    protected List<Itemset> generateCandidateSizeKMixed(List<Itemset> levelK_1) throws IOException {
+        List<Itemset> candidates = new ArrayList<Itemset>();
+        
+        // MEMORY PROTECTION: Limit processing on large levels
+        int maxPairs = Math.min(levelK_1.size() * (levelK_1.size() - 1) / 2, 100000);
+        int processedPairs = 0;
+        
+        loop1: for (int i = 0; i < levelK_1.size(); i++) {
+            Itemset itemset1 = levelK_1.get(i);
+            loop2: for (int j = i + 1; j < levelK_1.size(); j++) {
+                Itemset itemset2 = levelK_1.get(j);
+                
+                processedPairs++;
+                if (processedPairs > maxPairs) {
+                    System.out.println("MEMORY PROTECTION: Processed " + maxPairs + " pairs, stopping");
+                    break loop1;
+                }
+                
+                // Check if can join (Apriori join condition)
+                for (int k = 0; k < itemset1.size(); k++) {
+                    if (k == itemset1.size() - 1) {
+                        if (itemset1.getItems()[k] >= itemset2.get(k)) {
+                            continue loop1;
+                        }
+                    }
+                    else if (itemset1.getItems()[k] < itemset2.getItems()[k]) {
+                        continue loop2;
+                    } else if (itemset1.getItems()[k] > itemset2.getItems()[k]) {
+                        continue loop1;
+                    }
+                }
+
+                // Calculate intersection of TID sets
+                Set<Integer> intersectionTIDs = new HashSet<Integer>();
+                for (Integer tid : itemset1.getTransactionsIds()) {
+                    if (itemset2.getTransactionsIds().contains(tid)) {
+                        intersectionTIDs.add(tid);
+                    }
+                }
+
+                // Create new itemset
+                int newItemset[] = new int[itemset1.size()+1];
+                System.arraycopy(itemset1.itemset, 0, newItemset, 0, itemset1.size());
+                newItemset[itemset1.size()] = itemset2.getItems()[itemset2.size() -1];
+                
+                // BALANCED: Only add to candidates if has potential to be rare OR enables rare generation
+                boolean hasRareItem = false;
+                for (int item : newItemset) {
+                    if (rareItemsSet.contains(item)) {
+                        hasRareItem = true;
+                        break;
+                    }
+                }
+                
+                // Add if: 1) Could be rare pattern, OR 2) Support in reasonable range for next level
+                if (intersectionTIDs.size() > minSuppRelative && 
+                    (hasRareItem || intersectionTIDs.size() <= maxSuppRelative * 2)) {
+                    
+                    Itemset candidate = new Itemset(newItemset);
+                    candidate.setTIDs(intersectionTIDs);
+                    candidates.add(candidate);
+                    
+                    // Only save if forms valid mixed rare pattern
+                    if (isValidMixedRarePattern(newItemset, newItemset.length, intersectionTIDs.size())) {
+                        saveItemset(candidate);
+                    }
+                }
+            }
+        }
+        
+        return candidates;
+    }
+
+    public void setMaxItemsetSize(int maxItemsetSize) {
+        this.maxPatternLength = maxItemsetSize;
+    }
+    
+    // NEW: Size constraint setters
+    public void setMinimumPatternLength(int minLength) {
+        this.minPatternLength = Math.max(1, minLength);
+    }
+    
+    public void setMaximumPatternLength(int maxLength) {
+        this.maxPatternLength = Math.max(1, maxLength);
+    }
+
+    void saveItemset(Itemset itemset) throws IOException {
+        itemsetCount++;
+        if(writer != null){
+            writer.write(itemset.toString() + " #SUP: " + itemset.getTransactionsIds().size());
+            if(showTransactionIdentifiers) {
+                writer.append(" #TID:");
+                for (Integer tid: itemset.getTransactionsIds()) {
+                    writer.append(" " + tid); 
+                }
+            }
+            writer.newLine();
+        } else {
+            patterns.addItemset(itemset, itemset.size());
+        }
+    }
+
+    public void setEmptySetIsRequired(boolean emptySetIsRequired) {
+        this.emptySetIsRequired = emptySetIsRequired;
+    }
+
+    public void setShowTransactionIdentifiers(boolean showTransactionIdentifiers) {
+        this.showTransactionIdentifiers = showTransactionIdentifiers;
+    }
+
+    /**
+     * MODIFIED: Print stats with mixed mode info
+     */
+    public void printStats() {
+        System.out.println("=============  APRIORI-TID MIXED - STATS =============");
+        System.out.println(" Transactions count from database : " + databaseSize);
+        System.out.println(" Pattern size range: " + minPatternLength + " - " + maxPatternLength);
+        System.out.println(" Rare items identified: " + (rareItemsSet != null ? rareItemsSet.size() : 0));
+        System.out.println(" All valid items: " + (allValidItemsSet != null ? allValidItemsSet.size() : 0));
+        System.out.println(" Mixed rare itemsets count : " + itemsetCount);
+        System.out.println(" Mode: MIXED (Frequent + Rare Items)");
+        System.out.println(" Maximum memory usage : " + MemoryLogger.getInstance().getMaxMemory() + " mb");
+        System.out.println(" Total time ~ " + (endTimeStamp - startTimestamp) + " ms");
+        System.out.println(" Definition: MRT < Support(Pattern) <= MFT AND has ≥1 rare item");
+        System.out.println("======================================================");
+    }
+
+    public int getDatabaseSize() {
+        return databaseSize;
+    }
+    
+    public int getItemsetCount() {
+        return itemsetCount;
+    }
+    
+    public long getExecutionTime() {
+        return endTimeStamp - startTimestamp;
+    }
+    
+    // Getters for size constraints
+    public int getMinimumPatternLength() {
+        return minPatternLength;
+    }
+    
+    public int getMaximumPatternLength() {
+        return maxPatternLength;
+    }
 }

@@ -1,0 +1,97 @@
+=== RP-GROWTH - RARE PATTERN MINING ===
+File dữ liệu: chess.hui
+MinRareSupport (minsup): 15.0%
+MinFrequentSupport (maxsup): 50.0%
+Thời gian bắt đầu: Thu Jun 05 00:49:27 ICT 2025
+Output folder: release/RPGrowth/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (15.0%, 50.0%]
+Định nghĩa: MRT < Support(X) <= MFT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 3196
+
+--- 1-itemsets HIẾM ---
+43  #SUP: 482 (15.08%)
+65  #SUP: 565 (17.68%)
+45  #SUP: 584 (18.27%)
+47  #SUP: 640 (20.03%)
+18  #SUP: 696 (21.78%)
+75  #SUP: 789 (24.69%)
+73  #SUP: 851 (26.63%)
+22  #SUP: 971 (30.38%)
+55  #SUP: 980 (30.66%)
+28  #SUP: 991 (31.01%)
+39  #SUP: 1000 (31.29%)
+12  #SUP: 1067 (33.39%)
+16  #SUP: 1170 (36.61%)
+71  #SUP: 1189 (37.20%)
+69  #SUP: 1212 (37.92%)
+20  #SUP: 1216 (38.05%)
+51  #SUP: 1221 (38.20%)
+24  #SUP: 1379 (43.15%)
+14  #SUP: 1474 (46.12%)
+2  #SUP: 1527 (47.78%)
+
+--- 2-itemsets HIẾM ---
+24 65  #SUP: 524 (16.40%)
+20 47  #SUP: 640 (20.03%)
+2 18  #SUP: 486 (15.21%)
+16 18  #SUP: 613 (19.18%)
+18 20  #SUP: 696 (21.78%)
+55 75  #SUP: 532 (16.65%)
+2 73  #SUP: 510 (15.96%)
+24 73  #SUP: 676 (21.15%)
+2 22  #SUP: 743 (23.25%)
+14 55  #SUP: 494 (15.46%)
+2 28  #SUP: 547 (17.12%)
+39 71  #SUP: 795 (24.87%)
+12 14  #SUP: 514 (16.08%)
+2 12  #SUP: 539 (16.86%)
+12 20  #SUP: 562 (17.58%)
+12 16  #SUP: 664 (20.78%)
+16 71  #SUP: 490 (15.33%)
+16 24  #SUP: 574 (17.96%)
+14 16  #SUP: 598 (18.71%)
+2 16  #SUP: 685 (21.43%)
+16 20  #SUP: 713 (22.31%)
+69 71  #SUP: 508 (15.89%)
+24 71  #SUP: 513 (16.05%)
+51 71  #SUP: 535 (16.74%)
+2 71  #SUP: 537 (16.80%)
+14 71  #SUP: 603 (18.87%)
+14 69  #SUP: 580 (18.15%)
+2 69  #SUP: 862 (26.97%)
+14 20  #SUP: 541 (16.93%)
+20 24  #SUP: 555 (17.37%)
+2 20  #SUP: 647 (20.24%)
+24 51  #SUP: 518 (16.21%)
+2 51  #SUP: 548 (17.15%)
+14 51  #SUP: 550 (17.21%)
+2 24  #SUP: 605 (18.93%)
+14 24  #SUP: 624 (19.52%)
+2 14  #SUP: 593 (18.55%)
+
+--- 3-itemsets HIẾM ---
+16 18 20  #SUP: 613 (19.18%)
+2 18 20  #SUP: 486 (15.21%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 59
+Thuật toán: RP-Growth
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/RPGrowth/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: RP-Growth
+Tổng thời gian thực thi: 00:02.400 (phút:giây.mili giây) [2400 ms]
+Bộ nhớ tối đa sử dụng: 27.55 MB
+Thời gian kết thúc: Thu Jun 05 00:49:29 ICT 2025
+Output folder: release/RPGrowth/
+Định nghĩa: MRT < Support(X) <= MFT

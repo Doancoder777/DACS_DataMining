@@ -7,40 +7,70 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
-import Algorithrms.Rarepartem.nlistrare.AbstractPrePostAlgorithm;
 import tools.MemoryLogger;
 
 /**
- * PrePost Rare Algorithm Implementation
+ * PrePost Rare Algorithm Implementation with Size Constraints and Mixed Mode
  * Thuật toán khai phá rare itemsets sử dụng Pre/Post order indexing
+ * MODIFIED: Thêm support cho minSize, maxSize và mixed frequent-rare patterns
  */
 public class PrePostRare extends AbstractPrePostAlgorithm {
     
+    // THÊM: Tham số kích thước pattern
+    private int minPatternLength = 1;
+    private int maxPatternLength = 1000;
+    
+    // THÊM: Set để track rare items cho việc kiểm tra mixed patterns
+    private Set<Integer> rareItemsSet = null;
+    private Set<Integer> allValidItemsSet = null; // Tất cả items (frequent + rare)
+    
     /**
-     * Main algorithm execution
+     * Phương thức chính với 4 tham số (giữ nguyên để tương thích)
      */
     @Override
     public void runAlgorithm(String filename, double minsup, double maxsup, String output)
             throws IOException {
+        runAlgorithm(filename, minsup, maxsup, output, 1, 1000);
+    }
+    
+    /**
+     * Phương thức mới với 6 tham số bao gồm minSize và maxSize
+     */
+    public void runAlgorithm(String filename, double minsup, double maxsup, String output, 
+                            int minSize, int maxSize) throws IOException {
+        
+        // Thiết lập kích thước pattern
+        this.minPatternLength = Math.max(1, minSize);
+        this.maxPatternLength = Math.max(minSize, maxSize);
+        
+        System.out.println("=== PREPOST RARE MIXED MODE PARAMETERS ===");
+        System.out.println("MinSize: " + this.minPatternLength);
+        System.out.println("MaxSize: " + this.maxPatternLength);
+        System.out.println("MinRareSupport: " + minsup);
+        System.out.println("MaxSupport: " + maxsup);
+        System.out.println("Mode: MIXED (Frequent + Rare Items)");
+        System.out.println("=========================================");
         
         initializeAlgorithm();
         writer = new BufferedWriter(new FileWriter(output));
         initializeBuffer();
         
-        findTargetItems(filename, minsup, maxsup);
+        findTargetItemsMixed(filename, minsup, maxsup);
         
         resultLen = 0;
-        result = new int[numOfRareItem];
-        buildTree(filename);
+        result = new int[allValidItemsSet.size()]; // Sử dụng all valid items
+        buildTreeMixed(filename);
         
-        nlRoot.label = numOfRareItem;
+        nlRoot.label = allValidItemsSet.size();
         nlRoot.firstChild = null;
         nlRoot.next = null;
         initializeTree();
         
-        sameItems = new int[numOfRareItem];
+        sameItems = new int[allValidItemsSet.size()];
         
         int from_cursor = bf_cursor;
         int from_col = bf_col;
@@ -65,15 +95,15 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
     }
     
     /**
-     * Tìm rare items từ database
+     * MODIFIED: Tìm cả rare và frequent items từ database (Mixed Mode)
      */
-    @Override
-    protected void findTargetItems(String filename, double minsup, double maxsup) throws IOException {
+    protected void findTargetItemsMixed(String filename, double minsup, double maxsup) throws IOException {
         numOfTrans = 0;
         Map<Integer, Integer> mapItemCount = new HashMap<Integer, Integer>();
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         String line;
         
+        // Đếm frequency của tất cả items
         while (((line = reader.readLine()) != null)) {
             if (line.isEmpty() == true || line.charAt(0) == '#'
                     || line.charAt(0) == '%' || line.charAt(0) == '@') {
@@ -97,12 +127,34 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         
         computeAbsoluteThresholds(minsup, maxsup);
         
-        numOfRareItem = mapItemCount.size();
-        Item[] tempItems = new Item[numOfRareItem];
+        // THÊM: Xác định rare items và all valid items
+        this.rareItemsSet = new HashSet<>();
+        this.allValidItemsSet = new HashSet<>();
+        
+        for (Entry<Integer, Integer> entry : mapItemCount.entrySet()) {
+            int itemId = entry.getKey();
+            int support = entry.getValue();
+            
+            // Rare items: MRT < support <= MFT
+            if (support > minSuppRelative && support <= maxSuppRelative) {
+                rareItemsSet.add(itemId);
+            }
+            
+            // All valid items: support > MRT (bao gồm cả frequent và rare)
+            if (support > minSuppRelative) {
+                allValidItemsSet.add(itemId);
+            }
+        }
+        
+        System.out.println("Rare items identified: " + rareItemsSet.size());
+        System.out.println("All valid items: " + allValidItemsSet.size());
+        
+        // Tạo item array cho tất cả valid items (frequent + rare)
+        Item[] tempItems = new Item[allValidItemsSet.size()];
         int i = 0;
         
         for (Entry<Integer, Integer> entry : mapItemCount.entrySet()) {
-            if (isInSupportRange(entry.getValue())) {
+            if (allValidItemsSet.contains(entry.getKey())) {
                 tempItems[i] = new Item();
                 tempItems[i].index = entry.getKey();
                 tempItems[i].num = entry.getValue();
@@ -112,15 +164,14 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         
         item = new Item[i];
         System.arraycopy(tempItems, 0, item, 0, i);
-        numOfRareItem = item.length;
+        numOfRareItem = item.length; // Sử dụng tất cả valid items
         Arrays.sort(item, comp);
     }
     
     /**
-     * Xây dựng PPC Tree với pre/post order indexing
+     * MODIFIED: Xây dựng PPC Tree với cả frequent và rare items
      */
-    @Override
-    protected void buildTree(String filename) throws IOException {
+    protected void buildTreeMixed(String filename) throws IOException {
         ppcRoot.label = -1;
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         String line;
@@ -137,6 +188,8 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
             
             for (String itemString : lineSplited) {
                 int itemX = Integer.parseInt(itemString);
+                
+                // THAY ĐỔI: Chấp nhận tất cả valid items (không chỉ rare)
                 for (int j = 0; j < numOfRareItem; j++) {
                     if (itemX == item[j].index) {
                         transaction[tLen] = new Item();
@@ -157,7 +210,50 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
     }
     
     /**
-     * Insert transaction vào PPC Tree
+     * THÊM: Kiểm tra xem itemset có chứa ít nhất 1 rare item không
+     */
+    private boolean containsAtLeastOneRareItem(int[] itemIndices, int itemsetLength) {
+        for (int i = 0; i < itemsetLength; i++) {
+            int itemId = item[itemIndices[i]].index;
+            if (rareItemsSet.contains(itemId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * THÊM: Kiểm tra rare itemset với điều kiện mixed và size
+     */
+    private boolean isRareItemsetMixed(int[] itemIndices, int itemsetLength, int support) {
+        // Kiểm tra kích thước
+        if (itemsetLength < minPatternLength || itemsetLength > maxPatternLength) {
+            return false;
+        }
+        
+        // Điều kiện 1: Pattern support phải nằm trong [MRT, MFT]
+        boolean supportInRange = (support > minSuppRelative && support <= maxSuppRelative);
+        
+        // Điều kiện 2: Phải có ít nhất 1 rare item
+        boolean hasRareItem = containsAtLeastOneRareItem(itemIndices, itemsetLength);
+        
+        return supportInRange && hasRareItem;
+    }
+    
+
+    @Override
+    protected void findTargetItems(String filename, double minsup, double maxsup) throws IOException {
+        // Delegate to mixed version
+        findTargetItemsMixed(filename, minsup, maxsup);
+    }
+    
+    @Override
+    protected void buildTree(String filename) throws IOException {
+        buildTreeMixed(filename);
+    }
+    
+    /**
+     * Insert transaction vào PPC Tree 
      */
     private void insertTransactionIntoTree(Item[] transaction, int tLen) {
         int curPos = 0;
@@ -208,7 +304,7 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
     }
     
     /**
-     * Xây dựng header table và pre/post order indexing
+     * Xây dựng header table và pre/post order indexing 
      */
     private void buildHeaderTableAndIndexing() {
         headTable = new PPCTreeNode[numOfRareItem];
@@ -264,7 +360,7 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
     }
     
     /**
-     * Khởi tạo NodeList Tree từ PPC Tree
+     * Khởi tạo NodeList Tree từ PPC Tree (giữ nguyên)
      */
     @Override
     protected void initializeTree() {
@@ -305,7 +401,7 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
     }
     
     /**
-     * Two-pointer intersection algorithm
+     * MODIFIED: Two-pointer intersection algorithm với mixed mode check
      */
     private NodeListTreeNode isRareItemSetFreq(NodeListTreeNode ni, NodeListTreeNode nj,
             int level, NodeListTreeNode lastChild, IntegerByRef sameCountRef) {
@@ -350,7 +446,8 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
             }
         }
         
-        if (isInSupportRange(nlNode.support)) {
+        // Việc check mixed sẽ được thực hiện khi write output
+        if (nlNode.support > minSuppRelative) {  // Chấp nhận tất cả patterns có support > MRT
             if (ni.support == nlNode.support && nlNode.NLLength == 1) {
                 sameItems[sameCountRef.count++] = nj.label;
                 bf_cursor = nlNode.NLStartinBf;
@@ -377,7 +474,7 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
     }
     
     /**
-     * Main traversal function
+     * MODIFIED: Main traversal function với size constraints
      */
     @Override
     protected void traverse(NodeListTreeNode curNode, NodeListTreeNode curRoot,
@@ -404,7 +501,7 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
         nlLenSum += Math.pow(2.0, sameCount) * curNode.NLLength;
         
         result[resultLen++] = curNode.label;
-        writeRareItemsetsToFile(curNode, sameCount);
+        writeRareItemsetsToFileMixed(curNode, sameCount);
         nlNodeCount++;
         
         int from_cursor = bf_cursor;
@@ -430,13 +527,14 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
     }
     
     /**
-     * Ghi rare itemsets ra file
+     * MODIFIED: Ghi rare itemsets ra file với mixed mode và size constraints
      */
-    private void writeRareItemsetsToFile(NodeListTreeNode curNode, int sameCount)
+    private void writeRareItemsetsToFileMixed(NodeListTreeNode curNode, int sameCount)
             throws IOException {
         StringBuilder buffer = new StringBuilder();
         
-        if (isInSupportRange(curNode.support)) {
+        // Check current itemset
+        if (isRareItemsetMixed(result, resultLen, curNode.support)) {
             outputCount++;
             
             for (int i = 0; i < resultLen; i++) {
@@ -448,25 +546,41 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
             buffer.append("\n");
         }
         
+        // Check combinations with same items
         if (sameCount > 0) {
             for (long i = 1, max = 1 << sameCount; i < max; i++) {
-                for (int k = 0; k < resultLen; k++) {
-                    buffer.append(item[result[k]].index);
-                    buffer.append(' ');
-                }
+                int[] tempItemset = new int[resultLen + sameCount];
+                System.arraycopy(result, 0, tempItemset, 0, resultLen);
                 
+                int addedCount = 0;
                 for (int j = 0; j < sameCount; j++) {
                     int isSet = (int) i & (1 << j);
                     if (isSet > 0) {
-                        buffer.append(item[sameItems[j]].index);
-                        buffer.append(' ');
+                        tempItemset[resultLen + addedCount] = sameItems[j];
+                        addedCount++;
                     }
                 }
                 
-                buffer.append("#SUP: ");
-                buffer.append(curNode.support);
-                buffer.append("\n");
-                outputCount++;
+                // Check với mixed mode và size constraints
+                if (isRareItemsetMixed(tempItemset, resultLen + addedCount, curNode.support)) {
+                    for (int k = 0; k < resultLen; k++) {
+                        buffer.append(item[result[k]].index);
+                        buffer.append(' ');
+                    }
+                    
+                    for (int j = 0; j < sameCount; j++) {
+                        int isSet = (int) i & (1 << j);
+                        if (isSet > 0) {
+                            buffer.append(item[sameItems[j]].index);
+                            buffer.append(' ');
+                        }
+                    }
+                    
+                    buffer.append("#SUP: ");
+                    buffer.append(curNode.support);
+                    buffer.append("\n");
+                    outputCount++;
+                }
             }
         }
         
@@ -474,27 +588,28 @@ public class PrePostRare extends AbstractPrePostAlgorithm {
     }
     
     /**
-     * Override printStats để hiển thị thông tin specific cho rare mining
+     * Override printStats để hiển thị thông tin mixed mode
      */
     @Override
     public void printStats() {
-        System.out.println("========== PREPOST RARE - STATS ============");
+        System.out.println("========== PREPOST RARE MIXED - STATS ============");
         System.out.println(" Transactions count from database: " + numOfTrans);
         System.out.println(" MinRareSupport (MRT): " + minSuppRelative);
         System.out.println(" MaxSupport (MFT): " + maxSuppRelative);
-        System.out.println(" Number of rare items: " + numOfRareItem);
+        System.out.println(" Pattern size range: " + minPatternLength + " - " + maxPatternLength);
+        System.out.println(" Rare items identified: " + (rareItemsSet != null ? rareItemsSet.size() : 0));
+        System.out.println(" All valid items: " + (allValidItemsSet != null ? allValidItemsSet.size() : 0));
         System.out.println(" Number of rare itemsets: " + outputCount);
+        System.out.println(" Mode: MIXED (Frequent + Rare Items)");
         System.out.println(" Maximum memory usage: " + MemoryLogger.getInstance().getMaxMemory() + " MB");
         System.out.println(" Total time: " + (endTimestamp - startTimestamp) + " ms");
-        System.out.println(" Definition: MRT < Support(X) <= MFT");
-        System.out.println("=====================================================");
+        System.out.println(" Definition: MRT < Support(Pattern) <= MFT AND has ≥1 rare item");
+        System.out.println("=======================================================");
     }
     
-    /**
-     * Getter method để access outputCount từ external classes
-     * FIXED: Added for benchmark compatibility
-     */
-    public int getOutputCount() {
-        return outputCount;
-    }
+    // Getter methods
+    public int getMinPatternLength() { return minPatternLength; }
+    public int getMaxPatternLength() { return maxPatternLength; }
+    public void setMinPatternLength(int minLength) { this.minPatternLength = Math.max(1, minLength); }
+    public void setMaxPatternLength(int maxLength) { this.maxPatternLength = Math.max(1, maxLength); }
 }

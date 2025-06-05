@@ -1,0 +1,64 @@
+=== RP-GROWTH - RARE PATTERN MINING ===
+File dữ liệu: inputITtree.txt
+MinRareSupport (minsup): 15.0%
+MinFrequentSupport (maxsup): 50.0%
+MinSize: 1 items
+MaxSize: 3 items
+Thời gian bắt đầu: Thu Jun 05 01:03:19 ICT 2025
+Output folder: release/RPGrowth/
+
+========== ĐỊNH NGHĨA ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+- Kích thước itemset: 1 <= size <= 3
+
+========== RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (15.0%, 50.0%]
+Kích thước itemset: 1 <= size <= 3
+Định nghĩa: MRT < Support(X) <= MFT
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 12
+
+--- 1-itemsets HIẾM ---
+7  #SUP: 2 (16.67%)
+5  #SUP: 2 (16.67%)
+6  #SUP: 3 (25.00%)
+4  #SUP: 3 (25.00%)
+11  #SUP: 4 (33.33%)
+3  #SUP: 5 (41.67%)
+2  #SUP: 5 (41.67%)
+9  #SUP: 6 (50.00%)
+
+--- 2-itemsets HIẾM ---
+4 7  #SUP: 2 (16.67%)
+4 6  #SUP: 2 (16.67%)
+3 6  #SUP: 3 (25.00%)
+3 4  #SUP: 2 (16.67%)
+2 4  #SUP: 2 (16.67%)
+9 11  #SUP: 4 (33.33%)
+2 11  #SUP: 2 (16.67%)
+2 3  #SUP: 2 (16.67%)
+2 9  #SUP: 2 (16.67%)
+
+--- 3-itemsets HIẾM ---
+3 4 6  #SUP: 2 (16.67%)
+2 9 11  #SUP: 2 (16.67%)
+2 9 11  #SUP: 2 (16.67%)
+
+========== TỔNG KẾT ==========
+Tổng số rare itemsets tìm được: 20
+Kích thước: 1 đến 3 items
+Thuật toán: RP-Growth
+Định nghĩa: MRT < Support(X) <= MFT
+Output folder: release/RPGrowth/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: RP-Growth
+Tổng thời gian thực thi: 00:13.209 (phút:giây.mili giây) [13209 ms]
+Bộ nhớ tối đa sử dụng: 6.97 MB
+Kích thước itemset: 1 đến 3 items
+Thời gian kết thúc: Thu Jun 05 01:03:32 ICT 2025
+Output folder: release/RPGrowth/
+Định nghĩa: MRT < Support(X) <= MFT

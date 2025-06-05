@@ -7,18 +7,36 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
-import Algorithrms.Rarepartem.eclat_rare.AbstractRareItemsetAlgorithm;
 import input.transaction_database_list_integers.TransactionDatabase;
 import patterns.itemset_array_integers_with_count.Itemset;
 import patterns.itemset_array_integers_with_count.Itemsets;
 import tools.MemoryLogger;
 
+/**
+ * ECLAT Rare Mixed Mode Algorithm with BitSet Optimization
+ * 
+ * Key Features:
+ * 1. Mixed Mode: Accepts both frequent and rare items in patterns
+ * 2. Size Constraints: minSize and maxSize parameters  
+ * 3. Proper Rare Definition: MRT < Support(Pattern) <= MFT AND has ≥1 rare item
+ * 4. BitSet Optimization for better performance
+ */
 public class AlgoEclatRareBitset extends AbstractRareItemsetAlgorithm {
 
+    // ADDED: Size constraints
+    private int minPatternLength = 1;
+    private int maxPatternLength = Integer.MAX_VALUE;
+    
+    // ADDED: Item classification for mixed mode
+    private Set<Integer> rareItemsSet = null;
+    private Set<Integer> allValidItemsSet = null;
+    
     public class BitSetSupport {
         BitSet bitset = new BitSet();
         int support;
@@ -35,39 +53,76 @@ public class AlgoEclatRareBitset extends AbstractRareItemsetAlgorithm {
         super();
     }
 
+    /**
+     * Main algorithm with 4 parameters (backward compatibility)
+     */
     @Override
     public Itemsets runAlgorithm(String output, TransactionDatabase database, 
                                 double minRareSupport, double maxFrequentSupport) throws IOException {
+        return runAlgorithm(output, database, minRareSupport, maxFrequentSupport, 1, Integer.MAX_VALUE);
+    }
+    
+    /**
+     * NEW: Main algorithm with 6 parameters including size constraints
+     */
+    public Itemsets runAlgorithm(String output, TransactionDatabase database, 
+                                double minRareSupport, double maxFrequentSupport,
+                                int minSize, int maxSize) throws IOException {
+        
+        // Set size constraints
+        this.minPatternLength = Math.max(1, minSize);
+        this.maxPatternLength = Math.max(minSize, maxSize);
+        
+        System.out.println("=== ECLAT RARE MIXED MODE PARAMETERS ===");
+        System.out.println("MinSize: " + this.minPatternLength);
+        System.out.println("MaxSize: " + this.maxPatternLength);
+        System.out.println("MinRareSupport: " + minRareSupport);
+        System.out.println("MaxSupport: " + maxFrequentSupport);
+        System.out.println("Mode: MIXED (Frequent + Rare Items)");
+        System.out.println("========================================");
         
         initializeParameters(database, minRareSupport, maxFrequentSupport);
         
         if (output == null) {
             writer = null;
-            rareItemsets = new Itemsets("RARE ITEMSETS");
+            rareItemsets = new Itemsets("MIXED RARE ITEMSETS");
         } else {
             rareItemsets = null;
             writer = new BufferedWriter(new FileWriter(output));
         }
         
+        // Calculate support for all items and classify them
         final Map<Integer, BitSetSupport> mapItemBitsets = new HashMap<Integer, BitSetSupport>();
         calculateSupportSingleItemsBitset(database, mapItemBitsets);
-
-        List<Integer> rareItems = new ArrayList<Integer>();
+        
+        // ADDED: Classify items into rare, frequent, infrequent
+        classifyItemsMixed(mapItemBitsets);
+        
+        // Mine 1-itemsets from valid items (frequent + rare)
+        List<Integer> validItems = new ArrayList<Integer>();
         
         for (Entry<Integer, BitSetSupport> entry : mapItemBitsets.entrySet()) {
             int support = entry.getValue().support;
             int item = entry.getKey();
             
-            if (isRareSupport(support) && maxItemsetSize >= 1) {
-                rareItems.add(item);
-                saveRareSingleItemBitset(item, entry.getValue());
+            // Include all valid items (support > MRT)
+            if (support > minRareSupportRelative && allValidItemsSet.contains(item)) {
+                validItems.add(item);
+                
+                // Check if forms valid rare pattern
+                if (isValidMixedRarePattern(new int[]{item}, 1, support)) {
+                    saveRareSingleItemBitset(item, entry.getValue());
+                }
             }
         }
 
-        Collections.sort(rareItems);
+        Collections.sort(validItems);
+        System.out.println("Valid items for mining: " + validItems.size());
+        System.out.println("Rare items: " + rareItemsSet.size());
 
-        if (maxItemsetSize >= 2 && rareItems.size() > 1) {
-            generateRareCombinationsBitset(rareItems, mapItemBitsets);
+        // Mine larger itemsets if within size constraints
+        if (maxPatternLength >= 2 && validItems.size() > 1) {
+            generateMixedRareCombinationsBitset(validItems, mapItemBitsets);
         }
         
         finalizeExecution();
@@ -77,6 +132,67 @@ public class AlgoEclatRareBitset extends AbstractRareItemsetAlgorithm {
         }
         
         return rareItemsets;
+    }
+    
+    /**
+     * ADDED: Classify items into rare/frequent/infrequent
+     */
+    private void classifyItemsMixed(Map<Integer, BitSetSupport> mapItemBitsets) {
+        this.rareItemsSet = new HashSet<>();
+        this.allValidItemsSet = new HashSet<>();
+        
+        int rareCount = 0, frequentCount = 0, infrequentCount = 0;
+        
+        for (Entry<Integer, BitSetSupport> entry : mapItemBitsets.entrySet()) {
+            int item = entry.getKey();
+            int support = entry.getValue().support;
+            
+            if (support > minRareSupportRelative && support <= maxFrequentSupportRelative) {
+                // Rare items: MRT < support <= MFT
+                rareItemsSet.add(item);
+                allValidItemsSet.add(item);
+                rareCount++;
+            } else if (support > maxFrequentSupportRelative) {
+                // Frequent items: support > MFT
+                allValidItemsSet.add(item); // CRITICAL: Include in mixed mode
+                frequentCount++;
+            } else {
+                // Infrequent items: support <= MRT
+                infrequentCount++;
+            }
+        }
+        
+        System.out.println("Item classification:");
+        System.out.println("- Rare items (MRT < sup <= MFT): " + rareCount);
+        System.out.println("- Frequent items (sup > MFT): " + frequentCount);
+        System.out.println("- Infrequent items (sup <= MRT): " + infrequentCount);
+        System.out.println("- Total valid items: " + allValidItemsSet.size());
+    }
+    
+    /**
+     * ADDED: Check if pattern is valid mixed rare itemset
+     */
+    private boolean isValidMixedRarePattern(int[] itemset, int size, int support) {
+        // Check size constraints
+        if (size < minPatternLength || size > maxPatternLength) {
+            return false;
+        }
+        
+        // Check support range: MRT < support <= MFT
+        if (support <= minRareSupportRelative || support > maxFrequentSupportRelative) {
+            return false;
+        }
+        
+        // Check if contains at least one rare item
+        boolean hasRareItem = false;
+        for (int item : itemset) {
+            if (rareItemsSet.contains(item)) {
+                hasRareItem = true;
+                break;
+            }
+        }
+        
+        return hasRareItem;
     }
 
     private void calculateSupportSingleItemsBitset(TransactionDatabase database,
@@ -96,21 +212,21 @@ public class AlgoEclatRareBitset extends AbstractRareItemsetAlgorithm {
         }
     }
 
-    private void generateRareCombinationsBitset(List<Integer> rareItems, 
-                                               Map<Integer, BitSetSupport> mapItemBitsets) throws IOException {
+    /**
+     * MODIFIED: Generate combinations with mixed mode support and COMPLETE 2-itemset generation
+     */
+    private void generateMixedRareCombinationsBitset(List<Integer> validItems, 
+                                                    Map<Integer, BitSetSupport> mapItemBitsets) throws IOException {
         
         List<Itemset> level = new ArrayList<Itemset>();
         
-        for (int i = 0; i < rareItems.size(); i++) {
-            for (int j = i + 1; j < rareItems.size(); j++) {
-                Integer itemI = rareItems.get(i);
-                Integer itemJ = rareItems.get(j);
-                
-                if (itemI > itemJ) {
-                    Integer temp = itemI;
-                    itemI = itemJ;
-                    itemJ = temp;
-                }
+        System.out.println("DEBUG: Valid items for 2-itemset generation: " + validItems);
+        
+        // Generate ALL 2-itemsets (not just rare ones)
+        for (int i = 0; i < validItems.size(); i++) {
+            for (int j = i + 1; j < validItems.size(); j++) {
+                Integer itemI = validItems.get(i);
+                Integer itemJ = validItems.get(j);
                 
                 BitSetSupport bitsetI = mapItemBitsets.get(itemI);
                 BitSetSupport bitsetJ = mapItemBitsets.get(itemJ);
@@ -118,19 +234,38 @@ public class AlgoEclatRareBitset extends AbstractRareItemsetAlgorithm {
                 BitSetSupport intersectionBitset = performBitsetIntersection(bitsetI, bitsetJ);
                 int support = intersectionBitset.support;
                 
-                if (isRareSupport(support)) {
+                System.out.println("2-itemset: " + itemI + " " + itemJ + " SUP: " + support + 
+                                  " (threshold=" + minRareSupportRelative + ")");
+                
+                // CRITICAL: Add to level if support > threshold, regardless of rare validation
+                // This ensures all potentially useful 2-itemsets are available for 3-itemset generation
+                if (support > minRareSupportRelative) {
                     Itemset itemset = new Itemset(new int[]{itemI, itemJ});
                     itemset.setAbsoluteSupport(support);
                     level.add(itemset);
                     
-                    saveRareItemsetBitset(new int[]{itemI}, 1, itemJ, support);
+                    // Only save as rare if it passes mixed rare validation
+                    if (isValidMixedRarePattern(new int[]{itemI, itemJ}, 2, support)) {
+                        saveRareItemsetBitset(new int[]{itemI}, 1, itemJ, support);
+                        System.out.println("  -> SAVED as rare pattern");
+                    } else {
+                        System.out.println("  -> Added to level but not saved (no rare item or support out of range)");
+                    }
+                } else {
+                    System.out.println("  -> REJECTED (support too low)");
                 }
             }
         }
         
+        System.out.println("Generated " + level.size() + " 2-itemsets for next level");
+        
+        // Generate k-itemsets (k >= 3)
         int k = 3;
-        while (!level.isEmpty() && k <= maxItemsetSize) {
-            level = generateCandidatesLevelKBitset(level, mapItemBitsets);
+        while (!level.isEmpty() && k <= maxPatternLength) {
+            System.out.println("Generating " + k + "-itemsets from " + level.size() + " candidates...");
+            List<Itemset> newLevel = generateCandidatesLevelKBitset(level, mapItemBitsets);
+            System.out.println("Found " + newLevel.size() + " " + k + "-itemsets");
+            level = newLevel;
             k++;
         }
     }
@@ -142,54 +277,106 @@ public class AlgoEclatRareBitset extends AbstractRareItemsetAlgorithm {
         return new BitSetSupport(intersection, support);
     }
 
+    /**
+     * FIXED: Complete candidate generation WITHOUT Apriori pruning for mixed mode
+     * Since mixed mode violates Apriori property, we need exhaustive generation
+     */
     private List<Itemset> generateCandidatesLevelKBitset(List<Itemset> levelKMinus1, 
                                                         Map<Integer, BitSetSupport> mapItemBitsets) throws IOException {
         List<Itemset> candidates = new ArrayList<Itemset>();
         
-        for (int i = 0; i < levelKMinus1.size(); i++) {
-            Itemset itemset1 = levelKMinus1.get(i);
-            for (int j = i + 1; j < levelKMinus1.size(); j++) {
-                Itemset itemset2 = levelKMinus1.get(j);
-                
-                boolean canJoin = true;
-                for (int k = 0; k < itemset1.size() - 1; k++) {
-                    if (itemset1.getItems()[k] != itemset2.getItems()[k]) {
-                        canJoin = false;
-                        break;
-                    }
-                }
-                
-                if (canJoin && itemset1.getItems()[itemset1.size() - 1] < itemset2.getItems()[itemset2.size() - 1]) {
-                    int[] newItemset = new int[itemset1.size() + 1];
-                    System.arraycopy(itemset1.getItems(), 0, newItemset, 0, itemset1.size());
-                    newItemset[itemset1.size()] = itemset2.getItems()[itemset2.size() - 1];
-                    
-                    BitSet combinedBitset = null;
-                    for (int item : newItemset) {
-                        BitSetSupport itemBitset = mapItemBitsets.get(item);
-                        if (combinedBitset == null) {
-                            combinedBitset = (BitSet) itemBitset.bitset.clone();
-                        } else {
-                            combinedBitset.and(itemBitset.bitset);
-                        }
-                    }
-                    
-                    int support = combinedBitset.cardinality();
-                    
-                    if (isRareSupport(support)) {
-                        Itemset candidate = new Itemset(newItemset);
-                        candidate.setAbsoluteSupport(support);
-                        candidates.add(candidate);
-                        
-                        int[] prefix = new int[newItemset.length - 1];
-                        System.arraycopy(newItemset, 0, prefix, 0, newItemset.length - 1);
-                        saveRareItemsetBitset(prefix, newItemset.length - 1, newItemset[newItemset.length - 1], support);
-                    }
-                }
+        if (levelKMinus1.isEmpty()) return candidates;
+        
+        int currentSize = levelKMinus1.get(0).size();
+        int nextSize = currentSize + 1;
+        
+        System.out.println("Generating " + nextSize + "-itemsets using EXHAUSTIVE method (no Apriori pruning)");
+        
+        // CRITICAL: For mixed mode, we CANNOT use Apriori pruning
+        // Generate ALL possible k-itemsets exhaustively
+        
+        // Get all distinct items from current level
+        Set<Integer> allItemsSet = new HashSet<>();
+        for (Itemset itemset : levelKMinus1) {
+            for (int item : itemset.getItems()) {
+                allItemsSet.add(item);
             }
         }
         
+        List<Integer> allItems = new ArrayList<>(allItemsSet);
+        allItems.sort(Integer::compareTo);
+        
+        System.out.println("Items available for " + nextSize + "-itemsets: " + allItems.size());
+        
+        // Generate all combinations of size nextSize
+        generateAllCombinations(allItems, nextSize, new int[nextSize], 0, 0, 
+                               candidates, mapItemBitsets);
+        
+        System.out.println("Generated " + candidates.size() + " valid " + nextSize + "-itemsets");
         return candidates;
+    }
+    
+    /**
+     * EXHAUSTIVE: Generate all combinations of given size
+     */
+    private void generateAllCombinations(List<Integer> items, int targetSize, int[] current, 
+                                        int currentIndex, int startPos, List<Itemset> candidates,
+                                        Map<Integer, BitSetSupport> mapItemBitsets) throws IOException {
+        
+        if (currentIndex == targetSize) {
+            // We have a complete combination
+            BitSet combinedBitset = calculateCombinedBitset(current, mapItemBitsets);
+            if (combinedBitset != null) {
+                int support = combinedBitset.cardinality();
+                
+                // Basic support check first
+                if (support > minRareSupportRelative) {
+                    // Check if forms valid mixed rare pattern
+                    if (isValidMixedRarePattern(current, targetSize, support)) {
+                        Itemset candidate = new Itemset(current.clone());
+                        candidate.setAbsoluteSupport(support);
+                        candidates.add(candidate);
+                        
+                        // Save the pattern
+                        if (targetSize == 2) {
+                            saveRareItemsetBitset(new int[]{current[0]}, 1, current[1], support);
+                        } else {
+                            int[] prefix = new int[targetSize - 1];
+                            System.arraycopy(current, 0, prefix, 0, targetSize - 1);
+                            saveRareItemsetBitset(prefix, targetSize - 1, current[targetSize - 1], support);
+                        }
+                    }
+                }
+            }
+            return;
+        }
+        
+        // Generate combinations recursively
+        for (int i = startPos; i < items.size(); i++) {
+            current[currentIndex] = items.get(i);
+            generateAllCombinations(items, targetSize, current, currentIndex + 1, i + 1, 
+                                   candidates, mapItemBitsets);
+        }
+    }
+    
+    /**
+     * Helper method to calculate combined bitset for itemset
+     */
+    private BitSet calculateCombinedBitset(int[] itemset, Map<Integer, BitSetSupport> mapItemBitsets) {
+        BitSet combinedBitset = null;
+        for (int item : itemset) {
+            BitSetSupport itemBitset = mapItemBitsets.get(item);
+            if (itemBitset == null) {
+                System.err.println("ERROR: No bitset for item " + item);
+                return null;
+            }
+            if (combinedBitset == null) {
+                combinedBitset = (BitSet) itemBitset.bitset.clone();
+            } else {
+                combinedBitset.and(itemBitset.bitset);
+            }
+        }
+        return combinedBitset;
     }
 
     private void saveRareSingleItemBitset(int item, BitSetSupport bitsetSupport) throws IOException {
@@ -244,15 +431,39 @@ public class AlgoEclatRareBitset extends AbstractRareItemsetAlgorithm {
         }
     }
 
+    /**
+     * MODIFIED: Print stats with mixed mode info
+     */
     @Override
     public void printStats() {
-        System.out.println("=============  ECLAT RARE BITSET v1.0 - STATS =============");
+        System.out.println("=============  ECLAT RARE MIXED BITSET - STATS =============");
         System.out.println(" Transactions count from database : " + database.size());
-        System.out.println(" Rare itemsets count : " + rareItemsetCount);
+        System.out.println(" Pattern size range: " + minPatternLength + " - " + maxPatternLength);
+        System.out.println(" Rare items identified: " + (rareItemsSet != null ? rareItemsSet.size() : 0));
+        System.out.println(" All valid items: " + (allValidItemsSet != null ? allValidItemsSet.size() : 0));
+        System.out.println(" Mixed rare itemsets count : " + rareItemsetCount);
+        System.out.println(" Mode: MIXED (Frequent + Rare Items)");
         System.out.println(" Total time ~ " + getExecutionTime() + " ms");
         System.out.println(" Maximum memory usage : " + MemoryLogger.getInstance().getMaxMemory() + " mb");
         System.out.println(" BitSet optimization: ENABLED");
-        System.out.println(" Definition: MRT < Support(X) <= MFT");
-        System.out.println("============================================================");
+        System.out.println(" Definition: MRT < Support(Pattern) <= MFT AND has ≥1 rare item");
+        System.out.println("=============================================================");
+    }
+    
+    // NEW: Getter/Setter methods for size constraints
+    public void setMinimumPatternLength(int minLength) {
+        this.minPatternLength = Math.max(1, minLength);
+    }
+    
+    public void setMaximumPatternLength(int maxLength) {
+        this.maxPatternLength = Math.max(1, maxLength);
+    }
+    
+    public int getMinimumPatternLength() {
+        return minPatternLength;
+    }
+    
+    public int getMaximumPatternLength() {
+        return maxPatternLength;
     }
 }

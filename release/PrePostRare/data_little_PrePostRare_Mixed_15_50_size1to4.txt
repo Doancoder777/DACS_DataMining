@@ -1,0 +1,81 @@
+=== PREPOST RARE MIXED - RARE ITEMSETS MINING ===
+File dữ liệu: data_little.txt
+MinRareSupport (minsup): 15.0%
+MinFrequentSupport (maxsup): 50.0%
+MinSize: 1 items
+MaxSize: 4 items
+Mode: MIXED (Frequent + Rare Items)
+Thời gian bắt đầu: Thu Jun 05 10:35:46 ICT 2025
+Output folder: release/PrePostRare/
+
+========== ĐỊNH NGHĨA MIXED MODE ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+- Rare ItemSet: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
+- Kích thước itemset: 1 <= size <= 4
+- Chấp nhận patterns chứa cả frequent và rare items
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 20
+
+========== MIXED RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (15.0%, 50.0%]
+Kích thước itemset: 1 <= size <= 4
+Điều kiện: Pattern có ít nhất 1 rare item
+Mode: MIXED (chấp nhận cả frequent và rare items)
+
+--- 1-itemsets HIẾM (MIXED) ---
+10 #SUP: 5 (25.00%)
+9 #SUP: 5 (25.00%)
+8 #SUP: 5 (25.00%)
+7 #SUP: 7 (35.00%)
+6 #SUP: 7 (35.00%)
+5 #SUP: 8 (40.00%)
+4 #SUP: 8 (40.00%)
+3 #SUP: 10 (50.00%)
+
+--- 2-itemsets HIẾM (MIXED) ---
+10 5 #SUP: 4 (20.00%)
+10 1 #SUP: 3 (15.00%)
+10 2 #SUP: 3 (15.00%)
+9 6 #SUP: 4 (20.00%)
+9 3 #SUP: 3 (15.00%)
+9 2 #SUP: 3 (15.00%)
+8 7 #SUP: 3 (15.00%)
+8 3 #SUP: 3 (15.00%)
+8 2 #SUP: 3 (15.00%)
+7 4 #SUP: 3 (15.00%)
+7 3 #SUP: 4 (20.00%)
+7 1 #SUP: 3 (15.00%)
+7 2 #SUP: 3 (15.00%)
+6 4 #SUP: 4 (20.00%)
+6 1 #SUP: 5 (25.00%)
+5 3 #SUP: 3 (15.00%)
+5 1 #SUP: 4 (20.00%)
+5 2 #SUP: 6 (30.00%)
+4 3 #SUP: 4 (20.00%)
+4 1 #SUP: 3 (15.00%)
+4 2 #SUP: 4 (20.00%)
+3 1 #SUP: 4 (20.00%)
+3 2 #SUP: 5 (25.00%)
+
+--- 3-itemsets HIẾM (MIXED) ---
+5 1 2 #SUP: 3 (15.00%)
+
+========== TỔNG KẾT ==========
+Tổng số mixed rare itemsets tìm được: 32
+Kích thước: 1 đến 4 items
+Thuật toán: PrePost Rare Mixed Mode
+Định nghĩa: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
+Output folder: release/PrePostRare/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: PrePost Rare Mixed Mode
+Tổng thời gian thực thi: 00:09.316 (phút:giây.mili giây) [9316 ms]
+Bộ nhớ tối đa sử dụng: 46.86 MB
+Kích thước itemset: 1 đến 4 items
+Mode: MIXED (Frequent + Rare Items)
+Thời gian kết thúc: Thu Jun 05 10:35:55 ICT 2025
+Output folder: release/PrePostRare/
+Định nghĩa: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item

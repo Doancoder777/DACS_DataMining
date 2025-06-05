@@ -1,0 +1,163 @@
+=== APRIORI-TID MIXED - RARE ITEMSETS MINING ===
+File dữ liệu: accidents.hui
+MinRareSupport (minsup): 10.0%
+MinFrequentSupport (maxsup): 15.0%
+MinSize: 1 items
+MaxSize: 4 items
+Mode: MIXED (Frequent + Rare Items)
+Thời gian bắt đầu: Thu Jun 05 09:24:00 ICT 2025
+Output folder: release/AprioriTIDMixed/
+Optimization: TID-based intersection for improved performance
+
+========== ĐỊNH NGHĨA MIXED MODE ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- Infrequent Item: Support(X) <= MRT
+- Rare ItemSet: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
+- Kích thước itemset: 1 <= size <= 4
+- Chấp nhận patterns chứa cả frequent và rare items
+
+========== DATABASE INFO ==========
+Số lượng giao dịch: 340183
+
+========== MIXED RARE ITEMSETS ==========
+Tìm itemsets với support trong khoảng (10.0%, 15.0%]
+Kích thước itemset: 1 <= size <= 4
+Điều kiện: Pattern có ít nhất 1 rare item
+Mode: MIXED (chấp nhận cả frequent và rare items)
+Optimization: TID-based intersection for improved performance
+
+--- 1-itemsets HIẾM (MIXED) ---
+36  #SUP: 48806 (14.35%)
+45  #SUP: 37759 (11.10%)
+51  #SUP: 35198 (10.35%)
+55  #SUP: 37747 (11.10%)
+77  #SUP: 49284 (14.49%)
+86  #SUP: 45826 (13.47%)
+126  #SUP: 49749 (14.62%)
+135  #SUP: 44696 (13.14%)
+136  #SUP: 48390 (14.22%)
+137  #SUP: 43263 (12.72%)
+140  #SUP: 42639 (12.53%)
+144  #SUP: 34968 (10.28%)
+
+--- 2-itemsets HIẾM (MIXED) ---
+1 86  #SUP: 41269 (12.13%)
+1 126  #SUP: 37270 (10.96%)
+12 36  #SUP: 44040 (12.95%)
+12 77  #SUP: 44042 (12.95%)
+12 86  #SUP: 41192 (12.11%)
+12 126  #SUP: 44749 (13.15%)
+12 135  #SUP: 40243 (11.83%)
+12 136  #SUP: 43452 (12.77%)
+12 137  #SUP: 38851 (11.42%)
+12 140  #SUP: 38350 (11.27%)
+15 86  #SUP: 34421 (10.12%)
+15 126  #SUP: 35411 (10.41%)
+15 135  #SUP: 37271 (10.96%)
+15 136  #SUP: 35686 (10.49%)
+16 36  #SUP: 41880 (12.31%)
+16 77  #SUP: 39343 (11.57%)
+16 86  #SUP: 40621 (11.94%)
+16 126  #SUP: 43328 (12.74%)
+16 135  #SUP: 39893 (11.73%)
+16 136  #SUP: 42542 (12.51%)
+16 137  #SUP: 38583 (11.34%)
+16 140  #SUP: 37563 (11.04%)
+17 36  #SUP: 43883 (12.90%)
+17 55  #SUP: 34063 (10.01%)
+17 77  #SUP: 44345 (13.04%)
+17 86  #SUP: 41300 (12.14%)
+17 126  #SUP: 44885 (13.19%)
+17 135  #SUP: 40218 (11.82%)
+17 136  #SUP: 43465 (12.78%)
+17 137  #SUP: 38939 (11.45%)
+17 140  #SUP: 38345 (11.27%)
+18 36  #SUP: 43839 (12.89%)
+18 77  #SUP: 43805 (12.88%)
+18 86  #SUP: 41241 (12.12%)
+18 126  #SUP: 44561 (13.10%)
+18 135  #SUP: 40221 (11.82%)
+18 136  #SUP: 43505 (12.79%)
+18 137  #SUP: 38875 (11.43%)
+18 140  #SUP: 38230 (11.24%)
+21 36  #SUP: 39349 (11.57%)
+21 77  #SUP: 38774 (11.40%)
+21 86  #SUP: 36487 (10.73%)
+21 126  #SUP: 40473 (11.90%)
+21 135  #SUP: 36382 (10.69%)
+21 136  #SUP: 40572 (11.93%)
+24 36  #SUP: 34231 (10.06%)
+24 77  #SUP: 36696 (10.79%)
+24 86  #SUP: 34314 (10.09%)
+24 126  #SUP: 37129 (10.91%)
+25 77  #SUP: 39373 (11.57%)
+25 137  #SUP: 36858 (10.83%)
+27 36  #SUP: 37681 (11.08%)
+27 77  #SUP: 34026 (10.00%)
+27 126  #SUP: 38916 (11.44%)
+27 135  #SUP: 34847 (10.24%)
+27 136  #SUP: 38796 (11.40%)
+28 77  #SUP: 36540 (10.74%)
+28 86  #SUP: 35077 (10.31%)
+28 126  #SUP: 37583 (11.05%)
+28 137  #SUP: 36386 (10.70%)
+29 36  #SUP: 40124 (11.79%)
+29 77  #SUP: 39343 (11.57%)
+29 86  #SUP: 35131 (10.33%)
+29 126  #SUP: 40570 (11.93%)
+29 135  #SUP: 35706 (10.50%)
+29 136  #SUP: 37708 (11.08%)
+31 36  #SUP: 35195 (10.35%)
+31 77  #SUP: 38612 (11.35%)
+31 86  #SUP: 39934 (11.74%)
+31 126  #SUP: 43566 (12.81%)
+31 135  #SUP: 38789 (11.40%)
+31 136  #SUP: 40968 (12.04%)
+31 137  #SUP: 37802 (11.11%)
+31 140  #SUP: 36514 (10.73%)
+33 36  #SUP: 35289 (10.37%)
+36 43  #SUP: 35108 (10.32%)
+41 86  #SUP: 34020 (10.00%)
+41 126  #SUP: 38282 (11.25%)
+43 77  #SUP: 38040 (11.18%)
+43 86  #SUP: 35902 (10.55%)
+43 126  #SUP: 39498 (11.61%)
+43 136  #SUP: 35983 (10.58%)
+43 137  #SUP: 36487 (10.73%)
+44 136  #SUP: 43096 (12.67%)
+59 126  #SUP: 36431 (10.71%)
+59 137  #SUP: 34682 (10.20%)
+77 98  #SUP: 35320 (10.38%)
+
+--- 3-itemsets HIẾM (MIXED) ---
+12 44 136  #SUP: 38674 (11.37%)
+16 44 136  #SUP: 37897 (11.14%)
+
+========== TỔNG KẾT ==========
+Tổng số mixed rare itemsets tìm được: 101
+Kích thước: 1 đến 4 items
+Thuật toán: AprioriTID Mixed Mode
+Định nghĩa: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
+Optimization: TID-based intersection for memory and speed improvements
+Output folder: release/AprioriTIDMixed/
+
+========== THÔNG TIN HIỆU SUẤT ==========
+Thuật toán: AprioriTID Mixed Mode
+Tổng thời gian thực thi: 00:46.207 (phút:giây.mili giây) [46207 ms]
+Bộ nhớ tối đa sử dụng: 3258.18 MB
+Kích thước itemset: 1 đến 4 items
+Mode: MIXED (Frequent + Rare Items)
+Optimization: TID-based intersection for improved performance
+Thời gian kết thúc: Thu Jun 05 09:24:47 ICT 2025
+Output folder: release/AprioriTIDMixed/
+Định nghĩa: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
+
+========== TỐI ƯU ÁP DỤNG ==========
+1. TID-based Intersection: Efficient set operations using transaction IDs
+2. Mixed Mode Support: Both frequent and rare items in patterns
+3. Size Constraints: Pattern length filtering [1, 4]
+4. Lexicographic Ordering: Systematic candidate generation
+5. Early Termination: Skip low-support candidates
+6. Memory Optimization: TID sets instead of full transaction storage
+7. Apriori Property: Efficient pruning where applicable

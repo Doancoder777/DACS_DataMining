@@ -1,0 +1,15 @@
+=== APRIORI-TID MIXED - RARE ITEMSETS MINING ===
+File dữ liệu: accidents.hui
+MinRareSupport (minsup): 15.0%
+MinFrequentSupport (maxsup): 50.0%
+MinSize: 1 items
+MaxSize: 4 items
+Mode: MIXED (Frequent + Rare Items)
+Thời gian bắt đầu: Thu Jun 05 04:22:31 ICT 2025
+Output folder: release/AprioriTIDMixed/
+Optimization: TID-based intersection for improved performance
+
+========== ĐỊNH NGHĨA MIXED MODE ==========
+- Rare Item: MRT < Support(X) <= MFT
+- Frequent Item: Support(X) > MFT
+- In
