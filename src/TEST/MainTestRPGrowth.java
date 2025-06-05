@@ -15,11 +15,11 @@ public class MainTestRPGrowth {
     public static void main(String[] args) throws IOException {
         MemoryLogger.getInstance().reset();
         long startTime = System.currentTimeMillis();
-        
+
         String dataDir = "Data";
         File directory = new File(dataDir);
         File[] files = directory.listFiles((dir, name) -> name.endsWith(".txt") || name.endsWith(".hui"));
-        
+
         if (files == null || files.length == 0) {
             System.out.println("Không tìm thấy tệp dữ liệu trong thư mục: " + dataDir);
             return;
@@ -35,7 +35,6 @@ public class MainTestRPGrowth {
         System.out.println("- Chấp nhận patterns chứa cả frequent và rare items");
         System.out.println("================================================================");
 
-        // Chọn file
         System.out.println("\nDanh sách tệp dữ liệu trong thư mục:");
         for (int i = 0; i < files.length; i++) {
             System.out.println((i + 1) + ". " + files[i].getName());
@@ -51,7 +50,6 @@ public class MainTestRPGrowth {
         String fileName = files[choice - 1].getName();
         System.out.println("Đã chọn tệp: " + fileName);
 
-        // Nhập MinRareSupport
         System.out.print("Nhập MinRareSupport - minsup (phần trăm, từ 0 đến 100): ");
         double minRareSuppPercent = scanner.nextDouble();
         while (minRareSuppPercent < 0 || minRareSuppPercent > 100) {
@@ -59,7 +57,6 @@ public class MainTestRPGrowth {
             minRareSuppPercent = scanner.nextDouble();
         }
 
-        // Nhập MinFrequentSupport
         System.out.print("Nhập MinFrequentSupport - maxsup (phần trăm, từ 0 đến 100): ");
         double minFreqSuppPercent = scanner.nextDouble();
         while (minFreqSuppPercent < minRareSuppPercent || minFreqSuppPercent > 100) {
@@ -67,7 +64,6 @@ public class MainTestRPGrowth {
             minFreqSuppPercent = scanner.nextDouble();
         }
 
-        // Nhập MinSize - THAM SỐ MỚI
         System.out.print("Nhập MinSize - kích thước tối thiểu của itemset (>=1): ");
         int minSize = scanner.nextInt();
         while (minSize < 1) {
@@ -75,7 +71,6 @@ public class MainTestRPGrowth {
             minSize = scanner.nextInt();
         }
 
-        // Nhập MaxSize - THAM SỐ MỚI
         System.out.print("Nhập MaxSize - kích thước tối đa của itemset (>= MinSize): ");
         int maxSize = scanner.nextInt();
         while (maxSize < minSize) {
@@ -83,7 +78,6 @@ public class MainTestRPGrowth {
             maxSize = scanner.nextInt();
         }
 
-        // Tạo thư mục output
         File releaseDir = new File("release");
         if (!releaseDir.exists()) {
             releaseDir.mkdirs();
@@ -97,8 +91,7 @@ public class MainTestRPGrowth {
         String outputBaseName = fileName.replaceAll("\\.[^.]*$", "");
         double minRareSupp = minRareSuppPercent / 100.0;
         double minFreqSupp = minFreqSuppPercent / 100.0;
-        
-        // FIX: Tạo output path từng phần để tránh lỗi syntax
+
         StringBuilder outputPathBuilder = new StringBuilder();
         outputPathBuilder.append(rpGrowthDir.getAbsolutePath());
         outputPathBuilder.append(File.separator);
@@ -115,7 +108,7 @@ public class MainTestRPGrowth {
         String outputPath = outputPathBuilder.toString();
 
         try {
-            runRPGrowth(input, outputPath, minFreqSupp, minRareSupp, minSize, maxSize, 
+            runRPGrowth(input, outputPath, minFreqSupp, minRareSupp, minSize, maxSize,
                        fileName, startTime, minRareSuppPercent, minFreqSuppPercent);
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,8 +117,8 @@ public class MainTestRPGrowth {
         scanner.close();
     }
 
-    private static void runRPGrowth(String input, String outputPath, double minFreqSupp, double minRareSupp, 
-                                   int minSize, int maxSize, String fileName, long startTime, 
+    private static void runRPGrowth(String input, String outputPath, double minFreqSupp, double minRareSupp,
+                                   int minSize, int maxSize, String fileName, long startTime,
                                    double minRareSuppPercent, double minFreqSuppPercent) throws IOException {
         System.out.println("\n=== CHẠY RP-GROWTH MIXED MODE ===");
         System.out.println("Kết quả sẽ được lưu vào file: " + outputPath);
@@ -150,13 +143,12 @@ public class MainTestRPGrowth {
         writer.println("- Chấp nhận patterns chứa cả frequent và rare items");
         writer.println();
 
-        // Sử dụng phương thức mới với 6 tham số
         AlgoRPGrowth algo = new AlgoRPGrowth();
         Itemsets patterns = algo.runAlgorithm(input, null, minFreqSupp, minRareSupp, minSize, maxSize);
-        
+
         algo.printStats();
 
-        writeRareResults(writer, patterns, "MIXED RARE ITEMSETS", algo.getDatabaseSize(), 
+        writeRareResults(writer, patterns, "MIXED RARE ITEMSETS", algo.getDatabaseSize(),
                         minRareSupp, minFreqSupp, minSize, maxSize);
         writePerformanceStats(writer, startTime, minSize, maxSize);
 
@@ -166,7 +158,7 @@ public class MainTestRPGrowth {
         System.out.println("Thư mục output: release/RPGrowth/");
     }
 
-    private static void writeRareResults(PrintWriter writer, Itemsets patterns, String title, 
+    private static void writeRareResults(PrintWriter writer, Itemsets patterns, String title,
                                         int transactionCount, double minRareSupp, double minFreqSupp,
                                         int minSize, int maxSize) {
         writer.println("========== " + title + " ==========");
@@ -181,21 +173,20 @@ public class MainTestRPGrowth {
 
         int totalCount = 0;
         java.util.List<java.util.List<Itemset>> levels = patterns.getLevels();
-        
+
         for (int level = 0; level < levels.size(); level++) {
             java.util.List<Itemset> itemsetsAtLevel = levels.get(level);
             if (itemsetsAtLevel != null && !itemsetsAtLevel.isEmpty()) {
                 int actualSize = itemsetsAtLevel.get(0).size();
-                
-                // Chỉ hiển thị level nằm trong khoảng [minSize, maxSize]
+
                 if (actualSize >= minSize && actualSize <= maxSize) {
                     writer.println("--- " + actualSize + "-itemsets HIẾM (MIXED) ---");
                     System.out.println("--- " + actualSize + "-itemsets HIẾM (MIXED) ---");
-                    
+
                     for (Itemset itemset : itemsetsAtLevel) {
                         int support = itemset.getAbsoluteSupport();
                         double supportPercent = (support * 100.0) / transactionCount;
-                        String line = itemset.toString() + " #SUP: " + support + " (" + 
+                        String line = itemset.toString() + " #SUP: " + support + " (" +
                                      String.format("%.2f", supportPercent) + "%)";
                         writer.println(line);
                         System.out.println(line);
@@ -213,7 +204,7 @@ public class MainTestRPGrowth {
         writer.println("Thuật toán: RP-Growth Mixed Mode");
         writer.println("Định nghĩa: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item");
         writer.println("Output folder: release/RPGrowth/");
-        
+
         System.out.println("========== TỔNG KẾT ==========");
         System.out.println("Tổng số mixed rare itemsets tìm được: " + totalCount);
         System.out.println("Kích thước: " + minSize + " đến " + maxSize + " items");
@@ -228,7 +219,7 @@ public class MainTestRPGrowth {
         long minutes = (executionTime / 1000) / 60;
         long seconds = (executionTime / 1000) % 60;
         long milliseconds = executionTime % 1000;
-        
+
         String formattedTime = String.format("%02d:%02d.%03d", minutes, seconds, milliseconds);
         double maxMemory = MemoryLogger.getInstance().getMaxMemory();
         String formattedMemory = String.format("%.2f", maxMemory);

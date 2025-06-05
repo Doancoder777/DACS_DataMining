@@ -1,31 +1,18 @@
-=== PREPOST RARE MIXED - RARE ITEMSETS MINING ===
-File dữ liệu: accidents.hui
-MinRareSupport (minsup): 15.0%
-MinFrequentSupport (maxsup): 50.0%
-MinSize: 1 items
-MaxSize: 4 items
-Mode: MIXED (Frequent + Rare Items)
-Thời gian bắt đầu: Thu Jun 05 16:08:13 ICT 2025
-Output folder: release/PrePostRare/
-
-========== ĐỊNH NGHĨA MIXED MODE ==========
-- Rare Item: MRT < Support(X) <= MFT
-- Frequent Item: Support(X) > MFT
-- Infrequent Item: Support(X) <= MRT
-- Rare ItemSet: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
-- Kích thước itemset: 1 <= size <= 4
-- Chấp nhận patterns chứa cả frequent và rare items
+=== PREPOST RARE - RARE ITEMSETS MINING ===
+File: accidents.hui
+MinRareSupport: 15.0%
+MaxSupport: 50.0%
+Size range: [1, 4]
+Start time: Thu Jun 05 16:07:33 ICT 2025
 
 ========== DATABASE INFO ==========
-Số lượng giao dịch: 340183
+Transactions: 340183
 
-========== MIXED RARE ITEMSETS ==========
-Tìm itemsets với support trong khoảng (15.0%, 50.0%]
-Kích thước itemset: 1 <= size <= 4
-Điều kiện: Pattern có ít nhất 1 rare item
-Mode: MIXED (chấp nhận cả frequent và rare items)
+========== RARE ITEMSETS ==========
+Support range: (15.0%, 50.0%]
+Size range: [1, 4]
 
---- 1-itemsets HIẾM (MIXED) ---
+--- 1-itemsets ---
 72 #SUP: 51926 (15.26%)
 98 #SUP: 52183 (15.34%)
 2 #SUP: 53313 (15.67%)
@@ -61,7 +48,7 @@ Mode: MIXED (chấp nhận cả frequent và rare items)
 23 #SUP: 155901 (45.83%)
 30 #SUP: 165311 (48.59%)
 
---- 2-itemsets HIẾM (MIXED) ---
+--- 2-itemsets ---
 42 16 #SUP: 51518 (15.14%)
 42 18 #SUP: 52054 (15.30%)
 42 12 #SUP: 52013 (15.29%)
@@ -509,7 +496,7 @@ Mode: MIXED (chấp nhận cả frequent và rare items)
 30 12 #SUP: 148559 (43.67%)
 30 17 #SUP: 148715 (43.72%)
 
---- 3-itemsets HIẾM (MIXED) ---
+--- 3-itemsets ---
 7 18 12 #SUP: 51106 (15.02%)
 7 18 17 #SUP: 51055 (15.01%)
 7 12 17 #SUP: 51171 (15.04%)
@@ -3210,7 +3197,7 @@ Mode: MIXED (chấp nhận cả frequent và rare items)
 30 18 17 #SUP: 133590 (39.27%)
 30 12 17 #SUP: 133642 (39.29%)
 
---- 4-itemsets HIẾM (MIXED) ---
+--- 4-itemsets ---
 33 18 12 17 #SUP: 52366 (15.39%)
 82 31 16 18 #SUP: 52317 (15.38%)
 82 31 16 12 #SUP: 52335 (15.38%)
@@ -12198,19 +12185,12 @@ Mode: MIXED (chấp nhận cả frequent và rare items)
 30 16 12 17 #SUP: 117739 (34.61%)
 30 18 12 17 #SUP: 120150 (35.32%)
 
-========== TỔNG KẾT ==========
-Tổng số mixed rare itemsets tìm được: 12165
-Kích thước: 1 đến 4 items
-Thuật toán: PrePost Rare Mixed Mode
-Định nghĩa: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
-Output folder: release/PrePostRare/
+========== SUMMARY ==========
+Total rare itemsets: 12165
+Size range: 1 - 4
+Algorithm: PrePost Rare
 
-========== THÔNG TIN HIỆU SUẤT ==========
-Thuật toán: PrePost Rare Mixed Mode
-Tổng thời gian thực thi: 00:15.480 (phút:giây.mili giây) [15480 ms]
-Bộ nhớ tối đa sử dụng: 1675.60 MB
-Kích thước itemset: 1 đến 4 items
-Mode: MIXED (Frequent + Rare Items)
-Thời gian kết thúc: Thu Jun 05 16:08:29 ICT 2025
-Output folder: release/PrePostRare/
-Định nghĩa: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
+========== PERFORMANCE ==========
+Execution time: 00:15.277 (15277 ms)
+Memory usage: 1672.75 MB
+End time: Thu Jun 05 16:07:48 ICT 2025

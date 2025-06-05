@@ -1,22 +1,22 @@
 SupportPoint,Algorithm,Runtime(ms),Memory(MB),PatternsFound,Dataset
-10.0,PrePost Rare,9450,1580.00,334,accidents.hui
-10.0,ECLAT Rare,4918,163.16,334,accidents.hui
-10.0,RP-Growth,69728,604.35,334,accidents.hui
-15.0,PrePost Rare,10218,3210.65,172,accidents.hui
-15.0,ECLAT Rare,3683,2376.06,172,accidents.hui
-15.0,RP-Growth,35652,2376.06,172,accidents.hui
-20.0,PrePost Rare,7228,2443.34,39,accidents.hui
-20.0,ECLAT Rare,3359,2505.23,39,accidents.hui
-20.0,RP-Growth,23193,2505.23,39,accidents.hui
-25.0,PrePost Rare,6594,1182.38,13,accidents.hui
-25.0,ECLAT Rare,3296,300.69,13,accidents.hui
-25.0,RP-Growth,16310,1004.85,13,accidents.hui
-30.0,PrePost Rare,6497,383.30,1,accidents.hui
-30.0,ECLAT Rare,3287,591.29,1,accidents.hui
-30.0,RP-Growth,12811,628.08,1,accidents.hui
-35.0,PrePost Rare,6383,287.04,1,accidents.hui
-35.0,ECLAT Rare,3517,323.59,1,accidents.hui
-35.0,RP-Growth,11409,603.50,1,accidents.hui
-40.0,PrePost Rare,6348,678.79,6,accidents.hui
-40.0,ECLAT Rare,3213,955.42,6,accidents.hui
-40.0,RP-Growth,10071,955.42,6,accidents.hui
+10.0,PrePost Rare,481,133.08,21286,chess.hui
+10.0,ECLAT Rare,366,103.34,21286,chess.hui
+10.0,RP-Growth,5828,103.34,23052,chess.hui
+15.0,PrePost Rare,166,192.44,5221,chess.hui
+15.0,ECLAT Rare,131,261.44,5221,chess.hui
+15.0,RP-Growth,3788,261.44,6337,chess.hui
+20.0,PrePost Rare,137,72.70,7674,chess.hui
+20.0,ECLAT Rare,152,208.70,7674,chess.hui
+20.0,RP-Growth,2938,208.70,12666,chess.hui
+25.0,PrePost Rare,114,73.90,4507,chess.hui
+25.0,ECLAT Rare,97,158.90,4507,chess.hui
+25.0,RP-Growth,2208,158.90,8521,chess.hui
+30.0,PrePost Rare,156,255.30,7214,chess.hui
+30.0,ECLAT Rare,120,64.40,7214,chess.hui
+30.0,RP-Growth,1793,64.40,13015,chess.hui
+35.0,PrePost Rare,101,173.20,2476,chess.hui
+35.0,ECLAT Rare,126,232.20,2476,chess.hui
+35.0,RP-Growth,1402,232.20,3880,chess.hui
+40.0,PrePost Rare,100,57.28,80,chess.hui
+40.0,ECLAT Rare,68,104.28,80,chess.hui
+40.0,RP-Growth,1156,257.49,83,chess.hui

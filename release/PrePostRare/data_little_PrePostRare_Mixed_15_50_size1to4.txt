@@ -5,7 +5,7 @@ MinFrequentSupport (maxsup): 50.0%
 MinSize: 1 items
 MaxSize: 4 items
 Mode: MIXED (Frequent + Rare Items)
-Thời gian bắt đầu: Thu Jun 05 10:35:46 ICT 2025
+Thời gian bắt đầu: Thu Jun 05 16:05:08 ICT 2025
 Output folder: release/PrePostRare/
 
 ========== ĐỊNH NGHĨA MIXED MODE ==========
@@ -72,10 +72,10 @@ Output folder: release/PrePostRare/
 
 ========== THÔNG TIN HIỆU SUẤT ==========
 Thuật toán: PrePost Rare Mixed Mode
-Tổng thời gian thực thi: 00:09.316 (phút:giây.mili giây) [9316 ms]
+Tổng thời gian thực thi: 00:12.812 (phút:giây.mili giây) [12812 ms]
 Bộ nhớ tối đa sử dụng: 46.86 MB
 Kích thước itemset: 1 đến 4 items
 Mode: MIXED (Frequent + Rare Items)
-Thời gian kết thúc: Thu Jun 05 10:35:55 ICT 2025
+Thời gian kết thúc: Thu Jun 05 16:05:21 ICT 2025
 Output folder: release/PrePostRare/
 Định nghĩa: MRT < Support(Pattern) <= MFT AND có ít nhất 1 rare item
