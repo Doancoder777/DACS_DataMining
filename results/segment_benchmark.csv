@@ -1,22 +1,22 @@
 SupportPoint,Algorithm,Runtime(ms),Memory(MB),PatternsFound,Dataset
-10.0,PrePost Rare,9097,1581.00,334,accidents.hui
-10.0,ECLAT Rare,4507,256.44,334,accidents.hui
-10.0,RP-Growth,63824,1465.00,334,accidents.hui
-15.0,PrePost Rare,9900,2584.92,172,accidents.hui
-15.0,ECLAT Rare,3443,2429.31,172,accidents.hui
-15.0,RP-Growth,33926,2429.31,172,accidents.hui
-20.0,PrePost Rare,7133,1370.00,39,accidents.hui
-20.0,ECLAT Rare,3362,1533.74,39,accidents.hui
-20.0,RP-Growth,23079,1533.74,39,accidents.hui
-25.0,PrePost Rare,6476,531.34,13,accidents.hui
-25.0,ECLAT Rare,3289,401.19,13,accidents.hui
-25.0,RP-Growth,15584,831.95,13,accidents.hui
-30.0,PrePost Rare,6221,658.81,1,accidents.hui
-30.0,ECLAT Rare,3180,678.24,1,accidents.hui
-30.0,RP-Growth,12134,714.95,1,accidents.hui
-35.0,PrePost Rare,6099,431.25,1,accidents.hui
-35.0,ECLAT Rare,3281,294.82,1,accidents.hui
-35.0,RP-Growth,10639,552.78,1,accidents.hui
-40.0,PrePost Rare,5915,412.76,6,accidents.hui
-40.0,ECLAT Rare,3303,384.04,6,accidents.hui
-40.0,RP-Growth,9473,384.04,6,accidents.hui
+10.0,PrePost Rare,9450,1580.00,334,accidents.hui
+10.0,ECLAT Rare,4918,163.16,334,accidents.hui
+10.0,RP-Growth,69728,604.35,334,accidents.hui
+15.0,PrePost Rare,10218,3210.65,172,accidents.hui
+15.0,ECLAT Rare,3683,2376.06,172,accidents.hui
+15.0,RP-Growth,35652,2376.06,172,accidents.hui
+20.0,PrePost Rare,7228,2443.34,39,accidents.hui
+20.0,ECLAT Rare,3359,2505.23,39,accidents.hui
+20.0,RP-Growth,23193,2505.23,39,accidents.hui
+25.0,PrePost Rare,6594,1182.38,13,accidents.hui
+25.0,ECLAT Rare,3296,300.69,13,accidents.hui
+25.0,RP-Growth,16310,1004.85,13,accidents.hui
+30.0,PrePost Rare,6497,383.30,1,accidents.hui
+30.0,ECLAT Rare,3287,591.29,1,accidents.hui
+30.0,RP-Growth,12811,628.08,1,accidents.hui
+35.0,PrePost Rare,6383,287.04,1,accidents.hui
+35.0,ECLAT Rare,3517,323.59,1,accidents.hui
+35.0,RP-Growth,11409,603.50,1,accidents.hui
+40.0,PrePost Rare,6348,678.79,6,accidents.hui
+40.0,ECLAT Rare,3213,955.42,6,accidents.hui
+40.0,RP-Growth,10071,955.42,6,accidents.hui
